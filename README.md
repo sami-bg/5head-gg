@@ -1,10 +1,10 @@
 # cs0320 Term Project 2020
 
 **Team Members:**
-Salvador Brandi
-Sami Bou Ghanem
-Miguel Siordia
-Walter Zhan
+* Salvador Brandi
+* Sami Bou Ghanem
+* Miguel Siordia
+* Walter Zhan
 
 **Team Strengths and Weaknesses:**
 * Salvador: 
