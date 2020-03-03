@@ -1,15 +1,40 @@
 # cs0320 Term Project 2020
 
-**Team Members:** _Fill this in!_
+**Team Members:**
+Salvador Brandi
+Sami Bou Ghanem
+Miguel Siordia
+Walter Zhan
 
-**Team Strengths and Weaknesses:** _Fill this in!_
+**Team Strengths and Weaknesses:**
+* Salvador: 
+  Strengths: Operational knowledge of many programing languages. SQL 
+  Weakness: Poor commenting habits, can't make tests well
+* Sami:
+  Strengths: Good at CSS, front-end design. Good at unit and system tests.
+  Weaknesses: Can't SQL for my life. 
+* Miguel:
+  Strengths: Pretty good at debugging, good with design (not CSS though)
+  Weaknesses: Pretty bad at CSS
+* Walter:
+  Strengths:
+  Weaknesses:
 
-**Project Idea(s):** _Fill this in with three unique ideas! (Due by March 2)_
-### Idea 1
+
+**Project Idea(s):**
+### Idea 1 
+Given a list of tasks, time constraints, and priority weight, automatically fill out the times they should be working on which task, and export that to GCal. Dynamically changes when adding more tasks/meetings to optimally fill time. 
+Issue tracker.
+
 
 ### Idea 2
+A software that can look at a corpus of memes, and then generates a set of relevant keywords that apply to each meme by looking at their content and comment section. You can then sift through the memes via a certain hashtag (or multiple), and find memes that are relevant to any and all meme pages.
+
 
 ### Idea 3
+Use the user’s spotify song history to identify the emotions most commonly associated with them. Create a histogram/map of how the users song-emotions change over time / per playlist, etc. 
+
+
 
 **Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
 
