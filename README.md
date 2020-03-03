@@ -17,7 +17,7 @@
   Strengths: Pretty good at debugging, good with design (not CSS though)
   Weaknesses: Pretty bad at CSS
 * Walter:
-  Strengths: Good at implementing algorithms
+  Strengths: Good at implementing algorithms, testing
   Weaknesses: Not great at abstracting classes / making things extensible
 
 
