@@ -26,14 +26,21 @@
 Given a list of tasks, time constraints, and priority weight, automatically fill out the times they should be working on which task, and export that to GCal. Dynamically changes when adding more tasks/meetings to optimally fill time. 
 Issue tracker.
 
+TA review: Rejected - this idea seems like it's simply going to find overlapping time intervals, which is not complex enough for this assignment. 
+
 
 ### Idea 2
 A software that can look at a corpus of memes, and then generates a set of relevant keywords that apply to each meme by looking at their content and comment section. You can then sift through the memes via a certain hashtag (or multiple), and find memes that are relevant to any and all meme pages.
+
+TA review: Rejected - this idea will be heavily based on categorizing the memes (and then will just be a filter in the end), and the categorization algorithm seems like it belongs in a different CS class, not 32.
 
 
 ### Idea 3
 Use the user’s spotify song history to identify the emotions most commonly associated with them. Create a histogram/map of how the users song-emotions change over time / per playlist, etc. 
 
+TA review: Rejected - there is not enough algorithmic complexity behind this idea.
+
+**Note:** You must push a revised idea to Github.
 
 
 **Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
