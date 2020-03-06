@@ -4,7 +4,7 @@
 * Salvador Brandi
 * Sami Bou Ghanem
 * Miguel Siordia
-* Walter Zhan
+* Walter Zhang
 
 **Team Strengths and Weaknesses:**
 * Salvador: 
