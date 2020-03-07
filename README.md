@@ -67,6 +67,7 @@ Online games are being changed all the time, with the changes being released to 
 * Developing a fair weighting algorithm may require extensive user testing/feedback which is difficult to collect. 
 * Making the code extensible to easily be able to build on the framework in the future. 
 
+**TA Review: ** Approved! Looks good, make sure to discuss your algorithm with your mentor TA or Tim before coding it. 
 
 **Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
 
