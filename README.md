@@ -42,6 +42,31 @@ TA review: Rejected - there is not enough algorithmic complexity behind this ide
 
 **Note:** You must push a revised idea to Github.
 
+# REVISED IDEA
+
+# Online Game Winrate Prediction:
+
+Online games are being changed all the time, with the changes being released to the public before they actually are applied to the game. This means that for any given patch, there is a period in which people speculate about how the changes will affect how the game is played, and which strategies will be most effective. Since these games are complex systems, most changes impact the meta (most effective technique available) in non-obvious ways. People often have wildly different opinions based on their understanding of a game. We propose a web application to allow users to place value on their predictions, gaining rewards for making accurate predictions. There are many games which this could be applied to, including names like Overwatch, League of Legends, Dota 2, and Hearthstone. In the last decade, esports analysis has become a real career. Through this interface,  esports analysts and casual gamers alike, could prove their understanding of the game as a whole to the public, lending credibility to their analysis. 
+
+## Requirements
+* Web scraping for patch notes, and conversion of patch notes into quantifiable attributes
+* An algorithm that places weights on differents aspects of the patch notes to normalize how impactful different types of buffs are. 
+* Backend to store user profiles, Patch data, trends, etc
+* Use of company APIs to collect game state data
+* Front end development to display Users, interface, games, change categories, etc. 
+
+## Features 
+* Users can create an account and accrue reputation on their profile page
+* Correctly predicting the variation that a change will cause in game state awards reputation, while incorrectly predicting it causes loss of reputation
+* Different interfaces and profiles for League of Legends and Rainbow Six Siege
+* Analytics data trends and graphs for each prediction category
+
+
+## Challenges
+* Frontend will require significant development to convey information clearly
+* Developing a fair weighting algorithm may require extensive user testing/feedback which is difficult to collect. 
+* Making the code extensible to easily be able to build on the framework in the future. 
+
 
 **Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
 
