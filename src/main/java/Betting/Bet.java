@@ -1,4 +1,4 @@
-package data;
+package main.java.Betting;
 
 public final class Bet {
 private String user;
