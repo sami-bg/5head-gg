@@ -11,8 +11,7 @@ public class Champion {
 	
 	private List<Double> pastWinRate; 
 	
-	public Champion(List<String> userStrings) {
-		this.name = userStrings.get(0);
+	public Champion(List<String> winRate, List<String> banRate, List<String> pickRate) {
 		
 	}
 
