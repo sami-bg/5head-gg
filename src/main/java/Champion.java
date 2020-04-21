@@ -9,7 +9,7 @@ public class Champion {
 	public float pickRate;
 	public float banRate;
 	
-	private List<Double> pastWinRate; //Need to be able to show trend data, maybe store old rates?
+	private List<Double> pastWinRate; 
 	
 	public Champion(List<String> userStrings) {
 		this.name = userStrings.get(0);
