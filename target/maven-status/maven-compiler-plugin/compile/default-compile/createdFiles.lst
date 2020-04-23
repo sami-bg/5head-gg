@@ -1,9 +1,7 @@
-Betting/BettingSession$2.class
-Betting/Bet.class
-Betting/TestGainFunction.class
-Betting/BettingSession$1.class
 Betting/BettingSession.class
 Main.class
+Betting/Bet.class
 Betting/LogLossFunction.class
 Betting/GainFunction.class
+Betting/TestGainFunction.class
 RiotAPI/RiotAPI.class

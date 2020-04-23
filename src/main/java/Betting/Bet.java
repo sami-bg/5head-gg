@@ -1,9 +1,10 @@
 package Betting;
 
 /**
-*
-*/
-
+ * Class to represent a bet made by a user.
+ * @author sboughan
+ *
+ */
 public final class Bet {
   private final String userID;
   private final Double percentChangePredicted;
@@ -16,11 +17,15 @@ public final class Bet {
    * Category getter.
    * @return the category (i.e. champion) the bet was put in.
    */
-
   public String getCategory() {
     return category;
   }
 
+  /**
+   * Calculates the change in user rating given the result of the bet
+   * and updates that field in the bet.
+   * @param c The actual change that occurred
+   */
   protected void calculateChange(Double c) {
     this.percentChangeActual = c;
     this.change = gainFunction.calculateGain(c, this);
@@ -50,7 +55,13 @@ public final class Bet {
     return change;
   }
 
-
+/**
+ * Default bet constructor.
+ * @param user ID of the user woh made the bet
+ * @param percentChange the change in percentage the user thought would occur
+ * @param champion the champion whose change the user bet on
+ * @param gainFunction the function to be used to calculate the user's gain/loss
+ */
   public Bet(String user, Double percentChange, String champion, GainFunction gainFunction) {
     this.userID = user;
     this.percentChangePredicted = percentChange;
