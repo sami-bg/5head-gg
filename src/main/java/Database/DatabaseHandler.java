@@ -103,7 +103,7 @@ public class DatabaseHandler {
 		User user = null;
 		List<String> userStrings = new ArrayList<>();
 		if (userID != null && !userID.equals("")){
-			userStrings = this.queryData("SELECT * FROM users WHERE id = ?", Arrays.asList(userID));
+			userStrings = this.queryData("SELECT * FROM users WHERE id = ? ;", Arrays.asList(userID));
 		}
 		if (userStrings.size() != 0){
 			user = new User(userStrings);
@@ -116,17 +116,80 @@ public class DatabaseHandler {
 	
 	public Champion getChampion(String champName) throws SQLException {
 		Champion champ = null;
-		List<String> userStrings = new ArrayList<>();
+		List<String> champStringsW = new ArrayList<>();
+		List<String> champStringsB = new ArrayList<>();
+		List<String> champStringsP = new ArrayList<>();
+
 		if (champName != null && !champName.equals("")){
-			userStrings = this.queryData("SELECT * FROM users WHERE id = ?", Arrays.asList(champName));
+			champStringsW.addAll(this.queryData("SELECT * FROM WinRate WHERE champion = ? ;", Arrays.asList(champName)));
+			champStringsB.addAll(this.queryData("SELECT * FROM BanRate WHERE champion = ? ;", Arrays.asList(champName)));
+			champStringsP.addAll(this.queryData("SELECT * FROM PickRate WHERE champion = ? ;", Arrays.asList(champName)));
+			
+
 		}
-		if (userStrings.size() != 0){
-			champ = new Champion(userStrings);
+		if (champStringsW.size() != 0 && champStringsB.size() != 0 && champStringsP.size() != 0 ){
+			champ = new Champion(champStringsW, champStringsB, champStringsP);
 		} else {
-			throw new SQLException("User is not in database or has no information");
+			throw new SQLException("Champion is not in database or has no information");
 		}
+		
         return champ;
 
     }
+	
+	//have a champion table with rates, dont need rep query if its a field of user
+	
+	public float getChampionWinRateFromPatch(String patchNum, String champ) throws SQLException {
+		float winRate = 0;
+		if (champ != null && !champ.equals("")){
+			winRate = Float.parseFloat(this.queryData("SELECT ? FROM WinRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+		} else {
+			throw new SQLException("No relevant entry. Try running stat fetcher API.");
+		}
+        return winRate;
+
+	}
+	
+	public float getChampionPickRateFromPatch(String patchNum, String champ) throws SQLException {
+		float pickRate = 0;
+		if (champ != null && !champ.equals("")){
+			pickRate = Float.parseFloat(this.queryData("SELECT ? FROM PickRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+		} else {
+			throw new SQLException("No relevant entry. Try running stat fetcher API.");
+		}
+        return pickRate;
+
+	}
+	
+	public float getChampionBanRateFromPatch(String patchNum, String champ) throws SQLException {
+		float banRate = 0;
+		if (champ != null && !champ.equals("")){
+			banRate = Float.parseFloat(this.queryData("SELECT ? FROM BanRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+		} else {
+			throw new SQLException("No relevant entry. Try running stat fetcher API.");
+		}
+        return banRate;
+
+	}
+	
+	public void createNewPatch(String patchNum) throws SQLException {
+		this.queryData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		this.queryData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		this.queryData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+	}
+	
+	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate) throws SQLException {
+		
+		this.queryData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, winRate, champ));
+		this.queryData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, banRate, champ));
+		this.queryData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, pickRate, champ));
+	}
+	
+	public List<String> getTopFifty() throws SQLException {
+		List<String> topFifty = new ArrayList<String>();
+		topFifty = this.queryData("SELECT TOP 50 username, reputation, id FROM users ORDER BY reputation DESC", null);
+		return topFifty;
+	}
+	
 
 }

@@ -2,6 +2,8 @@ package main.java;
 
 import java.util.List;
 
+import main.java.Betting.Bet;
+
 public class User {
 private final String id;
 private int reputation;
@@ -15,6 +17,11 @@ public User(List<String> dataFields) {
 	id = dataFields.get(0);
 }
 
+
+public void submitBet(int rep, float percentChange, String champion, String stat) {
+	new Bet(this, rep, percentChange, champion);
+	//add to bet database
+}
 public String getID() {
 	return id;
 }
