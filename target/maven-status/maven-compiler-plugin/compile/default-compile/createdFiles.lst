@@ -1,0 +1,7 @@
+Betting/BettingSession.class
+Main.class
+Betting/Bet.class
+Betting/LogLossFunction.class
+Betting/GainFunction.class
+Betting/TestGainFunction.class
+RiotAPI/RiotAPI.class

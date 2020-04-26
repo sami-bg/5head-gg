@@ -14,5 +14,3 @@ public class Champion {
 	public Champion(List<String> winRate, List<String> banRate, List<String> pickRate) {
 		
 	}
-
-}
