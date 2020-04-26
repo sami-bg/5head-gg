@@ -1,6 +1,3 @@
-package main.java.RiotAPI;
-
-public class RiotAPI {
 package RiotAPI;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;

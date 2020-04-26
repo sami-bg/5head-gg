@@ -2,7 +2,7 @@ package main.java;
 
 import java.util.List;
 
-import main.java.Betting.Bet;
+import Betting.Bet;
 
 public class User {
 private final String id;
@@ -19,7 +19,7 @@ public User(List<String> dataFields) {
 
 
 public void submitBet(int rep, float percentChange, String champion, String stat) {
-	new Bet(this, rep, percentChange, champion);
+	//new Bet(this, rep, percentChange, champion);
 	//add to bet database
 }
 public String getID() {
