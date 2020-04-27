@@ -1,0 +1,50 @@
+.body {
+    background: #0A0B1C;
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+    font-style: normal;
+    display: flex;
+    grid-template-columns: 2;
+}
+
+#logo {
+    background: #4E77FF;
+}
+
+#bettingstatus {
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 14px;
+    display: flex;
+    align-items: flex-end;
+    text-align: center;
+
+    color: #F9F9F9;
+}
+
+#sidebar {
+    justify-content: space-around;
+    flex-direction: column;
+    font-size: 18px;
+}
+
+#sidebar-link {
+    color: #84929E;
+}
+
+#left-aligned {
+    align-content: left;
+}
+
+#profilediv {
+    flex-direction: row;
+}
+
+#reputation {
+    
+    color: #FEFEFE;
+    border-bottom: 3px solid #0A0B1C;
+    font-size: 14px;
+
+}
