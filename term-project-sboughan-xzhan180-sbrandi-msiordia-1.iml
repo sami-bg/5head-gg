@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" version="4">
   <component name="CheckStyle-IDEA-Module">
     <option name="configuration">
       <map />
     </option>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_9">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -39,5 +39,12 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.18.v20190429" level="project" />
     <orderEntry type="library" name="Maven: com.sparkjava:spark-template-freemarker:2.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.freemarker:freemarker:2.3.26-incubating" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:28.2-jre" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:2.10.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.4" level="project" />
+    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
   </component>
 </module>
