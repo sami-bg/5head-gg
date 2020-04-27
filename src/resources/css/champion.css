@@ -5,7 +5,7 @@
     font-family: Roboto;
     font-style: normal;
     display: flex;
-    grid-template-columns: 20fr 30fr auto;
+    grid-template-columns: 2;
 }
 
 #logo {
@@ -49,12 +49,3 @@
 
 }
 
-#patchnotes-embed {
-    grid-column: 2;
-}
-
-#champ-list {
-    grid-column: 3;
-    overflow: auto;
-
-}

@@ -7,7 +7,7 @@
   <title>5Head.gg</title>
   <meta name="description" content="5Head.gg">
 
-  <link rel="stylesheet" href="css/patchnotes.css">
+  <link rel="stylesheet" href="css/">
 
 </head>
 
@@ -43,9 +43,24 @@
         </div>
     </div>
     <div id="canvas">
-        <div id="patchnotes-embed"><iframe src="${currentPatchLink}"></iframe></div>
-        <div id="champlist"> ${championDivs} </div>
-        <!-- div for each champion -->
+        <div id="leaderboard">
+            <div class="leaderboard-entry" id="firstplace">
+                ${firstplace}
+            </div>
+
+            <div class="leaderboard-entry" id="secondplace">
+                ${secondplace}
+            </div>
+
+            <div class="leaderboard-entry" id="thirdplace">
+                ${thirdplace}
+            </div>
+
+            <!-- this should be a list of divs with the class "leaderboard-entry" -->
+            ${remainingLeaderboard}
+            
+        </div>
+
     </div>
 </body>
 </html>

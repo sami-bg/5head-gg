@@ -5,7 +5,7 @@
     font-family: Roboto;
     font-style: normal;
     display: flex;
-    grid-template-columns: 20fr 30fr auto;
+    grid-template-columns: 2;
 }
 
 #logo {
@@ -42,19 +42,37 @@
 }
 
 #reputation {
-    
     color: #FEFEFE;
     border-bottom: 3px solid #0A0B1C;
     font-size: 14px;
-
 }
 
-#patchnotes-embed {
-    grid-column: 2;
+#firstplace {
+    background: #F7C64A;
+    border-radius: 25px;
+    font-size: 64px;
 }
 
-#champ-list {
-    grid-column: 3;
-    overflow: auto;
+#secondplace {
+    background: #A4A4A4;
+    border-radius: 20px;
+    float: left;
+    font-size: 36px;   
+}
 
+#thirdplace {
+    background: #875A25;
+    border-radius: 20px;
+    float: right;
+    font-size: 36px;
+}
+
+#leaderboard {
+    color: #FEFEFE;
+    font-size: 24px;
+}
+
+.leaderboard-entry {
+    display: flex;
+    align-content: space-between;
 }
