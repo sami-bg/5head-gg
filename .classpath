@@ -2,5 +2,15 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
+	<classpathentry kind="lib" path="C:/Users/zerow/.m2/repository/com/sparkjava/spark-core/2.9.1/spark-core-2.9.1.jar" sourcepath="C:/Users/zerow/.m2/repository/com/sparkjava/spark-core/2.9.1/spark-core-2.9.1-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="com.sparkjava"/>
+			<attribute name="maven.artifactId" value="spark-core"/>
+			<attribute name="maven.version" value="2.9.1"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
