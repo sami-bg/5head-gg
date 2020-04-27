@@ -1,0 +1,17 @@
+.body {
+    background: #0A0B1C;
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+    font-style: normal;
+    display: flex;
+    grid-template-columns: 2;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.img {
+    width: 30vw;
+    height: 30vh;
+}
