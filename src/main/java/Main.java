@@ -1,4 +1,4 @@
-package main.java;
+//package main.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,11 +7,15 @@ import java.io.StringWriter;
 import java.util.Map;
 
 
+import RiotAPI.ChampConsts;
 import freemarker.template.Configuration;
 import com.google.common.collect.ImmutableMap;
 
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
+
+import static RiotAPI.RiotAPI.getIconByName;
+import static RiotAPI.RiotAPI.updateMapOfChamps;
 
 public class Main {
 
@@ -28,6 +32,8 @@ public class Main {
     private void run() throws IOException {
         // TODO Auto-generated method stub
         //RiotAPI.test();
+        //I'm running this every time we run main so it might take a while on startup
+        updateMapOfChamps();
         runSparkServer(4567);
     }
 
@@ -45,7 +51,7 @@ public class Main {
 
     private void runSparkServer(int port) {
         Spark.port(port);
-        Spark.externalStaticFileLocation("src/resources/static");
+        Spark.externalStaticFileLocation("src/resources");
         Spark.exception(Exception.class, new ExceptionPrinter());
 
         FreeMarkerEngine freeMarker = createEngine();
@@ -81,6 +87,10 @@ public class Main {
     private static class PatchNoteHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
+            String championDivs = "";
+            for (String champname : ChampConsts.getChampNames()) {
+                championDivs += "<img src=\"" + getIconByName(champname) + "\">";
+            }
             Map<String, Object> variables = ImmutableMap.<String, Object>builder()
                     .put("userReputation", "")
                     .put("currentPatchLink",
@@ -88,7 +98,7 @@ public class Main {
                     .put("bettingStatus", "")
                     .put("profileImage", "")
                     .put("profileName", "")
-                    .put("championDivs", "").build();
+                    .put("championDivs", championDivs).build();
 
             return new ModelAndView(variables, "patchnotes.ftl");
         }
