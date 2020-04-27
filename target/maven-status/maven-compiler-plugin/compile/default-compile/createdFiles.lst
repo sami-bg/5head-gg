@@ -1,7 +1,11 @@
 Betting/Bet.class
+main/java/Main.class
 Betting/TestGainFunction.class
 Betting/BettingSession.class
 main/java/Patch.class
 Betting/LogLossFunction.class
 Betting/GainFunction.class
+main/java/Main$ExceptionPrinter.class
+main/java/Main$FrontHandler.class
 RiotAPI/RiotAPI.class
+main/java/Main$1.class

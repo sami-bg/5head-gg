@@ -12,5 +12,41 @@
 			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/miguelsiordia/.m2/repository/com/sparkjava/spark-core/2.9.1/spark-core-2.9.1.jar" sourcepath="/Users/miguelsiordia/.m2/repository/com/sparkjava/spark-core/2.9.1/spark-core-2.9.1-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="com.sparkjava"/>
+			<attribute name="maven.artifactId" value="spark-core"/>
+			<attribute name="maven.version" value="2.9.1"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/miguelsiordia/.m2/repository/com/sparkjava/spark-template-freemarker/2.7.1/spark-template-freemarker-2.7.1.jar" sourcepath="/Users/miguelsiordia/.m2/repository/com/sparkjava/spark-template-freemarker/2.7.1/spark-template-freemarker-2.7.1-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="com.sparkjava"/>
+			<attribute name="maven.artifactId" value="spark-template-freemarker"/>
+			<attribute name="maven.version" value="2.7.1"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/miguelsiordia/.m2/repository/com/google/guava/guava/28.2-jre/guava-28.2-jre.jar" sourcepath="/Users/miguelsiordia/.m2/repository/com/google/guava/guava/28.2-jre/guava-28.2-jre-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="com.google.guava"/>
+			<attribute name="maven.artifactId" value="guava"/>
+			<attribute name="maven.version" value="28.2-jre"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/miguelsiordia/.m2/repository/org/freemarker/freemarker/2.3.26-incubating/freemarker-2.3.26-incubating.jar" sourcepath="/Users/miguelsiordia/.m2/repository/org/freemarker/freemarker/2.3.26-incubating/freemarker-2.3.26-incubating-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.freemarker"/>
+			<attribute name="maven.artifactId" value="freemarker"/>
+			<attribute name="maven.version" value="2.3.26-incubating"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

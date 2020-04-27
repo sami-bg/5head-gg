@@ -1,3 +1,4 @@
+package main.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -5,9 +6,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
-import RiotAPI.RiotAPI;
+
 import freemarker.template.Configuration;
 import com.google.common.collect.ImmutableMap;
+
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 public class Main {
