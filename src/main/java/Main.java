@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 
 import freemarker.template.Configuration;
+import main.java.Database.DatabaseHandler;
+
 import com.google.common.collect.ImmutableMap;
 
 import spark.*;
@@ -72,7 +76,29 @@ public class Main {
     private static class LeaderboardHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
-            Map<String, Object> variables = ImmutableMap.of("userReputation", "");
+        	List<String> top50 = null;
+        	String first, second, third;
+			try {
+				top50 = DatabaseHandler.getTopFifty();
+				//first = top50.get(0).getUsername(); //getUsername doesnt exist in user, i think we should add that
+				//second = top50.get(1).getUsername();
+				//third = top50.get(2).getUsername();
+				top50.remove(0);
+				top50.remove(1);
+				top50.remove(2);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	Map<String, Object> variables = ImmutableMap.<String, Object>builder()
+                    .put("userReputation", "")
+                    .put("bettingStatus", "")
+                    .put("profileImage", "")
+                    .put("profileName", "")
+                    //.put("firstplace", first)
+                    //.put("secondplace", second)
+                    //.put("thirdplace", third)
+                    .put("remainingplaces", "").build();
 
             return new ModelAndView(variables, "leaderboards.ftl");
         }
