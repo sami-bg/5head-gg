@@ -103,7 +103,7 @@ public class DatabaseHandler {
 		User user = null;
 		List<String> userStrings = new ArrayList<>();
 		if (userID != null && !userID.equals("")){
-			userStrings = this.queryData("SELECT * FROM users WHERE id = ? ;", Arrays.asList(userID));
+			userStrings = this.queryData("SELECT * FROM users WHERE userID = ? ;", Arrays.asList(userID));
 		}
 		if (userStrings.size() != 0){
 			user = new User(userStrings);
@@ -187,7 +187,7 @@ public class DatabaseHandler {
 	
 	public List<String> getTopFifty() throws SQLException {
 		List<String> topFifty = new ArrayList<String>();
-		topFifty = this.queryData("SELECT TOP 50 username, reputation, id FROM users ORDER BY reputation DESC", null);
+		topFifty = this.queryData("SELECT TOP 50 username, reputation, userID FROM users ORDER BY reputation DESC", null);
 		return topFifty;
 	}
 	
