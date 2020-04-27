@@ -25,11 +25,11 @@
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
+            <a class="sidebarlink" href="currpatch"> Current Patch</a>
 
-            <a class="sidebarlink" href="mybets">My Bets</a>
+            <a class="sidebarlink" href="mybets">Profile</a>
 
-            <a class="sidebarlink" href="leaderboard">Leaderboards</a>
+            <a class="sidebarlink" href="leaderboard"><p style="font-weight: bold; color: #FEFEFE">Leaderboards</p></a>
         </div>
 
         <div id="bettingstatus">
