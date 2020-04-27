@@ -36,19 +36,21 @@ public class BettingSession {
     } else {
     	//if the champion is not a key, put the champion as a key
     	//with the new bet as a member of the value list.
-	List<Bet> newChamp = new ArrayList<Bet>(List.of(b));
+	    List<Bet> newChamp = new ArrayList<Bet>();
+	    newChamp.add(b);
     	mapOfChampionToBets.put(b.getCategory(), newChamp);
 
     }
     //adds the bet to the map of bets by user
     //by mutating the list in the value
-	List<Bet> user = mapOfUserToBets.get(b.getUserID());
+	  List<Bet> user = mapOfUserToBets.get(b.getUserID());
     if (user != null) {
       user.add(b);
     } else {
     	//if the user ID is not a key, put the ID as a key
     	//with the new bet as a member of the value list.
-	List<Bet> newUser = new ArrayList<Bet>(List.of(b));
+	    List<Bet> newUser = new ArrayList<Bet>();
+	    newUser.add(b);
     	mapOfUserToBets.put(b.getUserID(), newUser);
     }
   }

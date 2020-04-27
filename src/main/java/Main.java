@@ -1,11 +1,11 @@
-package main.java;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
+//import com.google.common.collect.ImmutableMap;
 
 import RiotAPI.RiotAPI;
+import RiotAPI.ChampConsts;
 import freemarker.template.Configuration;
 import spark.ModelAndView;
 import spark.Request;
@@ -17,41 +17,45 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-    //RiotAPI.test();
+    RiotAPI.updateMapOfChamps();
+    for (String champ: ChampConsts.getChampNames()) {
+      System.out.println(RiotAPI.getIconByName(champ));
+      System.out.println(RiotAPI.getSplashByName(champ));
+    }
 	}
 	
-	private static FreeMarkerEngine createEngine() {
-	    Configuration config = new Configuration();
-	    File templates = new File("src/main/resources/spark/template/freemarker");
-	    try {
-	      config.setDirectoryForTemplateLoading(templates);
-	    } catch (IOException ioe) {
-	      System.out.printf("ERROR: Unable use %s for template loading.%n", templates);
-	      System.exit(1);
-	    }
-	    return new FreeMarkerEngine(config);
-	  }
-
-	  private void runSparkServer(int port) {
-	    Spark.port(port);
-	    Spark.externalStaticFileLocation("src/main/resources/static");
-	    Spark.exception(Exception.class, new ExceptionPrinter());
-
-	    FreeMarkerEngine freeMarker = createEngine();
-
-	    // Setup Spark Routes
-	    Spark.get("/stars", new FrontHandler(), freeMarker);
-	    Spark.post("/neighbors_name", new NeighborsNameHandler(), freeMarker);
-	  }
-	  
-	  private static class FrontHandler implements TemplateViewRoute {
-		    @Override
-		    public ModelAndView handle(Request req, Response res) {
-		      Map<String, Object> variables = ImmutableMap.of("title", "Stars", "suggestions", "");
-
-		      return new ModelAndView(variables, "query.ftl");
-		    }
-		  }
+//	private static FreeMarkerEngine createEngine() {
+//	    Configuration config = new Configuration();
+//	    File templates = new File("src/main/resources/spark/template/freemarker");
+//	    try {
+//	      config.setDirectoryForTemplateLoading(templates);
+//	    } catch (IOException ioe) {
+//	      System.out.printf("ERROR: Unable use %s for template loading.%n", templates);
+//	      System.exit(1);
+//	    }
+//	    return new FreeMarkerEngine(config);
+//	  }
+//
+//	  private void runSparkServer(int port) {
+//	    Spark.port(port);
+//	    Spark.externalStaticFileLocation("src/main/resources/static");
+//	    Spark.exception(Exception.class, new ExceptionPrinter());
+//
+//	    FreeMarkerEngine freeMarker = createEngine();
+//
+//	    // Setup Spark Routes
+//	    Spark.get("/stars", new FrontHandler(), freeMarker);
+//	    Spark.post("/neighbors_name", new NeighborsNameHandler(), freeMarker);
+//	  }
+//
+//	  private static class FrontHandler implements TemplateViewRoute {
+//		    @Override
+//		    public ModelAndView handle(Request req, Response res) {
+//		      Map<String, Object> variables = ImmutableMap.of("title", "Stars", "suggestions", "");
+//
+//		      return new ModelAndView(variables, "query.ftl");
+//		    }
+//		  }
 	
 	
 
