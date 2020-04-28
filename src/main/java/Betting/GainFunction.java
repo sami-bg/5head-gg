@@ -10,7 +10,7 @@ public interface GainFunction {
 	/**
 	 * The algorithm for the particular kind of GainFunction,
 	 * which can be defined by the user
-	 * @param actual
+	 * @param actual - the actual CHANGE in rate.
 	 * @param b the bet to calculate the gain/loss
 	 * @return a double representing the multiplier
 	 * to the user's reputation

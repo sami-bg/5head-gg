@@ -1,6 +1,5 @@
 package Betting;
 
-import Betting.*;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +11,7 @@ public void testBet(){
 	assertEquals(testBet.getCategory(), "Aatrox");
 	assertEquals(testBet.getUserID(), "testUser");
 	testBet.calculateChange(0.52);
-	assertEquals(testBet.getChange(), (Double) 0.0);
+	assertEquals(testBet.getGain(), (Double) 0.0);
 }
 
 }

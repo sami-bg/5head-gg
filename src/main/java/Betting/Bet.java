@@ -10,7 +10,7 @@ public final class Bet {
   private final Double percentChangePredicted;
   private final String category;
   private final GainFunction gainFunction;
-  private Double change = 0.0;
+  private Double gain = 0.0;
   private Double percentChangeActual;
 
   /**
@@ -24,11 +24,11 @@ public final class Bet {
   /**
    * Calculates the change in user rating given the result of the bet
    * and updates that field in the bet.
-   * @param c The actual change that occurred
+   * @param c The actual CHANGE that occurred
    */
   protected void calculateChange(Double c) {
     this.percentChangeActual = c;
-    this.change = gainFunction.calculateGain(c, this);
+    this.gain = gainFunction.calculateGain(c, this);
   }
 
   /**
@@ -51,8 +51,8 @@ public final class Bet {
    * User reputation change getter for testing purposes.
    * @return the multiplier of the reputation of the user after the bet.
    */
-  protected Double getChange() {
-    return change;
+  protected Double getGain() {
+    return gain;
   }
 
 /**

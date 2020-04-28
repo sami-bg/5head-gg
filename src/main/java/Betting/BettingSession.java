@@ -86,9 +86,10 @@ public class BettingSession {
    * @param result the actual statistic for the champion during the patch
    * @param category The category (i.e. champion) to calculate the payouts for
    */
-  public void broadcast(Double result, String category) {
+  public void broadcast(Double result, Double previousResult, String category) {
+    Double change = result - previousResult;
     for (Bet b: mapOfChampionToBets.get(category)) {
-      b.calculateChange(result);
+      b.calculateChange(change);
     }
   }
 
