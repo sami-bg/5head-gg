@@ -1,9 +1,7 @@
-.body {
+body {
     background: #0A0B1C;
     margin: 0;
     padding: 0;
-    font-family: Roboto;
-    font-style: normal;
     display: flex;
     grid-template-columns: 2;
     flex-direction: column;
@@ -11,7 +9,13 @@
     justify-content: center;
 }
 
-.img {
+#title {
+    font-family: Roboto;
+    font-style: normal;
+    color: #F9F9F9;
+}
+
+img {
     width: 30vw;
     height: 30vh;
 }

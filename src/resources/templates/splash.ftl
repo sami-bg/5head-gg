@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <h1>5HEAD.gg</h1>
+    <h1 id="title">5HEAD.gg</h1>
     <div><img src="icon.png"></div>
     ${googleLogin}
 
