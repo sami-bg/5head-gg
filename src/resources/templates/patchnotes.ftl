@@ -43,7 +43,8 @@
         </div>
     </div>
     <div id="canvas">
-        <div id="patchnotes-embed"><iframe src="${currentPatchLink}"></iframe></div>
+        <div id="patchnotes-embed"><object type="text/html" data="https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/">
+            </object></div>
         <div id="champlist"> ${championDivs} </div>
         <!-- div for each champion -->
     </div>
