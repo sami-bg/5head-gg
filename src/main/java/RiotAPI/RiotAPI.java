@@ -1,4 +1,4 @@
-package RiotAPI;
+package main.java.RiotAPI;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

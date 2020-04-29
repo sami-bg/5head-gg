@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import main.java.Champion;
-import main.java.User;
+import main.Champion;
+import main.User;
+import main.java.Betting.Bet;
 
 public class DatabaseHandler {
 
@@ -114,6 +115,12 @@ public class DatabaseHandler {
 
 	}
 	
+	public void addNewUser(String userID, String username, String reputation, String email, String authentication) throws SQLException {
+		this.queryData("INSERT INTO Users (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)", 
+				Arrays.asList(userID, username, reputation, email, authentication));
+	}
+	
+	
 	public Champion getChampion(String champName) throws SQLException {
 		Champion champ = null;
 		List<String> champStringsW = new ArrayList<>();
@@ -189,6 +196,27 @@ public class DatabaseHandler {
 		List<String> topFifty = new ArrayList<String>();
 		topFifty = this.queryData("SELECT TOP 50 username, reputation, userID FROM users ORDER BY reputation DESC", null);
 		return topFifty;
+	}
+	
+	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage, String betAmount) throws SQLException {
+		this.queryData("INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)", 
+				Arrays.asList(betID, userID, champion, betType, betPercentage));
+		
+	}
+	
+	public Bet getBet(String betID) throws SQLException {
+		Bet bet = null;
+		List<String> betStrings = new ArrayList<>();
+		if (betID != null && !betID.equals("")){
+			betStrings = this.queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID));
+		}
+		if (betStrings.size() != 0){
+			bet = new Bet(betStrings);
+		} else {
+			throw new SQLException("User is not in database or has no information");
+		}
+        return bet;
+
 	}
 	
 

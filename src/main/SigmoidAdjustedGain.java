@@ -1,5 +1,7 @@
-import Betting.Bet;
-import Betting.GainFunction;
+package main;
+
+import Main.Betting.Bet;
+import Main.Betting.GainFunction;
 
 public class SigmoidAdjustedGain implements GainFunction {
 

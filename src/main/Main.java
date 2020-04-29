@@ -1,3 +1,4 @@
+package main;
 //package main.java;
 
 import java.io.File;
@@ -9,19 +10,20 @@ import java.util.List;
 import java.util.Map;
 
 
-import RiotAPI.ChampConsts;
+import main.java.RiotAPI.ChampConsts;
 import freemarker.template.Configuration;
 import main.java.Database.DatabaseHandler;
 
 import com.google.common.collect.ImmutableMap;
 
+import RiotAPI.RiotAPI;
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 
-import static RiotAPI.RiotAPI.getIconByName;
-import static RiotAPI.RiotAPI.updateMapOfChamps;
 
 public class Main {
+	
+	static String userID;
 
     public static void main(String[] args) throws IOException {
         new Main(args).run();
@@ -37,7 +39,7 @@ public class Main {
         // TODO Auto-generated method stub
         //RiotAPI.test();
         //I'm running this every time we run main so it might take a while on startup
-        updateMapOfChamps();
+        RiotAPI.updateMapOfChamps();
         runSparkServer(4567);
     }
 
@@ -97,14 +99,15 @@ public class Main {
 				e.printStackTrace();
 			}
         	Map<String, Object> variables = ImmutableMap.<String, Object>builder()
-                    .put("userReputation", "")
+                    .put("userReputation", DatabaseHandler.getUser(userID).getReputation());
                     .put("bettingStatus", "")
                     .put("profileImage", "")
                     .put("profileName", "")
                     //.put("firstplace", first)
                     //.put("secondplace", second)
                     //.put("thirdplace", third)
-                    .put("remainingplaces", "").build();
+                    .put("remainingplaces", "")
+                    .build();
 
             return new ModelAndView(variables, "leaderboards.ftl");
         }
@@ -118,13 +121,14 @@ public class Main {
                 championDivs += "<img src=\"" + getIconByName(champname) + "\">";
             }
             Map<String, Object> variables = ImmutableMap.<String, Object>builder()
-                    .put("userReputation", "")
+                    .put("userReputation", DatabaseHandler.getUser(userID).getReputation())
                     .put("currentPatchLink",
                             "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/")
                     .put("bettingStatus", "")
                     .put("profileImage", "")
                     .put("profileName", "")
-                    .put("championDivs", championDivs).build();
+                    .put("championDivs", championDivs)
+                    .build();
 
             return new ModelAndView(variables, "patchnotes.ftl");
         }
@@ -135,8 +139,17 @@ public class Main {
         public ModelAndView handle(Request req, Response res) {
             String champName = req.params(":champname");
 
-            Map<String, Object> variables = ImmutableMap.of("userReputation", "");
-
+            Map<String, Object> variables = ImmutableMap.<String, Object>builder()
+                    .put("userReputation", DatabaseHandler.getUser(userID).getReputation())
+                    .put("bettingStatus", "")
+                    .put("profileImage", "")
+                    .put("profileName", "")
+                    .put("champSplash", "")
+                    .put("winrateGraph", "")
+                    .put("pickrateGraph", "")
+                    .put("banrateGraph", "")
+                    .build();
+                    
             return new ModelAndView(variables, "champion.ftl");
         }
     }

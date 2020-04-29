@@ -1,4 +1,6 @@
-package Betting;
+package main.java.Betting;
+
+import java.util.List;
 
 /**
  * Class to represent a bet made by a user.
@@ -6,12 +8,14 @@ package Betting;
  *
  */
 public final class Bet {
-  private final String userID;
+  private final int repWagered;
   private final Double percentChangePredicted;
   private final String category;
   private final GainFunction gainFunction;
   private Double gain = 0.0;
   private Double percentChangeActual;
+private String betType;
+private String betID;
 
   /**
    * Category getter.
@@ -32,11 +36,11 @@ public final class Bet {
   }
 
   /**
-   * User ID getter.
+   * The reputation wagered by a user
    * @return the ID of the user who made the bet.
    */
-  public String getUserID() {
-    return userID;
+  public int getRepWagered() {
+    return repWagered;
   }
 
   /**
@@ -57,16 +61,28 @@ public final class Bet {
 
 /**
  * Default bet constructor.
- * @param user ID of the user woh made the bet
+ * @param rep  reputation wagered
  * @param percentChange the change in percentage the user thought would occur
  * @param champion the champion whose change the user bet on
  * @param gainFunction the function to be used to calculate the user's gain/loss
  */
-  public Bet(String user, Double percentChange, String champion, GainFunction gainFunction) {
-    this.userID = user;
+  public Bet(String betID, int rep, Double percentChange, String champion, GainFunction gainFunction, String betType) {
+	this.gainFunction = null;
+	this.betID = betID;
+    this.repWagered = rep;
     this.percentChangePredicted = percentChange;
     this.category = champion;
     this.gainFunction = gainFunction;
+    this.betType = betType;
+  }
+  
+  public Bet(List<String> dataFields) {
+
+	this.betID = dataFields.get(0);
+	this.category = dataFields.get(2);
+	this.betType = dataFields.get(3);
+	this.percentChangePredicted = Double.parseDouble(dataFields.get(4));
+	this.repWagered = Integer.parseInt(dataFields.get(5));
   }
 }
 
