@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import main.Champion;
-import main.User;
+import main.java.Champion;
+import main.java.User;
 import main.java.Betting.Bet;
 
 public class DatabaseHandler {

@@ -10,19 +10,19 @@ import java.util.Map;
 
 
 import main.java.RiotAPI.ChampConsts;
+import main.java.RiotAPI.RiotAPI;
 import freemarker.template.Configuration;
 import main.java.Database.DatabaseHandler;
 
 import com.google.common.collect.ImmutableMap;
 
-import RiotAPI.RiotAPI;
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 import com.google.gson.Gson;
 
 public final class Main {
 	
-	String userID;
+	static String userID;
 
     private static final Gson GSON = new Gson();
 

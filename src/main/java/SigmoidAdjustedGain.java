@@ -1,4 +1,4 @@
-package main;
+package main.java;
 
 import Main.Betting.Bet;
 import Main.Betting.GainFunction;
