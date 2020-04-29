@@ -42,7 +42,7 @@ public final class Main {
         // TODO Auto-generated method stub
         //RiotAPI.test();
 
-       //db.read("users.db");
+        //db.read("users.db");
         //I'm running this every time we run main so it might take a while on startup
         RiotAPI.updateMapOfChamps();
         runSparkServer(4567);
@@ -69,8 +69,9 @@ public final class Main {
 
         // Setup Spark Routes
         Spark.get("/home", new FrontHandler(), freeMarker);
-        Spark.get("/patchnotes", new PatchNoteHandler(), freeMarker);
-        Spark.get("/mybets", new PatchNoteHandler(), freeMarker);
+        Spark.get("/currpatch", new PatchNoteHandler(), freeMarker);
+        Spark.get("/mybets", new MyBetHandler(), freeMarker);
+        Spark.post("/mybets/success", new BetSuccessHandler(), freeMarker);
         Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
         Spark.get("/champion/:champname", new ChampionPageHandler(), freeMarker);
 
@@ -110,9 +111,10 @@ public final class Main {
                 e.printStackTrace();
             }
             Map<String, Object> variables = null;
-            try {
+            //try {
                 variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", db.getUser(userID).getReputation())
+                        .put("userReputation", "")
+                        //.put("userReputation", db.getUser(userID).getReputation())
                         .put("bettingStatus", "")
                         .put("profileImage", "")
                         .put("profileName", "")
@@ -121,12 +123,78 @@ public final class Main {
 //.put("thirdplace", third)
                         .put("remainingplaces", "")
                         .build();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                //TODO: display error message
-            }
+            //} catch (SQLException throwables) {
+            //    throwables.printStackTrace();
+            //    //TODO: display error message
+            //}
 
             return new ModelAndView(variables, "leaderboards.ftl");
+        }
+    }
+
+    private static class MyBetHandler implements TemplateViewRoute {
+
+        @Override
+        public ModelAndView handle(Request req, Response res) {
+            String champOptions;
+            StringBuilder sb = new StringBuilder();
+            List<String> champNames = ChampConsts.getChampNames();
+            for (int i = 0; i < champNames.size(); i++) {
+                String currChamp = champNames.get(i);
+                sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
+            }
+            Map < String, Object > variables = null;
+            //try {
+                variables = ImmutableMap.<String, Object>builder()
+                        .put("userReputation", "")
+                        //.put("userReputation", db.getUser(userID).getReputation())
+                        .put("bettingStatus", "")
+                        .put("profileImage", "")
+                        .put("profileName", "")
+                        .put("champOptions", sb.toString())
+                        .put("success", "")
+                        .build();
+            //} catch (SQLException throwables) {
+            //    throwables.printStackTrace();
+            //    //TODO: display error message
+            //}
+
+            return new ModelAndView(variables, "mybets.ftl");
+        }
+    }
+
+    private static class BetSuccessHandler implements TemplateViewRoute {
+
+        @Override
+        public ModelAndView handle(Request req, Response res) {
+            QueryParamsMap qm = req.queryMap();
+            Integer rep = Integer.parseInt(qm.value("rep"));
+            String champ = qm.value("champion");
+            String betType = qm.value("betType");
+            String champOptions;
+            StringBuilder sb = new StringBuilder();
+            List<String> champNames = ChampConsts.getChampNames();
+            for (int i = 0; i < champNames.size(); i++) {
+                String currChamp = champNames.get(i);
+                sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
+            }
+                    Map < String, Object > variables = null;
+            //try {
+                variables = ImmutableMap.<String, Object>builder()
+                        .put("userReputation", "")
+                        //.put("userReputation", db.getUser(userID).getReputation())
+                        .put("bettingStatus", "")
+                        .put("profileImage", "")
+                        .put("profileName", "")
+                        .put("champOptions", sb.toString())
+                        .put("success", "Bet submitted!")
+                        .build();
+            //} catch (SQLException throwables) {
+             //   throwables.printStackTrace();
+             //   //TODO: display error message
+            //}
+
+            return new ModelAndView(variables, "mybets.ftl");
         }
     }
 
@@ -141,9 +209,10 @@ public final class Main {
                 championDivs += "<img src=\"" + RiotAPI.getIconByName(champname) + "\">";
             }
             Map<String, Object> variables = null;
-            try {
+            //try {
                 variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", db.getUser(userID).getReputation())
+                        .put("userReputation", "")
+                        //.put("userReputation", db.getUser(userID).getReputation())
                         .put("currentPatchLink",
                                 "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/")
                         .put("bettingStatus", "")
@@ -151,10 +220,10 @@ public final class Main {
                         .put("profileName", "")
                         .put("championDivs", championDivs)
                         .build();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                //TODO: display error message
-            }
+            //} catch (SQLException throwables) {
+            //    throwables.printStackTrace();
+            //    //TODO: display error message
+            //}
 
             return new ModelAndView(variables, "patchnotes.ftl");
         }
@@ -169,9 +238,10 @@ public final class Main {
             String champName = req.params(":champname");
 
             Map<String, Object> variables = null;
-            try {
+            //try {
                 variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", db.getUser(userID).getReputation())
+                        .put("userReputation", "")
+                        //.put("userReputation", db.getUser(userID).getReputation())
                         .put("bettingStatus", "")
                         .put("profileImage", "")
                         .put("profileName", "")
@@ -180,10 +250,10 @@ public final class Main {
                         .put("pickrateGraph", "")
                         .put("banrateGraph", "")
                         .build();
-            } catch (SQLException throwables) {
-                //TODO: display error message
-                throwables.printStackTrace();
-            }
+            //} catch (SQLException throwables) {
+            //    //TODO: display error message
+             //   throwables.printStackTrace();
+            //}
 
             return new ModelAndView(variables, "champion.ftl");
         }
