@@ -18,19 +18,13 @@ import com.google.common.collect.ImmutableMap;
 import RiotAPI.RiotAPI;
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
-
-
-<<<<<<< HEAD:src/main/Main.java
-public class Main {
-	
-	static String userID;
-=======
 import com.google.gson.Gson;
 
 public final class Main {
+	
+	String userID;
 
     private static final Gson GSON = new Gson();
->>>>>>> 2eeb5e2433312dcedd07d6b7f49048ca38d745f9:src/main/java/Main.java
 
     public static void main(String[] args) throws IOException {
         new Main(args).run();
