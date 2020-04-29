@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ChampConsts {
 
-  private static List<String> ChampNames = new ArrayList<String>(){
+  private static final List<String> ChampNames = new ArrayList<String>(){
     {
       add("Aatrox");
       add("Ahri");
@@ -154,6 +154,10 @@ public class ChampConsts {
     }
   };
 
+  /**
+   * Champ names getter.
+   * @return the list of all champions.
+   */
   public static List<String> getChampNames() {
     return ChampNames;
   }

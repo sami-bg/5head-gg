@@ -15,9 +15,9 @@ public class BettingSession {
   private final String type;
 
   // Map of champion to List<Bet>
-  private Map<String, List<Bet>> mapOfChampionToBets = new HashMap<>();
+  private final Map<String, List<Bet>> mapOfChampionToBets = new HashMap<>();
   // Map of user ID to List<Bet>
-  private Map<String, List<Bet>> mapOfUserToBets = new HashMap<>();
+  private final Map<String, List<Bet>> mapOfUserToBets = new HashMap<>();
 
   public Map<String, List<Bet>> getMapOfChampionToBets() {
     return this.mapOfChampionToBets;

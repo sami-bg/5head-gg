@@ -15,5 +15,5 @@ public interface GainFunction {
 	 * @return a double representing the multiplier
 	 * to the user's reputation
 	 */
-  public Double calculateGain(Double actual, Bet b);
+    Double calculateGain(Double actual, Bet b);
 }

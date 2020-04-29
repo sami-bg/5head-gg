@@ -5,7 +5,7 @@ import java.util.List;
 public class Patch {
 	
 	private final String id;
-	private List<String> users;
+	private final List<String> users;
 	
 	public Patch(String id, List<String> users) {
 		this.id =id;
