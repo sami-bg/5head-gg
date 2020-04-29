@@ -12,8 +12,8 @@
 </head>
 
 <body>
-    <h1>5HEAD.gg</h1>
-    <div><img src="icon.png"></div>
+    <h1 id="title">5HEAD.gg</h1>
+    <div><img src="/css/5head.png"></div>
     ${googleLogin}
 
 </body>

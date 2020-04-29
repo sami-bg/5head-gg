@@ -1,4 +1,4 @@
-package main.java.RiotAPI;
+package RiotAPI;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -13,14 +13,14 @@ public class RiotAPI {
   /**
    * NOTE: Format of value is {Winrate, pickrate, banrate}.
    */
-  private static Map<String, List<Double>> mapOfChampToWinPickBan = new HashMap<>();
+  private static final Map<String, List<Double>> mapOfChampToWinPickBan = new HashMap<>();
 
   /**
    *
    * @return a map of String -> String, i.e. chogath -> https://static.u.gg/assets/lol/riot_static/10.8.1/img/splash/Chogath_0.jpg
    */
 
-  private static Map<String, List<String>> mapOfChampToImageURL = new HashMap<>();
+  private static final Map<String, List<String>> mapOfChampToImageURL = new HashMap<>();
 
   public static Map<String, List<String>> getMapOfChampToImageURL() {
     return mapOfChampToImageURL;

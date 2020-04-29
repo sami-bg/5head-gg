@@ -1,11 +1,32 @@
-.body {
+body {
     background: #0A0B1C;
     margin: 0;
     padding: 0;
     font-family: Roboto;
     font-style: normal;
     display: flex;
-    grid-template-columns: 20fr 30fr auto;
+    grid-template-rows: 1fr;
+    grid-template-columns: 300px 1fr 1fr;
+}
+
+.sidebarlink:link {
+    text-decoration: none;
+}
+
+.sidebarlink:visited {
+    text-decoration:none;
+}
+
+#canvas {
+    display: flex;
+    flex-direction: row;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+}
+
+.icons {
+    height: auto;
+    width: auto;
 }
 
 #logo {
@@ -29,12 +50,12 @@
     font-size: 18px;
 }
 
-#sidebar-link {
+.sidebarlink {
     color: #84929E;
 }
 
 #left-aligned {
-    align-content: left;
+    align-content: flex-start;
 }
 
 #profilediv {
@@ -50,11 +71,12 @@
 }
 
 #patchnotes-embed {
-    grid-column: 2;
+    grid-column: 1;
 }
 
-#champ-list {
-    grid-column: 3;
+#champlist {
+    grid-column: 2;
     overflow: auto;
-
+    width: auto;
+    height: 100vh;
 }

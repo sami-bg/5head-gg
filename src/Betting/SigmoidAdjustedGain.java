@@ -1,12 +1,12 @@
-package main.java;
+package Betting;
 
-import main.java.Betting.GainFunction;
-import main.java.Betting.Bet;
+import Betting.GainFunction;
+import Betting.Bet;
 
 public class SigmoidAdjustedGain implements GainFunction {
 
-  private Double upperBound;
-  private Double lowerBound;
+  private final Double upperBound;
+  private final Double lowerBound;
   private Double maxAdjustment = 0.75;
   private Double maxGainMult = 1.5;
 
@@ -28,7 +28,7 @@ public class SigmoidAdjustedGain implements GainFunction {
    *
    */
   //We account for popularity elsewhere. this class returns raw main multiplier.
-  SigmoidAdjustedGain(Double maxGainMult, Double maxAdjustment, Double upperBound, Double lowerBound) {
+  public SigmoidAdjustedGain(Double maxGainMult, Double maxAdjustment, Double upperBound, Double lowerBound) {
     this.maxGainMult = maxGainMult;
     this.upperBound = upperBound;
     this.lowerBound = lowerBound;

@@ -43,10 +43,31 @@
         </div>
     </div>
     <div id="canvas">
-        <div id="patchnotes-embed"><object type="text/html" data="https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/">
-            </object></div>
-        <div id="champlist"> ${championDivs} </div>
-        <!-- div for each champion -->
+	${success}
+       <form method="POST" action="/mybets/success">
+    <label for="rep" style="font-family: georgia">
+    Enter your bet here:
+    </label><br>
+	  <p style="font-family: georgia"> <b>Amount of reputation:</b></p>
+<input type="number" id="rep" name="rep"
+       step="1">
+	   
+	   <b>Champion:</b>
+	   <select class="dropbtn" name="champion" value="Aatrox">
+  <div class="dropdown-content">
+    ${champOptions}
+	</select>
+  </div>
+  <b>Statistic of bet:</b>
+    <select class="dropbtn" name="betType" value="pick">
+  <div class="dropdown-content">
+    <option value="pick">Pick rate</option>
+    <option value="ban">Ban rate</option>
+	<option value="win">Win rate</option>
+	</select>
+  </div>
+    <input type="submit" alt="Submit">
+    </form>
     </div>
 </body>
 </html>

@@ -8,11 +8,14 @@ public class BettingSessionTest {
 
 	@Test
 	public void testBetSesh() {
-		final Bet testBet = new Bet("testUser", 0.51, "Teemo", new TestGainFunction());
-		final Bet testBet1 = new Bet("testUser1", 0.51, "Teemo", new TestGainFunction());
-		final Bet testBet2 = new Bet("testUser", 0.51, "Taric", new TestGainFunction());
+		final Bet testBet = new Bet("hash", "testUser", 51,
+				0.51, "Teemo", new TestGainFunction(), "win");
+		final Bet testBet1 = new Bet("hash1", "testUser1", 52, 0.51,
+				"Teemo", new TestGainFunction(), "win");
+		final Bet testBet2 = new Bet("hash2", "testUser", 51, 0.51,
+				"Taric", new TestGainFunction(), "ban:");
 		BettingSession testBetSesh = new BettingSession("winRate");
-		testBetSesh.addBet(new Bet("testUser", 0.51, "Teemo", new TestGainFunction()));
+		testBetSesh.addBet(testBet);
 		assertEquals(testBetSesh.getBetsFromUserID("testUser").get(0).getUserID(), "testUser");
 		assertEquals(testBetSesh.getBetsFromUserID("testUser").get(0).getCategory(), "Teemo");
 		testBetSesh.addBet(testBet1);
