@@ -116,7 +116,7 @@ public class DatabaseHandler {
 	}
 	
 	public void addNewUser(String userID, String username, String reputation, String email, String authentication) throws SQLException {
-		this.queryData("INSERT INTO Users (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)", 
+		this.queryData("INSERT INTO Users (userID, username, reputation, email, authentication) VALUES (?, ?, ?, ?, ?)", 
 				Arrays.asList(userID, username, reputation, email, authentication));
 	}
 	
