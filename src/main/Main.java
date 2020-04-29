@@ -1,5 +1,4 @@
-package main;
-//package main.java;
+package main.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +20,17 @@ import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 
 
+<<<<<<< HEAD:src/main/Main.java
 public class Main {
 	
 	static String userID;
+=======
+import com.google.gson.Gson;
+
+public final class Main {
+
+    private static final Gson GSON = new Gson();
+>>>>>>> 2eeb5e2433312dcedd07d6b7f49048ca38d745f9:src/main/java/Main.java
 
     public static void main(String[] args) throws IOException {
         new Main(args).run();
@@ -45,7 +52,7 @@ public class Main {
 
     private static FreeMarkerEngine createEngine() {
         Configuration config = new Configuration();
-        File templates = new File("src/resources/static");
+        File templates = new File("src/resources/templates");
         try {
             config.setDirectoryForTemplateLoading(templates);
         } catch (IOException ioe) {
@@ -57,7 +64,7 @@ public class Main {
 
     private void runSparkServer(int port) {
         Spark.port(port);
-        Spark.externalStaticFileLocation("src/resources");
+        Spark.externalStaticFileLocation("src/resources/static");
         Spark.exception(Exception.class, new ExceptionPrinter());
 
         FreeMarkerEngine freeMarker = createEngine();
