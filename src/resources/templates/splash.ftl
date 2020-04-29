@@ -13,7 +13,7 @@
 
 <body>
     <h1 id="title">5HEAD.gg</h1>
-    <div><img src="icon.png"></div>
+    <div><img src="/css/5head.png"></div>
     ${googleLogin}
 
 </body>
