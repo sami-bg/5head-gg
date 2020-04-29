@@ -43,7 +43,7 @@
         </div>
     </div>
     <div id="canvas">
-        <div id="champ-image" style="background-image: '${champSplashimage}'">
+        <div id="champ-image" style="background-image: url('${champSplashimage}')">
 
             <!-- winrate tab -- no submit button -->
             <div class="rate">

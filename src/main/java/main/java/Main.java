@@ -20,6 +20,8 @@ import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 import com.google.gson.Gson;
 
+import static RiotAPI.RiotAPI.getSplashByName;
+
 public final class Main {
 
     static String userID;
@@ -174,6 +176,7 @@ public final class Main {
             String champOptions;
             StringBuilder sb = new StringBuilder();
             List<String> champNames = ChampConsts.getChampNames();
+            //TODO: add placed bet to database
             for (int i = 0; i < champNames.size(); i++) {
                 String currChamp = champNames.get(i);
                 sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
@@ -245,7 +248,7 @@ public final class Main {
                         .put("bettingStatus", "")
                         .put("profileImage", "")
                         .put("profileName", "")
-                        .put("champSplash", "")
+                        .put("champSplashimage", getSplashByName(champName))
                         .put("winrateGraph", "")
                         .put("pickrateGraph", "")
                         .put("banrateGraph", "")
