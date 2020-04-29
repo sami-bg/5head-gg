@@ -12,7 +12,7 @@ import java.util.Map;
 import RiotAPI.ChampConsts;
 import RiotAPI.RiotAPI;
 import freemarker.template.Configuration;
-import Database.DatabaseHandler;
+//import Database.DatabaseHandler;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -26,7 +26,7 @@ public final class Main {
 
   static String userID;
 
-  static DatabaseHandler db = new DatabaseHandler();
+  //static DatabaseHandler db = new DatabaseHandler();
 
   private static final Gson GSON = new Gson();
 
