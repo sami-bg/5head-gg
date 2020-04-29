@@ -3,7 +3,7 @@ package main.java;
 import java.util.List;
 
 import main.java.Database.DatabaseHandler;
-import main.java.java.Betting.GainFunction;
+import main.java.Betting.GainFunction;
 import main.java.Betting.Bet;
 
 public class User {
