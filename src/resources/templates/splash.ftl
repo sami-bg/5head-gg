@@ -7,7 +7,7 @@
   <title>5Head.gg</title>
   <meta name="description" content="5Head.gg">
 
-  <link rel="stylesheet" href="css/">
+  <link rel="stylesheet" href="/css/splash.css">
 
 </head>
 
