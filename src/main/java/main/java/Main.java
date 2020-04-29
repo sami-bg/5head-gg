@@ -208,7 +208,9 @@ public final class Main {
     public ModelAndView handle(Request req, Response res) {
       String championDivs = "";
       for (String champname : ChampConsts.getChampNames()) {
-        championDivs += "<img src=\"" + RiotAPI.getIconByName(champname) + "\">";
+        championDivs += "<div class=\"iconsdiv\">";
+        championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\">";
+        championDivs += "</div>";
       }
       Map<String, Object> variables = null;
       //try {

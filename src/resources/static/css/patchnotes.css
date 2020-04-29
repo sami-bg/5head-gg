@@ -24,13 +24,22 @@ body {
     grid-template-columns: 1fr 1fr;
 }
 
+.iconsdiv {
+    overflow: hidden;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+
+}
 .icons {
+    scale: 105%;
+    width: 100px;
     height: auto;
-    width: auto;
 }
 
 #logo {
     background: #4E77FF;
+    height: 50px;
 }
 
 #bettingstatus {
@@ -46,8 +55,13 @@ body {
 
 #sidebar {
     justify-content: space-around;
+    display: flex;
     flex-direction: column;
     font-size: 18px;
+    width: 150vw;
+    background-color: #181921;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .sidebarlink {
@@ -58,14 +72,15 @@ body {
     align-content: flex-start;
 }
 
-#profilediv {
-    flex-direction: row;
+#profile {
+    margin-top: auto;
+    padding-bottom: 10px;
 }
 
 #reputation {
     
     color: #FEFEFE;
-    border-bottom: 3px solid #0A0B1C;
+    border-bottom: 0.5px solid #84929E;
     font-size: 14px;
 
 }
@@ -76,7 +91,10 @@ body {
 
 #champlist {
     grid-column: 2;
+    flex-wrap: wrap;
     overflow: auto;
     width: auto;
     height: 100vh;
+    display: flex;
+    flex-wrap: wrap;ß
 }
