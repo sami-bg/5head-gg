@@ -76,7 +76,7 @@ public class BettingSession {
    * @param type the statistic the bets in the session
    * will be made respect to
    */
-  BettingSession(String type) {
+  public BettingSession(String type) {
     this.type = type;
   }
 

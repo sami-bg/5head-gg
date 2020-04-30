@@ -1,4 +1,4 @@
-package Betting;
+package test.java;
 
 import Betting.*;
 import org.junit.Test;

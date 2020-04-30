@@ -158,6 +158,13 @@ public class DatabaseHandler {
 	
 	//have a champion table with rates, dont need rep query if its a field of user
 	
+	/**
+	 * Gets the win rate of a certain champion during a certain patch.
+	 * @param patchNum, the patch number to search.
+	 * @param champ, the champion's name to search.
+	 * @return the win rate of champion. 
+	 * @throws SQLException
+	 */
 	public float getChampionWinRateFromPatch(String patchNum, String champ) throws SQLException {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")){
@@ -169,6 +176,13 @@ public class DatabaseHandler {
 
 	}
 	
+	/**
+	 * Gets the pick rate of a certain champion during a certain patch.
+	 * @param patchNum, the patch number to search.
+	 * @param champ, the champion's name to search.
+	 * @return the pick rate of champion. 
+	 * @throws SQLException
+	 */
 	public float getChampionPickRateFromPatch(String patchNum, String champ) throws SQLException {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")){
@@ -180,6 +194,13 @@ public class DatabaseHandler {
 
 	}
 	
+	/**
+	 * Gets the ban rate of a certain champion during a certain patch.
+	 * @param patchNum, the patch number to search.
+	 * @param champ, the champion's name to search.
+	 * @return the ban rate of champion. 
+	 * @throws SQLException
+	 */
 	public float getChampionBanRateFromPatch(String patchNum, String champ) throws SQLException {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")){
@@ -191,12 +212,26 @@ public class DatabaseHandler {
 
 	}
 	
+	/**
+	 * Adds a new patch to the win,pick, and ban rates tables.
+	 * @param patchNum, the new patch name.
+	 * @throws SQLException
+	 */
 	public void createNewPatch(String patchNum) throws SQLException {
 		queryData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
 		queryData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
 		queryData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
 	}
 	
+	/**
+	 * Sets the win, pick, and ban rates for a champion in a given patch
+	 * @param champ, champion's name
+	 * @param patchNum, the patch number to add the rates to.
+	 * @param winRate, new win rate.
+	 * @param banRate, new ban rate.
+	 * @param pickRate, new pick rate.
+	 * @throws SQLException
+	 */
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate) throws SQLException {
 		
 		queryData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, winRate, champ));
