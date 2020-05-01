@@ -1,4 +1,14 @@
-package main.java;
+package main;
+
+import Database.DatabaseHandler;
+import RiotAPI.ChampConsts;
+import RiotAPI.RiotAPI;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import freemarker.template.Configuration;
+import org.jsoup.Jsoup;
+import spark.*;
+import spark.template.freemarker.FreeMarkerEngine;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,25 +18,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-
-import RiotAPI.ChampConsts;
-import RiotAPI.RiotAPI;
-import freemarker.template.Configuration;
-//import Database.DatabaseHandler;
-
-import com.google.common.collect.ImmutableMap;
-
-import spark.*;
-import spark.template.freemarker.FreeMarkerEngine;
-import com.google.gson.Gson;
-
 import static RiotAPI.RiotAPI.getSplashByName;
 
 public final class Main {
 
   static String userID;
 
-  //static DatabaseHandler db = new DatabaseHandler();
+  static DatabaseHandler db = new DatabaseHandler();
 
   private static final Gson GSON = new Gson();
 
@@ -71,6 +69,7 @@ public final class Main {
 
     // Setup Spark Routes
     Spark.get("/home", new FrontHandler(), freeMarker);
+    Spark.get("/profile", new FrontHandler(), freeMarker);
     Spark.get("/currpatch", new PatchNoteHandler(), freeMarker);
     Spark.get("/mybets", new MyBetHandler(), freeMarker);
     Spark.post("/mybets/success", new BetSuccessHandler(), freeMarker);
@@ -205,24 +204,28 @@ public final class Main {
    */
   private static class PatchNoteHandler implements TemplateViewRoute {
     @Override
-    public ModelAndView handle(Request req, Response res) {
+    public ModelAndView handle(Request req, Response res) throws IOException {
       String championDivs = "";
       for (String champname : ChampConsts.getChampNames()) {
         championDivs += "<div class=\"iconsdiv\">";
         championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\">";
         championDivs += "</div>";
       }
+      String patchNotes = Jsoup.connect(
+              "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/")
+              .get().getElementById("patch-notes-container").outerHtml();
       Map<String, Object> variables = null;
       //try {
-      variables = ImmutableMap.<String, Object>builder()
-          .put("userReputation", "")
-          //.put("userReputation", db.getUser(userID).getReputation())
-          .put("currentPatchLink",
-              "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/")
-          .put("bettingStatus", "")
-          .put("profileImage", "")
-          .put("profileName", "")
-          .put("championDivs", championDivs)
+      ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
+      builder.put("userReputation", "");
+      builder.put("currentPatchLink",
+              "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/");
+      builder.put("currentPatch", patchNotes);
+      builder.put("bettingStatus", "");
+      builder.put("profileImage", "");
+      builder.put("profileName", "");
+      builder.put("championDivs", championDivs);//.put("userReputation", db.getUser(userID).getReputation())
+      variables = builder
           .build();
       //} catch (SQLException throwables) {
       //    throwables.printStackTrace();

@@ -1,9 +1,2 @@
-main/java/Main$ChampionPageHandler.class
-main/java/Main.class
-Database/DatabaseHandler.class
-Betting/SigmoidAdjustedGain.class
-main/java/Main$LeaderboardHandler.class
-main/java/Main$PatchNoteHandler.class
-main/java/Main$ExceptionPrinter.class
-main/java/Main$FrontHandler.class
-main/java/Main$1.class
+Betting\SigmoidAdjustedGain.class
+Database\DatabaseHandler.class

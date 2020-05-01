@@ -1,7 +1,7 @@
-package test.java;
+package Betting;
 
-import Betting.*;
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 
 public class BettingSessionTest {

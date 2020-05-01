@@ -68,6 +68,110 @@ body {
     color: #84929E;
 }
 
+.patch-change-block {
+    color: rgb(255, 255, 255);
+    padding-bottom: 100px;
+}
+
+.patch-change-block {
+    display: block;
+    position: relative;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(36, 44, 54);
+    border-image: initial;
+    margin: 3.57143%;
+    padding: 3.57143%;
+    cursor: default;
+    -webkit-tap-highlight-color: transparent;
+    font-family: Spiegel, "Arial Narrow", Arial, sans-serif;
+}
+
+.change-detail-title {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding-top: 10px;
+}
+
+.summary {
+    padding-left: 14.2857%;
+    padding-top: 5px;
+    margin: 0px;
+}
+
+.reference-link {
+    top: 0px;
+    left: 0px;
+    width: 10.7143%;
+    min-width: 60
+}
+
+.attribute {
+	color: rgb(134, 134, 134);
+text-transform: uppercase;
+}
+.attribute-before {
+    color: rgb(134, 134, 134);
+    text-decoration: line-through;
+}
+.attribute-after {
+    color: rgb(255, 255, 255);
+}
+
+.white-stone.accent-before {
+color: rgb(255, 255, 255);
+
+}
+
+.new {
+    background-color: rgb(78, 166, 78);
+position: relative;
+    top: -1px;
+    margin-right: 4px;
+    font-size: 0.4375rem;
+    font-weight: 200;
+    letter-spacing: 1.5px;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    padding: 3px 3px 3px 5px;
+}
+
+.blockquote {
+    margin-left: 3.57143%;
+    margin-right: 3.57143%;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 40px;
+    margin-inline-end: 40px;
+font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 7.14286% 7.14286% 3.57143%;
+color: rgb(255, 255, 255);
+
+}
+
+.header-primary {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: "Beaufort for LOL", serif;
+    letter-spacing: 2.5px;
+    line-height: 1;
+    color: rgb(208, 168, 92);
+    margin: 0px;
+}
+
+.context-designer {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 0.75rem;
+    color: rgb(134, 134, 134);
+    margin: 5px 0px;
+}
+
 #left-aligned {
     align-content: flex-start;
 }

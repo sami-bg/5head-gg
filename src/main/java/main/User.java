@@ -1,11 +1,7 @@
-package main.java;
+package main;
 
 import java.sql.SQLException;
 import java.util.List;
-
-import Database.DatabaseHandler;
-import Betting.GainFunction;
-import Betting.Bet;
 
 public class User {
     private final String id;
