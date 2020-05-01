@@ -168,7 +168,7 @@ public class DatabaseHandler {
 	public float getChampionWinRateFromPatch(String patchNum, String champ) throws SQLException {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")){
-			winRate = Float.parseFloat(queryData("SELECT ? FROM WinRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+			winRate = Float.parseFloat(queryData("SELECT ? FROM WinRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -186,7 +186,7 @@ public class DatabaseHandler {
 	public float getChampionPickRateFromPatch(String patchNum, String champ) throws SQLException {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")){
-			pickRate = Float.parseFloat(queryData("SELECT ? FROM PickRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+			pickRate = Float.parseFloat(queryData("SELECT ? FROM PickRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -204,7 +204,7 @@ public class DatabaseHandler {
 	public float getChampionBanRateFromPatch(String patchNum, String champ) throws SQLException {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")){
-			banRate = Float.parseFloat(queryData("SELECT ? FROM BanRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+			banRate = Float.parseFloat(queryData("SELECT ? FROM BanRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -279,7 +279,6 @@ public class DatabaseHandler {
 			betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID));
 		}
 		if (betStrings.size() != 0){
-			//TODO: make Sigmoid constructor
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75,
 					0.0, 0.0);
 			bet = new Bet(gainFunc,
@@ -289,6 +288,18 @@ public class DatabaseHandler {
 		}
         return bet;
 
+	}
+	
+	/**
+	 * Method that counts the number of bets for a given champion.
+	 * @param champ, the champion's name
+	 * @return, number of bets submitted for that champion
+	 * @throws SQLException
+	 */
+	public int countNumberOfBets(String champ) throws SQLException {
+		int numBets = 0;
+		numBets = Integer.parseInt(queryData("SELECT COUNT(champion) FROM Bets WHERE champion = ?; ", Arrays.asList(champ)).get(0));
+		return numBets;	
 	}
 	
 

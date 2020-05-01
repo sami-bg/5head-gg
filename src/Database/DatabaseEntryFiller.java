@@ -31,7 +31,8 @@ public class DatabaseEntryFiller {
 	        // Generate random integers in range 0 to 999 
 	        int rand_int = rand.nextInt(1000); 
 			
-			db.addNewUser(String.valueOf(i), "user " + String.valueOf(i), String.valueOf(rand_int), "Email "+ String.valueOf(i),"user " + String.valueOf(i) );
+			db.addNewUser(String.valueOf(i), "user " + String.valueOf(i), 
+					String.valueOf(rand_int), "Email "+ String.valueOf(i),"user " + String.valueOf(i) );
 		}
 	}
 	

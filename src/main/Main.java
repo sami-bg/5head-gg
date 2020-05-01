@@ -98,12 +98,14 @@ public final class Main {
     @Override
     public ModelAndView handle(Request req, Response res) {
       List<String> top50 = null;
-      String first, second, third;
+      String first = "";
+      String second = "";
+      String third = "";
       try {
         top50 = db.getTopFifty();
-        //first = top50.get(0).getUsername(); //getUsername doesnt exist in user, i think we should add that
-        //second = top50.get(1).getUsername();
-        //third = top50.get(2).getUsername();
+        first = top50.get(0);
+        second = top50.get(1);
+        third = top50.get(2);
         top50.remove(0);
         top50.remove(1);
         top50.remove(2);
@@ -112,22 +114,22 @@ public final class Main {
         e.printStackTrace();
       }
       Map<String, Object> variables = null;
-      //try {
+      try {
       variables = ImmutableMap.<String, Object>builder()
           .put("userReputation", "")
-          //.put("userReputation", db.getUser(userID).getReputation())
+          .put("userReputation", db.getUser(userID).getReputation())
           .put("bettingStatus", "")
           .put("profileImage", "")
           .put("profileName", "")
-//.put("firstplace", first)
-//.put("secondplace", second)
-//.put("thirdplace", third)
-          .put("remainingplaces", "")
+          .put("firstplace", first)
+          .put("secondplace", second)
+          .put("thirdplace", third)
+          .put("remainingplaces", top50)
           .build();
-      //} catch (SQLException throwables) {
-      //    throwables.printStackTrace();
-      //    //TODO: display error message
-      //}
+      } catch (SQLException throwables) {
+         throwables.printStackTrace();
+          //TODO: display error message
+      }
 
       return new ModelAndView(variables, "leaderboards.ftl");
     }
