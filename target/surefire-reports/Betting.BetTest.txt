@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: Betting.BetTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.054 sec
+=======
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.085 sec
+>>>>>>> 42faa90a9d5487ea5b6f26c9f38c7b85eab17a65
