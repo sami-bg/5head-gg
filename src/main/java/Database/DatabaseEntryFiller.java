@@ -33,7 +33,9 @@ public class DatabaseEntryFiller {
 	        // Generate random integers in range 0 to 999 
 	        int rand_int = rand.nextInt(1000);
 
-			Main.db.addNewUser(String.valueOf(i), "user " + String.valueOf(i), String.valueOf(rand_int), "Email "+ String.valueOf(i),"user " + String.valueOf(i) );
+
+			Main.db.addNewUser(String.valueOf(i), "user" + String.valueOf(i), String.valueOf(rand_int),
+					"Email"+ String.valueOf(i),"user" + String.valueOf(i) );
 		}
 	}
 	
@@ -55,13 +57,14 @@ public class DatabaseEntryFiller {
 			String betType = betTypes.get(rand.nextInt(betTypes.size()));
 			 
 			String champ = ChampConsts.getChampNames().get(rand.nextInt(ChampConsts.getChampNames().size()));
-			
-	        int rand_int = rand.nextInt(1000); 
-	        
-	        String userID = String.valueOf(userIDs.get(rand.nextInt(userIDs.size())));
+
+
+        int rand_index = rand.nextInt(userIDs.size());
+        String userID = String.valueOf(userIDs.get(rand_index));
+        userIDs.remove(rand_index);
 
 			
-			Main.db.createNewBet("bet " + String.valueOf(i), userID , champ, betType, "0.5", String.valueOf(rand_int) );
+			Main.db.createNewBet("bet " + Integer.toString(i), userID , champ, betType, "0.5", String.valueOf(rand_index));
 		}
 	}
 

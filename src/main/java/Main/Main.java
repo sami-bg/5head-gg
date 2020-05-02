@@ -53,11 +53,9 @@ public final class Main {
 
     db.read("data/5Head.db");
     DatabaseEntryFiller DBEF = new DatabaseEntryFiller();
-  DBEF.addUsers(50);
-  DBEF.addBets(10);
     //I'm running this every time we run main so it might take a while on startup
-    //RiotAPI.updateMapOfChamps();
-    //runSparkServer(4567);
+    RiotAPI.updateMapOfChamps();
+    runSparkServer(4567);
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -113,35 +111,41 @@ public final class Main {
       String first = "";
       String second = "";
       String third = "";
+      StringBuilder sb = new StringBuilder();
       try {
         top50 = db.getTopFifty();
         first = top50.get(0); //getUsername doesnt exist in user, i think we should add that
         second = top50.get(1);
         third = top50.get(2);
         top50.remove(0);
-        top50.remove(1);
-        top50.remove(2);
+        top50.remove(0);
+        top50.remove(0);
+
+        for (int i = 0; i < top50.size(); i++) {
+          String currUser = top50.get(i);
+          sb.append(currUser + "<br>");
+        }
       } catch (SQLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
       Map<String, Object> variables = null;
-      try {
+      //try {
       variables = ImmutableMap.<String, Object>builder()
           .put("userReputation", "")
-          .put("userReputation", db.getUser(userID).getReputation())
+          //.put("userReputation", db.getUser(userID).getReputation())
           .put("bettingStatus", "")
           .put("profileImage", "")
           .put("profileName", "")
           .put("firstplace", first)
           .put("secondplace", second)
           .put("thirdplace", third)
-          .put("remainingplaces", top50)
+          .put("remainingLeaderboard", sb.toString())
           .build();
-      } catch (SQLException throwables) {
+      /*} catch (SQLException throwables) {
          throwables.printStackTrace();
           //TODO: display error message
-      }
+      }*/
 
       return new ModelAndView(variables, "leaderboards.ftl");
     }
@@ -225,16 +229,19 @@ public final class Main {
         championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\">";
         championDivs += "</div>";
       }
-      String patchNotes = Jsoup.connect(
+      //getElementById("patch-notes-container") gets the entire patch notes, which is not useful. We
+      // do getElementsByClass("content-box") instead
+      org.jsoup.select.Elements patchNotes = Jsoup.connect(
               "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/")
-              .get().getElementById("patch-notes-container").outerHtml();
+              .get().getElementsByClass("patch-change-block");
+      String patchNotesString = (patchNotes).outerHtml();
       Map<String, Object> variables = null;
       //try {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
       builder.put("userReputation", "");
       builder.put("currentPatchLink",
               "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/");
-      builder.put("currentPatch", patchNotes);
+      builder.put("currentPatch", patchNotesString);
       builder.put("bettingStatus", "");
       builder.put("profileImage", "");
       builder.put("profileName", "");

@@ -25,7 +25,7 @@
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="currpatch"> Current Main.Patch</a>
+            <a class="sidebarlink" href="currpatch">Current  Patch</a>
 
             <a class="sidebarlink" href="mybets">Profile</a>
 
