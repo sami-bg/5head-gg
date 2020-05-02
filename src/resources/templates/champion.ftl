@@ -8,6 +8,7 @@
   <meta name="description" content="5Head.gg">
 
   <link rel="stylesheet" href="/css/champion.css">
+  <script src="/js/Chart.js"></script>
 
 </head>
 
@@ -50,6 +51,8 @@
 
                 <div class="graph">
                     ${winrateGraph}
+                    <canvas id="wrgraph"> </canvas>
+                    <script src="js/wr.js"></script>
                 </div>
 
                 <div class="bet">
@@ -87,6 +90,8 @@
 
                 <div class="graph">
                     ${pickrateGraph}
+                    <canvas id="prgraph"> </canvas>
+                    <script src="js/pr.js"></script>
                 </div>
 
                 <div class="bet">
@@ -124,6 +129,8 @@
 
                 <div class="graph">
                     ${banrateGraph}
+                    <canvas id="brgraph"> </canvas>
+                    <script src="js/br.js"></script>
                 </div>
 
                 <div class="bet">
