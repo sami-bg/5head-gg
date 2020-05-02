@@ -43,11 +43,9 @@
         </div>
     </div>
     <div id="canvas">
-        <div id="patchnotes-embed">
-		${currentPatch}
-            
-        <div id="champlist"> ${championDivs} </div>
+        <div id="patchnotes-embed"> ${currentPatch} </div>
         <!-- div for each champion -->
+        <div id="champlist"> ${championDivs} </div>
     </div>
 </body>
 </html>

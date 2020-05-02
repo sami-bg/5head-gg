@@ -2,13 +2,13 @@ package Database;
 
 import Betting.Bet;
 import Betting.SigmoidAdjustedGain;
-import Main.Champion;
-import Main.User;
-
+import main.User;
+import main.Champion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 public class DatabaseHandler {
 
@@ -79,6 +79,7 @@ public class DatabaseHandler {
 			return new ArrayList<String>();
 		} catch (SQLException e) {
 			System.out.println("Error: SQL connection error");
+      e.printStackTrace();
 			return new ArrayList<String>();
 		}
 		return res;
@@ -106,7 +107,7 @@ public class DatabaseHandler {
 			System.out.println("ERROR: Database is not connected");
 		} catch (SQLException e) {
 			System.out.println("Error: SQL connection error");
-
+			e.printStackTrace();
 		}
 	}
 
@@ -282,7 +283,8 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage, String betAmount) throws SQLException {
-		updateData("INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",
+		System.out.println("Bet made with id " + betID);
+	  updateData("INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",
 				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount));
 		
 	}

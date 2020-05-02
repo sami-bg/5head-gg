@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import Database.*;
 import RiotAPI.ChampConsts;
@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import freemarker.template.Configuration;
 import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -44,11 +45,11 @@ public final class Main {
 
     db.read("data/5Head.db");
     DatabaseEntryFiller DBEF = new DatabaseEntryFiller();
-  DBEF.addUsers(50);
-  DBEF.addBets(10);
+//    DBEF.addUsers(50);
+//    DBEF.addBets(9);
     //I'm running this every time we run main so it might take a while on startup
-    //RiotAPI.updateMapOfChamps();
-    //runSparkServer(4567);
+    RiotAPI.updateMapOfChamps();
+    runSparkServer(4567);
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -216,16 +217,19 @@ public final class Main {
         championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\">";
         championDivs += "</div>";
       }
-      String patchNotes = Jsoup.connect(
+      //getElementById("patch-notes-container") gets the entire patch notes, which is not useful. We
+      // do getElementsByClass("content-box") instead
+      Elements patchNotes = Jsoup.connect(
               "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/")
-              .get().getElementById("patch-notes-container").outerHtml();
+              .get().getElementsByClass("patch-change-block");
+      String patchNotesString = patchNotes.outerHtml();
       Map<String, Object> variables = null;
       //try {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
       builder.put("userReputation", "");
       builder.put("currentPatchLink",
               "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/");
-      builder.put("currentPatch", patchNotes);
+      builder.put("currentPatch", patchNotesString);
       builder.put("bettingStatus", "");
       builder.put("profileImage", "");
       builder.put("profileName", "");
