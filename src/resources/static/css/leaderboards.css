@@ -5,11 +5,12 @@ body {
     font-family: Roboto;
     font-style: normal;
     display: flex;
-    grid-template-columns: 2;
+  
 }
 
 #logo {
     background: #4E77FF;
+height: 50px;
 }
 
 #bettingstatus {
@@ -25,8 +26,13 @@ body {
 
 #sidebar {
     justify-content: space-around;
+    display: flex;
     flex-direction: column;
     font-size: 18px;
+    width: 150vw;
+    background-color: #181921;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 #sidebar-link {
@@ -34,7 +40,7 @@ body {
 }
 
 #left-aligned {
-    align-content: left;
+    align-content: flex-start;
 }
 
 #profilediv {

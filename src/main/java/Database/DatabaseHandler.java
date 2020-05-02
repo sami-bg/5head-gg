@@ -36,7 +36,6 @@ public class DatabaseHandler {
 		}
 
 		String urlToDB = "jdbc:sqlite:" + filename;
-	System.out.println(urlToDB);
 		try {
 			conn = DriverManager.getConnection(urlToDB);
 			/*Statement stat = conn.createStatement();
@@ -85,12 +84,11 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * This method queries the database. It exists so that other classes do not have
+	 * This method updates the database. It exists so that other classes do not have
 	 * to directly make calls to the database, but instead this can be done here.
 	 *
 	 * @param query The SQL Query which will be called to the database
 	 * @param args   The argument which can be passed into the SQL call
-	 * @return A list containing the elements from the sql call
 	 */
 	public static void updateData(String query, List<String> args) {
 		try {
@@ -267,7 +265,7 @@ public class DatabaseHandler {
 	 */
 	public List<String> getTopFifty() throws SQLException {
 		List<String> topFifty = new ArrayList<String>();
-		topFifty = queryData("SELECT TOP 50 username, reputation, userID FROM users ORDER BY reputation DESC", null);
+		topFifty = queryData("SELECT username, reputation, userID FROM users ORDER BY reputation DESC LIMIT 50", null);
 		return topFifty;
 	}
 
