@@ -1,7 +1,7 @@
 package Database;
 
 import RiotAPI.ChampConsts;
-import main.Main;
+import Main.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

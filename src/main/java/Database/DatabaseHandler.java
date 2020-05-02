@@ -2,8 +2,8 @@ package Database;
 
 import Betting.Bet;
 import Betting.SigmoidAdjustedGain;
-import main.Champion;
-import main.User;
+import Main.Champion;
+import Main.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class DatabaseHandler {
 	/**
 	 * Gets the user with the corresponding userID from the database.
 	 * @param userID The user ID to query the database with
-	 * @return The corresponding User object with the given user ID
+	 * @return The corresponding Main.User object with the given user ID
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String userID) throws SQLException {
@@ -137,7 +137,7 @@ public class DatabaseHandler {
 		if (userStrings.size() != 0){
 			user = new User(userStrings);
 		} else {
-			throw new SQLException("User is not in database or has no information");
+			throw new SQLException("Main.User is not in database or has no information");
 		}
         return user;
 
@@ -151,7 +151,7 @@ public class DatabaseHandler {
 	/**
 	 * Finds the champion with the given champ name.
 	 * @param champName the name of the champion to query the database
-	 * @return the Champion object with the given name
+	 * @return the Main.Champion object with the given name
 	 * @throws SQLException if the champion is not found
 	 */
 	public Champion getChampion(String champName) throws SQLException {
@@ -170,7 +170,7 @@ public class DatabaseHandler {
 		if (champStringsW.size() != 0 && champStringsB.size() != 0 && champStringsP.size() != 0 ){
 			champ = new Champion(champStringsW, champStringsB, champStringsP);
 		} else {
-			throw new SQLException("Champion is not in database or has no information");
+			throw new SQLException("Main.Champion is not in database or has no information");
 		}
 		
         return champ;
@@ -189,7 +189,7 @@ public class DatabaseHandler {
 	public float getChampionWinRateFromPatch(String patchNum, String champ) throws SQLException {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")){
-			winRate = Float.parseFloat(queryData("SELECT ? FROM WinRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+			winRate = Float.parseFloat(queryData("SELECT ? FROM WinRate WHERE champion = ? ;", Arrays.asList("Main.Patch" + patchNum, champ)).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -207,7 +207,7 @@ public class DatabaseHandler {
 	public float getChampionPickRateFromPatch(String patchNum, String champ) throws SQLException {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")){
-			pickRate = Float.parseFloat(queryData("SELECT ? FROM PickRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+			pickRate = Float.parseFloat(queryData("SELECT ? FROM PickRate WHERE champion = ? ;", Arrays.asList("Main.Patch" + patchNum, champ)).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -225,7 +225,7 @@ public class DatabaseHandler {
 	public float getChampionBanRateFromPatch(String patchNum, String champ) throws SQLException {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")){
-			banRate = Float.parseFloat(queryData("SELECT ? FROM BanRate WHERE = ? ;", Arrays.asList("Patch" + patchNum, champ)).get(0));
+			banRate = Float.parseFloat(queryData("SELECT ? FROM BanRate WHERE champion = ? ;", Arrays.asList("Main.Patch" + patchNum, champ)).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -239,9 +239,9 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
-		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
-		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
-		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Main.Patch" + patchNum));
+		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Main.Patch" + patchNum));
+		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Main.Patch" + patchNum));
 	}
 	
 	/**
@@ -255,9 +255,9 @@ public class DatabaseHandler {
 	 */
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate) throws SQLException {
 		
-		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, winRate, champ));
-		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, banRate, champ));
-		updateData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, pickRate, champ));
+		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Main.Patch" + patchNum, winRate, champ));
+		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Main.Patch" + patchNum, banRate, champ));
+		updateData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Main.Patch" + patchNum, pickRate, champ));
 	}
 
 	/**
@@ -300,7 +300,6 @@ public class DatabaseHandler {
 			betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID));
 		}
 		if (betStrings.size() != 0){
-			//TODO: make Sigmoid constructor
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75,
 					0.0, 0.0);
 			bet = new Bet(gainFunc,
@@ -310,6 +309,18 @@ public class DatabaseHandler {
 		}
         return bet;
 
+	}
+	
+	/**
+	 * Method that counts the number of bets for a given champion.
+	 * @param champ, the champion's name
+	 * @return, number of bets submitted for that champion
+	 * @throws SQLException
+	 */
+	public int countNumberOfBets(String champ) throws SQLException {
+		int numBets = 0;
+		numBets = Integer.parseInt(queryData("SELECT COUNT(champion) FROM Bets WHERE champion = ?; ", Arrays.asList(champ)).get(0));
+		return numBets;	
 	}
 	
 

@@ -25,7 +25,7 @@
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
+            <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Main.Patch</p></a>
 
             <a class="sidebarlink" href="mybets">Profile</a>
 

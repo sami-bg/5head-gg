@@ -13,9 +13,9 @@ Bet(2% expectedIncrease, category, user, 0-1loss) <-- 51% -> -50
 
 lambda x, y --> myLoss(x: predict, y: result)
 
-User makes winrate bet --> BettingSessionWinrate.addBet(betObj)
+Main.User makes winrate bet --> BettingSessionWinrate.addBet(betObj)
     
 
 List of Bets
-Map of User ID to List of Bets
+Map of Main.User ID to List of Bets
 
