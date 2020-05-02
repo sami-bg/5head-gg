@@ -1,14 +1,18 @@
-package Database;
+package main.java.Database;
 
-import Betting.Bet;
-import Betting.SigmoidAdjustedGain;
-import Main.Champion;
-import Main.User;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import main.java.Betting.Bet;
+import main.java.Betting.SigmoidAdjustedGain;
+import main.java.Main.Champion;
+import main.java.Main.User;
 
 public class DatabaseHandler {
 

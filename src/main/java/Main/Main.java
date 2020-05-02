@@ -1,24 +1,33 @@
-package Main;
+package main.java.Main;
 
-import Database.*;
-import RiotAPI.ChampConsts;
-import RiotAPI.RiotAPI;
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import freemarker.template.Configuration;
-import org.jsoup.Jsoup;
-import spark.*;
-import spark.template.freemarker.FreeMarkerEngine;
+import static main.java.RiotAPI.RiotAPI.getSplashByName;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import static RiotAPI.RiotAPI.getSplashByName;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+
+import org.jsoup.Jsoup;
+
+import freemarker.template.Configuration;
+import main.java.Database.DatabaseEntryFiller;
+import main.java.Database.DatabaseHandler;
+import main.java.RiotAPI.ChampConsts;
+import main.java.RiotAPI.RiotAPI;
+import spark.ExceptionHandler;
+import spark.ModelAndView;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
+import spark.TemplateViewRoute;
+import spark.template.freemarker.FreeMarkerEngine;
 
 public final class Main {
 
