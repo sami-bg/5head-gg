@@ -1,10 +1,12 @@
 package Database;
 
+import RiotAPI.ChampConsts;
+import main.Main;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import RiotAPI.ChampConsts;
 
 /**
  * Class that populates the database for testing purposes.
@@ -12,7 +14,7 @@ import RiotAPI.ChampConsts;
  */
 public class DatabaseEntryFiller {
 	
-	DatabaseHandler db = new DatabaseHandler();
+	//DatabaseHandler db = new DatabaseHandler();
 	
 	List<Integer> userIDs = new ArrayList<Integer>();
 	
@@ -29,9 +31,9 @@ public class DatabaseEntryFiller {
 			Random rand = new Random(); 
 			  
 	        // Generate random integers in range 0 to 999 
-	        int rand_int = rand.nextInt(1000); 
-			
-			db.addNewUser(String.valueOf(i), "user " + String.valueOf(i), String.valueOf(rand_int), "Email "+ String.valueOf(i),"user " + String.valueOf(i) );
+	        int rand_int = rand.nextInt(1000);
+
+			Main.db.addNewUser(String.valueOf(i), "user " + String.valueOf(i), String.valueOf(rand_int), "Email "+ String.valueOf(i),"user " + String.valueOf(i) );
 		}
 	}
 	
@@ -59,7 +61,7 @@ public class DatabaseEntryFiller {
 	        String userID = String.valueOf(userIDs.get(rand.nextInt(userIDs.size())));
 
 			
-			db.createNewBet("bet " + String.valueOf(i), userID , champ, betType, "0.5", String.valueOf(rand_int) );
+			Main.db.createNewBet("bet " + String.valueOf(i), userID , champ, betType, "0.5", String.valueOf(rand_int) );
 		}
 	}
 

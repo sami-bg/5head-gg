@@ -1,6 +1,6 @@
 package main;
 
-import Database.DatabaseHandler;
+import Database.*;
 import RiotAPI.ChampConsts;
 import RiotAPI.RiotAPI;
 import com.google.common.collect.ImmutableMap;
@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +24,11 @@ public final class Main {
 
   static String userID;
 
-  static DatabaseHandler db = new DatabaseHandler();
+  public static DatabaseHandler db = new DatabaseHandler();
 
   private static final Gson GSON = new Gson();
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, SQLException {
     new Main(args).run();
   }
 
@@ -38,14 +38,17 @@ public final class Main {
     this.args = args;
   }
 
-  private void run() throws IOException {
+  private void run() throws IOException, SQLException {
     // TODO Auto-generated method stub
     //RiotAPI.test();
 
-    //db.read("users.db");
+    db.read("data/5Head.db");
+    DatabaseEntryFiller DBEF = new DatabaseEntryFiller();
+  DBEF.addUsers(50);
+  DBEF.addBets(10);
     //I'm running this every time we run main so it might take a while on startup
-    RiotAPI.updateMapOfChamps();
-    runSparkServer(4567);
+    //RiotAPI.updateMapOfChamps();
+    //runSparkServer(4567);
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -101,9 +104,9 @@ public final class Main {
       String first, second, third;
       try {
         top50 = db.getTopFifty();
-        //first = top50.get(0).getUsername(); //getUsername doesnt exist in user, i think we should add that
-        //second = top50.get(1).getUsername();
-        //third = top50.get(2).getUsername();
+        first = top50.get(0).getUsername(); //getUsername doesnt exist in user, i think we should add that
+        second = top50.get(1).getUsername();
+        third = top50.get(2).getUsername();
         top50.remove(0);
         top50.remove(1);
         top50.remove(2);

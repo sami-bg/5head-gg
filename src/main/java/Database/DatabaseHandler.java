@@ -1,19 +1,14 @@
 package Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import Betting.Bet;
+import Betting.SigmoidAdjustedGain;
+import main.Champion;
+import main.User;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import main.Champion;
-import main.User;
-import Betting.Bet;
-import Betting.SigmoidAdjustedGain;
 
 public class DatabaseHandler {
 
@@ -41,14 +36,14 @@ public class DatabaseHandler {
 		}
 
 		String urlToDB = "jdbc:sqlite:" + filename;
-
+	System.out.println(urlToDB);
 		try {
 			conn = DriverManager.getConnection(urlToDB);
-			Statement stat = conn.createStatement();
+			/*Statement stat = conn.createStatement();
 			stat.executeUpdate("PRAGMA foreign_keys=ON;");
 			System.out.println("Connected to " + filename);
 			prevFiles.add(filename);
-			stat.close();
+			stat.close();*/
 		} catch (SQLException e) {
 			System.out.println("SQLException when creating connection to database -- Database doesn't exist");
 		}
@@ -68,11 +63,11 @@ public class DatabaseHandler {
 			PreparedStatement prep = conn.prepareStatement(query);
 			if (args != null) {
 				for (int i = 0; i < args.size(); i++) {
-					prep.setString(i, args.get(i));
+					System.out.println("G");
+					prep.setString(i + 1, args.get(i));
 				}
 			}
 			ResultSet result = prep.executeQuery();
-
 			res = new ArrayList<String>();
 			while (result.next()) {
 				res.add(result.getString(1));
@@ -87,6 +82,32 @@ public class DatabaseHandler {
 			return new ArrayList<String>();
 		}
 		return res;
+	}
+
+	/**
+	 * This method queries the database. It exists so that other classes do not have
+	 * to directly make calls to the database, but instead this can be done here.
+	 *
+	 * @param query The SQL Query which will be called to the database
+	 * @param args   The argument which can be passed into the SQL call
+	 * @return A list containing the elements from the sql call
+	 */
+	public static void updateData(String query, List<String> args) {
+		try {
+			PreparedStatement prep = conn.prepareStatement(query);
+			if (args != null) {
+				for (int i = 0; i < args.size(); i++) {
+					prep.setString(i + 1, args.get(i));
+				}
+			}
+			prep.executeUpdate();
+			prep.close();
+		} catch (NullPointerException e) {
+			System.out.println("ERROR: Database is not connected");
+		} catch (SQLException e) {
+			System.out.println("Error: SQL connection error");
+
+		}
 	}
 
 	/**
@@ -123,7 +144,7 @@ public class DatabaseHandler {
 	}
 	
 	public void addNewUser(String userID, String username, String reputation, String email, String authentication) throws SQLException {
-		queryData("INSERT INTO Users (userID, username, reputation, email, authentication) VALUES (?, ?, ?, ?, ?, ?)",
+		updateData("INSERT INTO Users (userID, username, reputation, email, authentication) VALUES (?, ?, ?, ?, ?)",
 				Arrays.asList(userID, username, reputation, email, authentication));
 	}
 
@@ -218,9 +239,9 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
-		queryData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
-		queryData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
-		queryData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
 	}
 	
 	/**
@@ -234,9 +255,9 @@ public class DatabaseHandler {
 	 */
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate) throws SQLException {
 		
-		queryData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, winRate, champ));
-		queryData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, banRate, champ));
-		queryData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, pickRate, champ));
+		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, winRate, champ));
+		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, banRate, champ));
+		updateData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, pickRate, champ));
 	}
 
 	/**
@@ -261,8 +282,8 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage, String betAmount) throws SQLException {
-		queryData("INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",
-				Arrays.asList(betID, userID, champion, betType, betPercentage));
+		updateData("INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",
+				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount));
 		
 	}
 
