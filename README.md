@@ -51,7 +51,7 @@ Online games are being changed all the time, with the changes being released to 
 ## Requirements
 * Web scraping for patch notes, and conversion of patch notes into quantifiable attributes
 * An algorithm that places weights on differents aspects of the patch notes to normalize how impactful different types of buffs are. 
-* Backend to store user profiles, Patch data, trends, etc
+* Backend to store user profiles, Main.Patch data, trends, etc
 * Use of company APIs to collect game state data
 * Front end development to display Users, interface, games, change categories, etc. 
 

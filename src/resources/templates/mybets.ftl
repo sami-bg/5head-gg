@@ -25,7 +25,7 @@
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
+            <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Main.Patch</p></a>
 
             <a class="sidebarlink" href="mybets">Profile</a>
 
@@ -52,7 +52,7 @@
 <input type="number" id="rep" name="rep"
        step="1">
 	   
-	   <b>Champion:</b>
+	   <b>Main.Champion:</b>
 	   <select class="dropbtn" name="champion" value="Aatrox">
   <div class="dropdown-content">
     ${champOptions}

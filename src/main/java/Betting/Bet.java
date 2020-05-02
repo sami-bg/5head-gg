@@ -53,7 +53,7 @@ private final String userID;
   }
 
   /**
-   * User reputation change getter for testing purposes.
+   * Main.User reputation change getter for testing purposes.
    * @return the multiplier of the reputation of the user after the bet.
    */
   protected Double getGain() {
@@ -93,7 +93,7 @@ private final String userID;
   }
 
   /**
-   * User ID getter.
+   * Main.User ID getter.
    * @return userID of the current bet
    */
   public String getUserID() {
