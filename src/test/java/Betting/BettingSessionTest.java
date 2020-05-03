@@ -1,6 +1,10 @@
-package Betting;
+package test.java.Betting;
 
 import org.junit.Test;
+
+import main.java.Betting.Bet;
+import main.java.Betting.BettingSession;
+import main.java.Betting.TestGainFunction;
 
 import static org.junit.Assert.assertEquals;
 

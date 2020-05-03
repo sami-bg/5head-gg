@@ -14,6 +14,11 @@
 <body>
     <h1 id="title">5HEAD.gg</h1>
     <div><img src="/css/5head.png"></div>
+    <div id="login">
+      <form>
+      <input >
+      </form>
+    </div>
     ${googleLogin}
 
 </body>

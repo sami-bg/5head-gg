@@ -1,4 +1,4 @@
-package Betting;
+package main.java.Betting;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ private final String userID;
    * and updates that field in the bet.
    * @param c The actual CHANGE that occurred
    */
-  protected void calculateChange(Double c) {
+  public void calculateChange(Double c) {
     this.percentChangeActual = c;
     this.gain = gainFunction.calculateGain(c, this);
   }
@@ -56,7 +56,7 @@ private final String userID;
    * Main.User reputation change getter for testing purposes.
    * @return the multiplier of the reputation of the user after the bet.
    */
-  protected Double getGain() {
+  public Double getGain() {
     return gain;
   }
 

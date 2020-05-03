@@ -25,6 +25,7 @@ import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
+import spark.Route;
 import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -225,9 +226,11 @@ public final class Main {
     public ModelAndView handle(Request req, Response res) throws IOException {
       String championDivs = "";
       for (String champname : ChampConsts.getChampNames()) {
+        championDivs += "<a href=\"/champion/" + champname + "\">";
         championDivs += "<div class=\"iconsdiv\">";
         championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\">";
         championDivs += "</div>";
+        championDivs += "</a>";
       }
       //getElementById("patch-notes-container") gets the entire patch notes, which is not useful. We
       // do getElementsByClass("content-box") instead
@@ -277,6 +280,7 @@ public final class Main {
           .put("winrateGraph", "")
           .put("pickrateGraph", "")
           .put("banrateGraph", "")
+          .put("champname", champName)
           .build();
       //} catch (SQLException throwables) {
       //    //TODO: display error message
@@ -285,6 +289,30 @@ public final class Main {
 
       return new ModelAndView(variables, "champion.ftl");
     }
+  }
+
+  private static class ChampGraphHandler implements Route {
+
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+
+      String champname = request.queryMap().value("champ");
+      String winrates, pickrates, banrates, patches;
+      winrates = pickrates = banrates = patches = "";
+      List<String> patchnums = db.getPatches();
+      for (String patch : patchnums){
+        winrates += db.getChampionWinRateFromPatch(patch, champname) + ",";
+        banrates += db.getChampionBanRateFromPatch(patch, champname) + ",";
+        pickrates += db.getChampionPickRateFromPatch(patch, champname) + ",";
+        patches += patch + ",";
+
+      }
+
+      Map<String, String> graphData = ImmutableMap.of("patches", patches, "winrates", winrates, "banrates", banrates, "pickrates", pickrates);
+      
+      return GSON.toJson(graphData);
+    }
+
   }
 
   /**

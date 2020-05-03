@@ -9,12 +9,20 @@ body {
     grid-template-columns: 300px 1fr 1fr;
 }
 
+.sidebarlink {
+    color: #84929E;
+}
+
 .sidebarlink:link {
     text-decoration: none;
 }
 
 .sidebarlink:visited {
     text-decoration:none;
+}
+
+.sidebarlink:hover {
+    color: #FEFEFE !important;
 }
 
 #canvas {
@@ -64,9 +72,7 @@ body {
     padding-right: 15px;
 }
 
-.sidebarlink {
-    color: #84929E;
-}
+
 
 .patch-change-block {
     color: rgb(255, 255, 255);
@@ -222,3 +228,4 @@ color: rgb(255, 255, 255);
 #skins img {
     width: 1vw;
 }
+

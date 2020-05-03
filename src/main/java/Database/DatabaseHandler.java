@@ -327,5 +327,9 @@ public class DatabaseHandler {
 		return numBets;	
 	}
 	
+	public List<String> getPatches() throws SQLException {
+		return queryData("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = \"winrate\" ORDER BY ORDINAL_POSITION;"
+			, Arrays.asList());
+	}
 
 }

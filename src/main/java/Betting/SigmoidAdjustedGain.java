@@ -1,7 +1,4 @@
-package Betting;
-
-import Betting.GainFunction;
-import Betting.Bet;
+package main.java.Betting;
 
 public class SigmoidAdjustedGain implements GainFunction {
 

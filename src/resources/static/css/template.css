@@ -25,26 +25,44 @@ body {
 
 #sidebar {
     justify-content: space-around;
+    display: flex;
     flex-direction: column;
     font-size: 18px;
+    width: 15vw;
+    background-color: #181921;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-#sidebar-link {
+.sidebarlink {
     color: #84929E;
 }
 
-#left-aligned {
-    align-content: left;
+.sidebarlink:link {
+    text-decoration: none;
 }
 
-#profilediv {
-    flex-direction: row;
+.sidebarlink:visited {
+    text-decoration:none;
+}
+
+.sidebarlink:hover {
+    color: #FEFEFE;
+}
+
+#left-aligned {
+    align-content: flex-start;
+}
+
+#profile {
+    margin-top: auto;
+    padding-bottom: 10px;
 }
 
 #reputation {
     
     color: #FEFEFE;
-    border-bottom: 3px solid #0A0B1C;
+    border-bottom: 0.5px solid #84929E;
     font-size: 14px;
 
 }
