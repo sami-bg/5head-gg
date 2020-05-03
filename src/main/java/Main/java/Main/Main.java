@@ -17,7 +17,7 @@ import org.jsoup.Jsoup;
 
 import freemarker.template.Configuration;
 import main.java.Database.DatabaseEntryFiller;
-import main.java.Database.DatabaseHandler;
+import Main.java.Database.DatabaseHandler;
 import main.java.RiotAPI.ChampConsts;
 import main.java.RiotAPI.RiotAPI;
 import spark.ExceptionHandler;

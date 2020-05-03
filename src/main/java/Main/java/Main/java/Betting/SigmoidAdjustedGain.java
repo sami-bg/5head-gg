@@ -1,4 +1,4 @@
-package main.java.Betting;
+package Main.java.Betting;
 
 public class SigmoidAdjustedGain implements GainFunction {
 
