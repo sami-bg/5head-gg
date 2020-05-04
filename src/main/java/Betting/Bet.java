@@ -1,4 +1,4 @@
-package Main.java.Betting;
+package main.java.Betting;
 
 import java.util.List;
 

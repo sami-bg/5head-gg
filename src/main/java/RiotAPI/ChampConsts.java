@@ -1,4 +1,4 @@
-package Main.java.RiotAPI;
+package main.java.RiotAPI;
 
 import java.util.ArrayList;
 import java.util.List;
