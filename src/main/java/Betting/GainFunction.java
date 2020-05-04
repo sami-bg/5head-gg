@@ -1,4 +1,4 @@
-package main.java.Betting;
+package Betting;
 
 /**
  * Interface that represents the function to calculate 

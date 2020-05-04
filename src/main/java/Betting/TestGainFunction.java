@@ -1,4 +1,4 @@
-package main.java.Betting;
+package Betting;
 
 public class TestGainFunction implements GainFunction {
 	public Double calculateGain(Double actual, Bet b){

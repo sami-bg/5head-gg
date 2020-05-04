@@ -1,4 +1,4 @@
-package main.java.Betting;
+package Betting;
 
 import java.util.ArrayList;
 import java.util.HashMap;

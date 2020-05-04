@@ -1,11 +1,10 @@
-package main.java.Main;
+package Main;
 
-import java.sql.SQLException;
-import java.util.Random;
-
-import main.java.Database.DatabaseHandler;
+import Database.DatabaseHandler;
 import spark.Request;
 import spark.Response;
+
+import java.sql.SQLException;
 
 public class SessionHandler {
     

@@ -1,4 +1,4 @@
-package main.java.Betting;
+package Betting;
 
 public class LogLossFunction implements GainFunction {
 //sample log loss function that returns the multiplier of the bet,

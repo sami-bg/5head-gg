@@ -1,6 +1,7 @@
-package main.java.Betting;
+package Betting;
 
 import java.util.List;
+
 
 /**
  * Class to represent a bet made by a user.
@@ -18,7 +19,10 @@ private final String betType;
 private final String betID;
 private final String userID;
 
-  /**
+    //public Bet(String hash, String testUser, int rep, double percentChange, String aatrox, Betting.TestGainFunction testGainFunction, String testType) {
+    //}
+
+    /**
    * Category getter.
    * @return the category (i.e. champion) the bet was put in.
    */

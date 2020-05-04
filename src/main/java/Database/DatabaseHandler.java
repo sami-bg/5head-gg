@@ -1,20 +1,15 @@
-package main.java.Database;
+package Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import Betting.Bet;
+import Betting.SigmoidAdjustedGain;
+import Main.Champion;
+import Main.User;
+import org.sqlite.SQLiteException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.sqlite.SQLiteException;
-
-import main.java.Betting.Bet;
-import main.java.Betting.SigmoidAdjustedGain;
-import main.java.Main.Champion;
-import main.java.Main.User;
 
 public class DatabaseHandler {
 
@@ -137,7 +132,7 @@ public class DatabaseHandler {
 	 * Gets the user with the corresponding userID from the database.
 	 * 
 	 * @param userID The user ID to query the database with
-	 * @return The corresponding Main.User object with the given user ID
+	 * @return The corresponding User object with the given user ID
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String userID) throws SQLException {
@@ -149,7 +144,7 @@ public class DatabaseHandler {
 		if (userStrings.size() != 0) {
 			user = new User(userStrings);
 		} else {
-			throw new SQLException("Main.User is not in database or has no information");
+			throw new SQLException("User is not in database or has no information");
 		}
 		return user;
 
@@ -161,7 +156,7 @@ public class DatabaseHandler {
 	 * 
 	 * @param username The username to query the database with
 	 * @param password The password to query the database with
-	 * @return The corresponding Main.User object with the given username and
+	 * @return The corresponding User object with the given username and
 	 *         password
 	 * @throws SQLException if the user is not in the database
 	 */
@@ -177,7 +172,7 @@ public class DatabaseHandler {
 		if (qResults.size() > 0) {
 			userStrings = qResults.get(0);
 		} else {
-			throw new SQLException("Main.User is not in database or has no information");
+			throw new SQLException("User is not in database or has no information");
 		}
 
 		System.out.println("User Strings for current user: " + userStrings.toString());
@@ -185,7 +180,7 @@ public class DatabaseHandler {
 			user = new User(userStrings);
 			System.out.println("Successfully got user with username " + username);
 		} else {
-			throw new SQLException("Main.User is not in database or has no information");
+			throw new SQLException("User is not in database or has no information");
 		}
 		return user;
 
@@ -245,7 +240,7 @@ public class DatabaseHandler {
 		if (champStringsW.size() != 0 && champStringsB.size() != 0 && champStringsP.size() != 0) {
 			champ = new Champion(champStringsW, champStringsB, champStringsP);
 		} else {
-			throw new SQLException("Main.Champion is not in database or has no information");
+			throw new SQLException("Champion is not in database or has no information");
 		}
 
 		return champ;
@@ -266,7 +261,7 @@ public class DatabaseHandler {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")) {
 			winRate = Float.parseFloat(queryData("SELECT ? FROM WinRate WHERE champion = ? ;",
-					Arrays.asList("Main.Patch" + patchNum, champ)).get(0).get(0));
+					Arrays.asList("Patch" + patchNum, champ)).get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -286,7 +281,7 @@ public class DatabaseHandler {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")) {
 			pickRate = Float.parseFloat(queryData("SELECT ? FROM PickRate WHERE champion = ? ;",
-					Arrays.asList("Main.Patch" + patchNum, champ)).get(0).get(0));
+					Arrays.asList("Patch" + patchNum, champ)).get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -306,7 +301,7 @@ public class DatabaseHandler {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")) {
 			banRate = Float.parseFloat(queryData("SELECT ? FROM BanRate WHERE champion = ? ;",
-					Arrays.asList("Main.Patch" + patchNum, champ)).get(0).get(0));
+					Arrays.asList("Patch" + patchNum, champ)).get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -321,9 +316,9 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
-		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Main.Patch" + patchNum));
-		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Main.Patch" + patchNum));
-		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Main.Patch" + patchNum));
+		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
 	}
 
 	/**
@@ -339,9 +334,9 @@ public class DatabaseHandler {
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate)
 			throws SQLException {
 		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;",
-				Arrays.asList("Main.Patch" + patchNum, winRate, champ));
+				Arrays.asList("Patch" + patchNum, winRate, champ));
 		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;",
-				Arrays.asList("Main.Patch" + patchNum, banRate, champ));
+				Arrays.asList("Patch" + patchNum, banRate, champ));
 		updateData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;",
 				Arrays.asList("Main.Patch" + patchNum, pickRate, champ));
 	}

@@ -1,12 +1,12 @@
-package main.java.Database;
+package Database;
+
+import Main.Main;
+import RiotAPI.ChampConsts;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import main.java.RiotAPI.ChampConsts;
-import main.java.Main.Main;
 
 /**
  * Class that populates the database for testing purposes.

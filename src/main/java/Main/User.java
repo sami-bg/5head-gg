@@ -1,4 +1,4 @@
-package main.java.Main;
+package Main;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -36,7 +36,6 @@ public class User {
         betID = String.valueOf(IDandTime.hashCode());
         Main.db.createNewBet(betID, id, champion, stat, percentChange, String.valueOf(rep));
         Main.db.updateReputation(id, String.valueOf(this.reputation - rep));
-
 
     }
 

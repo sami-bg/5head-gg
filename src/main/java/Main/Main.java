@@ -1,6 +1,16 @@
-package main.java.Main;
+package Main;
 
-import static main.java.RiotAPI.RiotAPI.getSplashByName;
+import Betting.Bet;
+import Database.DatabaseEntryFiller;
+import Database.DatabaseHandler;
+import RiotAPI.ChampConsts;
+import RiotAPI.RiotAPI;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import freemarker.template.Configuration;
+import org.jsoup.Jsoup;
+import spark.*;
+import spark.template.freemarker.FreeMarkerEngine;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,34 +21,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import main.java.Main.LeaderboardBuilder;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-
-import org.jsoup.Jsoup;
-import org.sqlite.SQLiteException;
-
-import freemarker.template.Configuration;
-import main.java.Database.DatabaseEntryFiller;
-import main.java.Database.DatabaseHandler;
-import main.java.RiotAPI.ChampConsts;
-import main.java.RiotAPI.RiotAPI;
-import spark.ExceptionHandler;
-import spark.ModelAndView;
-import spark.QueryParamsMap;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-import spark.Spark;
-import spark.TemplateViewRoute;
-import spark.template.freemarker.FreeMarkerEngine;
+import static RiotAPI.RiotAPI.getSplashByName;
 
 public final class Main {
 
   static String userID;
 
   public static DatabaseHandler db = new DatabaseHandler();
+
+  private static final Patch currentPatch = new Patch("10.9", new ArrayList<String>());
 
   private static final Gson GSON = new Gson();
 
@@ -152,7 +144,15 @@ public final class Main {
     public ModelAndView handle(Request req, Response res) {
       String champOptions;
       StringBuilder sb = new StringBuilder();
+      StringBuilder sb1 = new StringBuilder();
+
+      List<Bet> userBets = currentPatch.getBanBets().getBetsFromUserID(userID);
+      userBets.addAll(currentPatch.getWinBets().getBetsFromUserID(userID));
+      userBets.addAll(currentPatch.getPickBets().getBetsFromUserID(userID));
       List<String> champNames = ChampConsts.getChampNames();
+      for (Bet b : userBets){
+        sb1.append("Category: " + b.getCategory() + " Reputation Wagered: " + b.getRepWagered() + "<br>");
+      }
       for (int i = 0; i < champNames.size(); i++) {
         String currChamp = champNames.get(i);
         sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
@@ -166,7 +166,8 @@ public final class Main {
           .put("profileImage", "")
           .put("profileName", "")
           .put("champOptions", sb.toString())
-          .put("success", "")
+          .put("success", "true")
+              .put("myBets", sb1)
           .build();
       //} catch (SQLException throwables) {
       //    throwables.printStackTrace();
@@ -296,10 +297,6 @@ public final class Main {
       String champName = req.params(":champname");
 
       Map<String, Object> variables = null;
-
-
-
-
       //try {
       variables = ImmutableMap.<String, Object>builder()
           .put("userReputation", "")

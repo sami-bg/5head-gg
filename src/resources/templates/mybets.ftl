@@ -68,6 +68,7 @@
   </div>
     <input type="submit" alt="Submit">
     </form>
+	${myBets}
     </div>
 </body>
 </html>
