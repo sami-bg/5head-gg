@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.sqlite.SQLiteException;
+
 import main.java.Betting.Bet;
 import main.java.Betting.SigmoidAdjustedGain;
 import main.java.Main.Champion;
@@ -90,6 +92,7 @@ public class DatabaseHandler {
 			System.out.println("Error: SQL connection error");
 			return Arrays.asList(new ArrayList<String>());
 		}
+
 		return res;
 	}
 
@@ -164,12 +167,21 @@ public class DatabaseHandler {
 	 */
 	public User getUser(String username, String password) throws SQLException {
 		User user = null;
+		List<List<String>> qResults = new ArrayList<>();
 		List<String> userStrings = new ArrayList<>();
 		if ((username != null && !username.equals("")) && (password != null && !password.equals(""))) {
-			userStrings = queryData("SELECT * FROM users WHERE username = ? AND authentication = ?;",
-					Arrays.asList(username, password)).get(0);
+			qResults = queryData("SELECT * FROM users WHERE username = ? AND authentication = ?;",
+					Arrays.asList(username, password));
 		}
-		if (userStrings.size() != 0) {
+
+		if (qResults.size() > 0) {
+			userStrings = qResults.get(0);
+		} else {
+			throw new SQLException("Main.User is not in database or has no information");
+		}
+
+		System.out.println("User Strings for current user: " + userStrings.toString());
+		if (userStrings.size() > 3) {
 			user = new User(userStrings);
 			System.out.println("Successfully got user with username " + username);
 		} else {
@@ -303,7 +315,6 @@ public class DatabaseHandler {
 	 */
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate)
 			throws SQLException {
-
 		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;",
 				Arrays.asList("Main.Patch" + patchNum, winRate, champ));
 		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;",
@@ -320,8 +331,7 @@ public class DatabaseHandler {
 	 */
 	public List<User> getTopFifty() throws SQLException {
 		List<User> topFifty = new ArrayList<User>();
-		for (List<String> row : queryData(
-				"SELECT username, reputation, userID FROM users ORDER BY reputation DESC LIMIT 50", null)) {
+		for (List<String> row : queryData("SELECT * FROM users ORDER BY reputation DESC LIMIT 50", null)) {
 			topFifty.add(new User(row));
 		}
 		return topFifty;
@@ -339,7 +349,7 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage,
-			String betAmount) throws SQLException {
+			String betAmount) throws SQLException, SQLiteException {
 		System.out.println("Bet made with id " + betID);
 		updateData(
 				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",

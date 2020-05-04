@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
 import org.jsoup.Jsoup;
+import org.sqlite.SQLiteException;
 
 import freemarker.template.Configuration;
 import main.java.Database.DatabaseEntryFiller;
@@ -119,7 +120,7 @@ public final class Main {
       String leaderboards = "<div class=\"no-users\">No users.<div>";
       try {
         for (User u : db.getTopFifty()){
-          top50.add(u.getUsername() + " " + u.getReputation());
+          top50.add(u.getUsername() + "     " + u.getReputation());
         }
         leaderboards = LeaderboardBuilder.makeLeaderboard(top50);
       } catch (SQLException e) {
@@ -364,9 +365,9 @@ public final class Main {
             db.createNewBet(String.valueOf((currentUser.getID() + champName + "Ban" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", wper, wstake);
           } catch (SQLException e) {
             System.out.println("Error adding bet to user with username " + currentUser.getUsername());
-          }
         }
       }
+    }
       Map<String, Object> variables = null;
       //try {
       variables = ImmutableMap.<String, Object>builder()

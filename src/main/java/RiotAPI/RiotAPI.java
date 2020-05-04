@@ -1,4 +1,4 @@
-package Main.java.RiotAPI;
+package main.java.RiotAPI;
 
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
@@ -45,7 +45,7 @@ public class RiotAPI {
       String urlFriendlyName = urlFriendlyName(champname);
       // We visit the site and parse the rates
       Document document = Jsoup.connect("https://u.gg/lol/champions/" + urlFriendlyName + "/build").get();
-      System.out.println(document.title());
+      //System.out.println(document.title());
       Elements price = document.select(".value:contains(%)");
       //Construct the list to be used as value
       List<Double> listOfWrPrBr = new ArrayList<>();
@@ -59,7 +59,7 @@ public class RiotAPI {
       List<String> splashIconList = new ArrayList<>();
       Elements background = document.getElementsByClass("champion-profile-container");
       String style = background.get(0).attr("style");
-      System.out.println(style);
+      //System.out.println(style);
       String splash = style.substring(style.indexOf("https://"), style.indexOf(".jpg") + 4);
       String icon = document.getElementsByClass("champion-image").attr("src");
       splashIconList.add(icon);
