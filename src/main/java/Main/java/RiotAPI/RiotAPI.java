@@ -1,8 +1,8 @@
-package main.java.RiotAPI;
+package Main.java.RiotAPI;
+
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,14 +13,14 @@ public class RiotAPI {
   /**
    * NOTE: Format of value is {Winrate, pickrate, banrate}.
    */
-  private static final Map<String, List<Double>> mapOfChampToWinPickBan = new HashMap<>();
+  private static Map<String, List<Double>> mapOfChampToWinPickBan = new HashMap<>();
 
   /**
    *
    * @return a map of String -> String, i.e. chogath -> https://static.u.gg/assets/lol/riot_static/10.8.1/img/splash/Chogath_0.jpg
    */
 
-  private static final Map<String, List<String>> mapOfChampToImageURL = new HashMap<>();
+  private static Map<String, List<String>> mapOfChampToImageURL = new HashMap<>();
 
   public static Map<String, List<String>> getMapOfChampToImageURL() {
     return mapOfChampToImageURL;
@@ -45,7 +45,7 @@ public class RiotAPI {
       String urlFriendlyName = urlFriendlyName(champname);
       // We visit the site and parse the rates
       Document document = Jsoup.connect("https://u.gg/lol/champions/" + urlFriendlyName + "/build").get();
-
+      System.out.println(document.title());
       Elements price = document.select(".value:contains(%)");
       //Construct the list to be used as value
       List<Double> listOfWrPrBr = new ArrayList<>();
@@ -59,10 +59,11 @@ public class RiotAPI {
       List<String> splashIconList = new ArrayList<>();
       Elements background = document.getElementsByClass("champion-profile-container");
       String style = background.get(0).attr("style");
+      System.out.println(style);
       String splash = style.substring(style.indexOf("https://"), style.indexOf(".jpg") + 4);
       String icon = document.getElementsByClass("champion-image").attr("src");
-      splashIconList.add(splash);
       splashIconList.add(icon);
+      splashIconList.add(splash);
       mapOfChampToImageURL.put(urlFriendlyName, splashIconList);
 
     } catch (IOException | NullPointerException e) {
@@ -79,8 +80,49 @@ public class RiotAPI {
    */
   public static void updateMapOfChamps() {
     for (String champname : ChampConsts.getChampNames()) {
+      System.out.println(champname);
       updateMapOfChamps(champname);
+      cleanupChampInMaps(champname);
+
     }
+  }
+
+  //This checks if anything's value is null in any map, and sets it to a non-null value if it is.
+  //NOTE: Meant to be called after updateMapOfChamps
+  private static void cleanupChampInMaps(String champname) {
+    String urlName = urlFriendlyName(champname);
+    String icon;
+    if (getIconByName(champname) == null) {
+      icon = "";
+    } else {
+      icon = getIconByName(champname);
+    }
+
+    String splash;
+    if (getSplashByName(champname) == null) {
+      splash = "";
+    } else {
+      splash = getSplashByName(champname);
+    }
+
+    List<Double> defaultWrPrBr = new ArrayList<>();
+    defaultWrPrBr.add(50.0);
+    defaultWrPrBr.add(5.0);
+    defaultWrPrBr.add(5.0);
+
+    List<Double> wrPrBr;
+    if (getMapOfChampToWinPickBan().get(champname) == null) {
+      wrPrBr = defaultWrPrBr;
+    } else {
+      wrPrBr = getMapOfChampToWinPickBan().get(champname);
+    }
+
+    List<String> iconSplashList = new ArrayList<>();
+    iconSplashList.add(icon);
+    iconSplashList.add(splash);
+
+    mapOfChampToImageURL.put(urlName, iconSplashList);
+    mapOfChampToWinPickBan.put(urlName, wrPrBr);
   }
 
   /**
@@ -92,7 +134,12 @@ public class RiotAPI {
    */
   public static String getIconByName(String champname) {
     String urlFriendlyName = urlFriendlyName(champname);
-    return mapOfChampToImageURL.get(urlFriendlyName).get(1);
+    List<String> list = mapOfChampToImageURL.get(urlFriendlyName);
+    if (list == null) {
+      return "";
+    } else {
+      return list.get(0);
+    }
   }
 
   /**
@@ -104,7 +151,12 @@ public class RiotAPI {
    */
   public static String getSplashByName(String champname) {
     String urlFriendlyName = urlFriendlyName(champname);
-    return mapOfChampToImageURL.get(urlFriendlyName).get(0);
+    List<String> list = mapOfChampToImageURL.get(urlFriendlyName);
+    if (list == null) {
+      return "";
+    } else {
+      return list.get(1);
+    }
   }
 
   private static String urlFriendlyName(String champname) {

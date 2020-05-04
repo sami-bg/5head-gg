@@ -1,4 +1,4 @@
-package main.java.Database;
+package Main.java.Database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import main.java.Betting.Bet;
-import main.java.Betting.SigmoidAdjustedGain;
+import Main.java.Betting.Bet;
+import Main.java.Betting.SigmoidAdjustedGain;
 import main.java.Main.Champion;
 import main.java.Main.User;
 

@@ -1,4 +1,4 @@
-package main.java.RiotAPI;
+package Main.java.RiotAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +138,11 @@ public class ChampConsts {
       add("Vayne");
       add("Veigar");
       add("Vel'koz");
+      add("Vi");
+      add("Viktor");
+      add("Vladimir");
+      add("Volibear");
+      add("Warwick");
       add("Wukong");
       add("Xayah");
       add("Xerath");
