@@ -15,8 +15,13 @@
     <h1 id="title">5HEAD.gg</h1>
     <div><img src="/css/5head.png"></div>
     <div id="login">
-      <form>
-      <input >
+      <p> Log in or create an account below.
+      <br> 
+      If you don't have an account, one will be made for you!</p>
+      <form method="POST" action="/mybets">
+      <input type=text name="username">
+      <input type="password" name="password">
+      <input type="submit" value="Log In">
       </form>
     </div>
     ${googleLogin}

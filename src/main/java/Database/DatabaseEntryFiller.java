@@ -35,7 +35,7 @@ public class DatabaseEntryFiller {
 
 
 			Main.db.addNewUser(String.valueOf(i), "user" + String.valueOf(i), String.valueOf(rand_int),
-					"Email"+ String.valueOf(i),"user" + String.valueOf(i) );
+					"Email"+ String.valueOf(i),"user" + String.valueOf(i));
 		}
 	}
 	

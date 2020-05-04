@@ -57,10 +57,10 @@
 
                 <div class="bet">
                     <div class="plus-button">
-                        AMOUNT
+                        % CHANGE
                     </div>
-                    <form method="/post">
-                        <input id="wpercentage" type="number" value="0">
+                    <form method="POST">
+                        <input name="wpercentage" type="number" value="0">
                     <div class="minus-button">
                         
                     </div>
@@ -70,7 +70,7 @@
                     <div class="plus-button">
                         REP STAKED
                     </div>
-                        <input id="wstaked" type="number" value="0">
+                        <input name="wstaked" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
                         
                     </div>
@@ -94,10 +94,10 @@
 
                 <div class="bet">
                     <div class="plus-button">
-                        AMOUNT
+                        % CHANGE
                     </div>
-                    <form method="/post">
-                        <input id= "ppercentage" type="number" value="0">
+                    <form method="POST">
+                        <input name= "ppercentage" type="number" value="0">
                     <div class="minus-button">
                         
                     </div>
@@ -107,7 +107,7 @@
                     <div class="plus-button">
                         REP STAKED
                     </div>
-                        <input id="pstaked" type="number" value="0">
+                        <input name="pstaked" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
                         
                     </div>
@@ -131,10 +131,10 @@
 
                 <div class="bet">
                     <div class="plus-button">
-                        AMOUNT
+                        % CHANGE
                     </div>
-                    <form method="/post">
-                        <input id= "bpercentage" type="number" value="0">
+                    <form method="POST">
+                        <input name= "bpercentage" type="number" value="0">
                     <div class="minus-button">
                         
                     </div>
@@ -144,7 +144,7 @@
                     <div class="plus-button">
                         REP STAKED
                     </div>
-                        <input id="bstake" type="number" value="0">
+                        <input name="bstake" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
                         
                     </div>

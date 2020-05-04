@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -80,12 +81,16 @@ public final class Main {
 
     // Setup Spark Routes
     Spark.get("/home", new FrontHandler(), freeMarker);
+    Spark.get("/", new FrontHandler(), freeMarker);
     Spark.get("/profile", new FrontHandler(), freeMarker);
     Spark.get("/currpatch", new PatchNoteHandler(), freeMarker);
     Spark.get("/mybets", new MyBetHandler(), freeMarker);
+    Spark.post("/mybets", new LoginPageHandler(), freeMarker);
     Spark.post("/mybets/success", new BetSuccessHandler(), freeMarker);
     Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
     Spark.get("/champion/:champname", new ChampionPageHandler(), freeMarker);
+    Spark.post("/champion/:champname", new ChampionBetHandler(), freeMarker);
+
 
 
   }
@@ -108,22 +113,22 @@ public final class Main {
   private static class LeaderboardHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-      List<String> top50 = null;
+      List<User> top50 = null;
       String first = "";
       String second = "";
       String third = "";
       StringBuilder sb = new StringBuilder();
       try {
         top50 = db.getTopFifty();
-        first = top50.get(0); //getUsername doesnt exist in user, i think we should add that
-        second = top50.get(1);
-        third = top50.get(2);
+        first = top50.get(0).getUsername();//getUsername doesnt exist in user, i think we should add that
+        second = top50.get(1).getUsername();
+        third = top50.get(2).getUsername();
         top50.remove(0);
         top50.remove(0);
         top50.remove(0);
 
         for (int i = 0; i < top50.size(); i++) {
-          String currUser = top50.get(i);
+          String currUser = top50.get(i).getUsername();
           sb.append(currUser + "<br>");
         }
       } catch (SQLException e) {
@@ -183,6 +188,39 @@ public final class Main {
     }
   }
 
+  private static class LoginPageHandler implements TemplateViewRoute {
+
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+      String champOptions;
+      StringBuilder sb = new StringBuilder();
+      List<String> champNames = ChampConsts.getChampNames();
+      for (int i = 0; i < champNames.size(); i++) {
+        String currChamp = champNames.get(i);
+        sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
+      }
+      Map < String, Object > variables = null;
+      //try {
+      variables = ImmutableMap.<String, Object>builder()
+          .put("userReputation", "")
+          //.put("userReputation", db.getUser(userID).getReputation())
+          .put("bettingStatus", "")
+          .put("profileImage", "")
+          .put("profileName", "")
+          .put("champOptions", sb.toString())
+          .put("success", "")
+          .build();
+      //} catch (SQLException throwables) {
+      //    throwables.printStackTrace();
+      //    //TODO: display error message
+      //}
+
+        SessionHandler.loginUser(req, res, db);
+
+      return new ModelAndView(variables, "mybets.ftl");
+    }
+  }
+
   private static class BetSuccessHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
@@ -235,6 +273,7 @@ public final class Main {
       //getElementById("patch-notes-container") gets the entire patch notes, which is not useful. We
       // do getElementsByClass("content-box") instead
       org.jsoup.select.Elements patchNotes = Jsoup.connect(
+        // TODO: Link the current patch notes
               "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/")
               .get().getElementsByClass("patch-change-block");
       String patchNotesString = (patchNotes).outerHtml();
@@ -242,8 +281,7 @@ public final class Main {
       //try {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
       builder.put("userReputation", "");
-      builder.put("currentPatchLink",
-              "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-8-notes/");
+      builder.put("currentPatchLink","https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/");
       builder.put("currentPatch", patchNotesString);
       builder.put("bettingStatus", "");
       builder.put("profileImage", "");
@@ -269,6 +307,10 @@ public final class Main {
       String champName = req.params(":champname");
 
       Map<String, Object> variables = null;
+
+
+
+
       //try {
       variables = ImmutableMap.<String, Object>builder()
           .put("userReputation", "")
@@ -291,6 +333,73 @@ public final class Main {
     }
   }
 
+  private static class ChampionBetHandler implements TemplateViewRoute {
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+      String champName = req.params(":champname");
+      
+      QueryParamsMap qm = req.queryMap();
+      System.out.println(qm.toString());
+
+      String wper = req.queryMap().value("wpercentage");
+      String pper = req.queryMap().value("ppercentage");
+      String bper = req.queryMap().value("bpercentage");
+
+      String wstake = req.queryMap().value("wstaked");
+      String pstake = req.queryMap().value("pstaked");
+      String bstake = req.queryMap().value("bstaked");
+
+      System.out.println(Arrays.asList(wper, pper, bper).toString());
+
+      User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+
+      if (currentUser != null) {
+        if (wper != null && Integer.parseInt(wstake) > 0){
+          
+          try {
+            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Win" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", wper, wstake);
+          } catch (SQLException e) {
+            System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+          }
+        }
+        if (pper != null && Integer.parseInt(pstake) > 0){
+          
+          try {
+            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Pick" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", wper, wstake);
+          } catch (SQLException e) {
+            System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+          }
+        }
+        if (bper != null && Integer.parseInt(bstake) > 0){
+          
+          try {
+            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Ban" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", wper, wstake);
+          } catch (SQLException e) {
+            System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+          }
+        }
+      }
+      Map<String, Object> variables = null;
+      //try {
+      variables = ImmutableMap.<String, Object>builder()
+          .put("userReputation", "")
+          //.put("userReputation", db.getUser(userID).getReputation())
+          .put("bettingStatus", "")
+          .put("profileImage", "")
+          .put("profileName", "")
+          .put("champSplashimage", getSplashByName(champName))
+          .put("winrateGraph", "")
+          .put("pickrateGraph", "")
+          .put("banrateGraph", "")
+          .put("champname", champName)
+          .build();
+        
+
+
+      return new ModelAndView(variables, "champion.ftl");
+    }
+  }
+
   private static class ChampGraphHandler implements Route {
 
     @Override
@@ -299,11 +408,12 @@ public final class Main {
       String champname = request.queryMap().value("champ");
       String winrates, pickrates, banrates, patches;
       winrates = pickrates = banrates = patches = "";
-      List<String> patchnums = db.getPatches();
-      for (String patch : patchnums){
-        winrates += db.getChampionWinRateFromPatch(patch, champname) + ",";
-        banrates += db.getChampionBanRateFromPatch(patch, champname) + ",";
-        pickrates += db.getChampionPickRateFromPatch(patch, champname) + ",";
+      List<List<String>> patchnums = db.getPatches();
+      for (List<String> patch : patchnums){
+        String p = patch.get(0);
+        winrates += db.getChampionWinRateFromPatch(p, champname) + ",";
+        banrates += db.getChampionBanRateFromPatch(p, champname) + ",";
+        pickrates += db.getChampionPickRateFromPatch(p, champname) + ",";
         patches += patch + ",";
 
       }
