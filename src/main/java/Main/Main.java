@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import main.java.Main.LeaderboardBuilder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -113,24 +115,13 @@ public final class Main {
   private static class LeaderboardHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-      List<User> top50 = null;
-      String first = "";
-      String second = "";
-      String third = "";
-      StringBuilder sb = new StringBuilder();
+      List<String> top50 = new ArrayList<>();
+      String leaderboards = "<div class=\"no-users\">No users.<div>";
       try {
-        top50 = db.getTopFifty();
-        first = top50.get(0).getUsername();//getUsername doesnt exist in user, i think we should add that
-        second = top50.get(1).getUsername();
-        third = top50.get(2).getUsername();
-        top50.remove(0);
-        top50.remove(0);
-        top50.remove(0);
-
-        for (int i = 0; i < top50.size(); i++) {
-          String currUser = top50.get(i).getUsername();
-          sb.append(currUser + "<br>");
+        for (User u : db.getTopFifty()){
+          top50.add(u.getUsername() + " " + u.getReputation());
         }
+        leaderboards = LeaderboardBuilder.makeLeaderboard(top50);
       } catch (SQLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -143,10 +134,7 @@ public final class Main {
           .put("bettingStatus", "")
           .put("profileImage", "")
           .put("profileName", "")
-          .put("firstplace", first)
-          .put("secondplace", second)
-          .put("thirdplace", third)
-          .put("remainingLeaderboard", sb.toString())
+          .put("leaderboard", leaderboards)
           .build();
       /*} catch (SQLException throwables) {
          throwables.printStackTrace();
@@ -318,7 +306,7 @@ public final class Main {
           .put("bettingStatus", "")
           .put("profileImage", "")
           .put("profileName", "")
-          .put("champSplashimage", getSplashByName(champName))
+          .put("champSplashimage", RiotAPI.getSplashByName(champName))
           .put("winrateGraph", "")
           .put("pickrateGraph", "")
           .put("banrateGraph", "")
