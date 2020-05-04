@@ -191,10 +191,33 @@ public class DatabaseHandler {
 
 	}
 
+	/**
+	 * Method that adds a new user to the database.
+	 * @param userID, the new user's id
+	 * @param username, the new user's username.
+	 * @param reputation, the user's initial reputation.
+	 * @param email, user's email.
+	 * @param authentication, user's password.
+	 * @throws SQLException
+	 */
 	public void addNewUser(String userID, String username, String reputation, String email, String authentication)
 			throws SQLException {
 		updateData("INSERT INTO Users (userID, username, reputation, email, authentication) VALUES (?, ?, ?, ?, ?)",
 				Arrays.asList(userID, username, reputation, email, authentication));
+	}
+	
+	/**
+	 * Method that updates the reputation of a given user.
+	 * @param userID, user ID of user to change rep.
+	 * @param newRep, the new reputation of the user.
+	 * @throws SQLException
+	 */
+	public void updateReputation(String userID, String newRep) throws SQLException {
+		if (userID != null && !userID.equals("") && Integer.parseInt(newRep) > 0) {
+			updateData("UPDATE users SET reputation = ? WHERE userID = ? ;", Arrays.asList(newRep, userID));
+		} else {
+			throw new SQLException("Main.User is not in database or has no information");
+		}
 	}
 
 	/**
