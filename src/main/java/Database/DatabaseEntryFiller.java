@@ -34,8 +34,8 @@ public class DatabaseEntryFiller {
 	        int rand_int = rand.nextInt(1000);
 
 
-			Main.db.addNewUser(String.valueOf(i), "user" + String.valueOf(i), String.valueOf(rand_int),
-					"Email"+ String.valueOf(i),"user" + String.valueOf(i));
+			Main.db.addNewUser(String.valueOf(i), "user" + i, String.valueOf(rand_int),
+					"Email"+ i,"user" + i);
 		}
 	}
 	
@@ -64,7 +64,7 @@ public class DatabaseEntryFiller {
         userIDs.remove(rand_index);
 
 			
-			Main.db.createNewBet("bet " + Integer.toString(i), userID , champ, betType, "0.5", String.valueOf(rand_index));
+			Main.db.createNewBet("bet " + i, userID , champ, betType, "0.5", String.valueOf(rand_index));
 		}
 	}
 

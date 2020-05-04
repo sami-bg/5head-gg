@@ -25,11 +25,11 @@
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
+            <a class="sidebarlink" href="/currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
 
-            <a class="sidebarlink" href="mybets">Profile</a>
+            <a class="sidebarlink" href="/mybets">Profile</a>
 
-            <a class="sidebarlink" href="leaderboard">Leaderboards</a>
+            <a class="sidebarlink" href="/leaderboard">Leaderboards</a>
         </div>
 
         <div id="bettingstatus">
@@ -39,8 +39,14 @@
         <div id="profile">
             ${profileImage}
             ${profileName}
-            <a href="profile"><img src="up-arrow"></a>
+            <a href="profile"></a>
         </div>
+		
+		<div id="logout">
+		<form action="/" method="post">
+		<button type="submit">Logout</button>
+		</form>
+		</div>
     </div>
     <div id="canvas">
 	${success}
@@ -50,9 +56,9 @@
     </label><br>
 	  <p style="font-family: georgia"> <b>Amount of reputation:</b></p>
 <input type="number" id="rep" name="rep"
-       step="1">
+       step="100" value="0">
 	   
-	   <b>Main.Champion:</b>
+	   <b>Champion:</b>
 	   <select class="dropbtn" name="champion" value="Aatrox">
   <div class="dropdown-content">
     ${champOptions}
@@ -66,6 +72,8 @@
 	<option value="win">Win rate</option>
 	</select>
   </div>
+  <p style="font-family: georgia"> <b>New percentage</b></p>
+	<input id="percentage" name="percentage" type="number" value="0" step="0.1">
     <input type="submit" alt="Submit">
     </form>
 	${myBets}

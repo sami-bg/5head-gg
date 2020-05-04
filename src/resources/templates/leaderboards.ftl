@@ -41,6 +41,11 @@
             ${profileName}
             <a href="profile"><img src="up-arrow"></a>
         </div>
+		<div id="logout">
+		<form action="/" method="post">
+		<button type="submit">Logout</button>
+		</form>
+		</div>
     </div>
     <div id="canvas">
         <div id="leaderboard">

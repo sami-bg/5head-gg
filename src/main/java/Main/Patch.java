@@ -1,7 +1,9 @@
 package Main;
 
+import Betting.Bet;
 import Betting.BettingSession;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Patch {
@@ -47,5 +49,28 @@ public class Patch {
 	 */
 	public BettingSession getBanBets() {
 		return banBets;
+	}
+
+	/**
+	 *
+	 * @param patch The patch where the bets occurred
+	 * @param id The ID of the user that made the bets
+	 * @return
+	 */
+	public static List<Bet> getBets(Patch patch, String id) {
+		List<Bet> userBets = new ArrayList<>();
+		List<Bet> banBets = patch.getBanBets().getBetsFromUserID(id);
+		if (banBets != null) {
+			userBets.addAll(banBets);
+		}
+		List<Bet> winBets = patch.getWinBets().getBetsFromUserID(id);
+		if (winBets != null) {
+			userBets.addAll(winBets);
+		}
+		List<Bet> pickBets = patch.getPickBets().getBetsFromUserID(id);
+		if (pickBets != null) {
+			userBets.addAll(pickBets);
+		}
+		return userBets;
 	}
 }

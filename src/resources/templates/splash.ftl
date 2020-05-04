@@ -24,7 +24,6 @@
       <input type="submit" value="Log In">
       </form>
     </div>
-    ${googleLogin}
 
 </body>
 </html>

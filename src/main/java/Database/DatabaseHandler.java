@@ -4,7 +4,6 @@ import Betting.Bet;
 import Betting.SigmoidAdjustedGain;
 import Main.Champion;
 import Main.User;
-import org.sqlite.SQLiteException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -64,7 +63,6 @@ public class DatabaseHandler {
 			PreparedStatement prep = conn.prepareStatement(query);
 			if (args != null) {
 				for (int i = 0; i < args.size(); i++) {
-					// System.out.println("G");
 					prep.setString(i + 1, args.get(i));
 				}
 			}
@@ -162,6 +160,7 @@ public class DatabaseHandler {
 	 */
 	public User getUser(String username, String password) throws SQLException {
 		User user = null;
+		System.out.println("F");
 		List<List<String>> qResults = new ArrayList<>();
 		List<String> userStrings = new ArrayList<>();
 		if ((username != null && !username.equals("")) && (password != null && !password.equals(""))) {
@@ -367,7 +366,7 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage,
-			String betAmount) throws SQLException, SQLiteException {
+			String betAmount) throws SQLException {
 		System.out.println("Bet made with id " + betID);
 		updateData(
 				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",

@@ -167,5 +167,13 @@ public class ChampConsts {
     return ChampNames;
   }
 
+  public static String champOptions() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < ChampNames.size(); i++) {
+      String currChamp = ChampNames.get(i);
+      sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
+    }
+    return sb.toString();
+  }
 
 }
