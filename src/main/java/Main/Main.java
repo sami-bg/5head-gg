@@ -1,4 +1,4 @@
-package main.java.Main;
+package Main.java.Main;
 
 import static main.java.RiotAPI.RiotAPI.getSplashByName;
 
@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import org.jsoup.Jsoup;
 
 import freemarker.template.Configuration;
-import main.java.Database.DatabaseEntryFiller;
+import Main.java.Database.DatabaseEntryFiller;
 import Main.java.Database.DatabaseHandler;
 import main.java.RiotAPI.ChampConsts;
 import main.java.RiotAPI.RiotAPI;
