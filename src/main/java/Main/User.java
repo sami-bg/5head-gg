@@ -36,6 +36,8 @@ public class User {
         betID = String.valueOf(IDandTime.hashCode());
         Main.db.createNewBet(betID, id, champion, stat, percentChange, String.valueOf(rep));
         reputation -= rep;
+        Main.db.updateReputation(id, String.valueOf(this.reputation - rep));
+
     }
 
     /**
