@@ -211,7 +211,7 @@ public class DatabaseHandler {
 		if (userID != null && !userID.equals("") && Integer.parseInt(newRep) > 0) {
 			updateData("UPDATE users SET reputation = ? WHERE userID = ? ;", Arrays.asList(newRep, userID));
 		} else {
-			throw new SQLException("Main.User is not in database or has no information");
+			throw new SQLException("User is not in database or has no information");
 		}
 	}
 
@@ -356,14 +356,14 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * Creates a new bet and inserts it into the database
+	 * Creates a new bet and inserts it into the database, then decrements the user's reputation
 	 * 
-	 * @param betID
-	 * @param userID
-	 * @param champion
-	 * @param betType
-	 * @param betPercentage
-	 * @param betAmount
+	 * @param betID The unique ID of the bet
+	 * @param userID The ID of the user who made the bet
+	 * @param champion The champion whose statistic is being bet on
+	 * @param betType The statistic that is being bet on
+	 * @param betPercentage What the user bet the resulting change will be
+	 * @param betAmount The amount of reputation bet
 	 * @throws SQLException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage,
@@ -372,6 +372,7 @@ public class DatabaseHandler {
 		updateData(
 				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",
 				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount));
+		updateReputation(userID, String.valueOf(getUser(userID).getReputation() - Integer.parseInt(betAmount)));
 
 	}
 

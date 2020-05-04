@@ -35,6 +35,7 @@ public class User {
         //think of a way to generate unique ids
         betID = String.valueOf(IDandTime.hashCode());
         Main.db.createNewBet(betID, id, champion, stat, percentChange, String.valueOf(rep));
+        reputation -= rep;
     }
 
     /**
