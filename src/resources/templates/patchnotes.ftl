@@ -27,9 +27,9 @@
         <div class="left-aligned" id="buttons">
             <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
 
-            <a class="sidebarlink" href="mybets"><p style="font-weight: normal; color: #84929E"">Profile</p></a>
+            <a class="sidebarlink" href="mybets"><p style="font-weight: normal;">Profile</p></a>
 
-            <a class="sidebarlink" href="leaderboard"><p style="font-weight: normal; color: #84929E"">Leaderboards</p></a>
+            <a class="sidebarlink" href="leaderboard"><p style="font-weight: normal;">Leaderboards</p></a>
         </div>
 
         <div id="bettingstatus">
@@ -43,11 +43,9 @@
         </div>
     </div>
     <div id="canvas">
-        <div id="patchnotes-embed">
-		${currentPatch}
-            
-        <div id="champlist"> ${championDivs} </div>
+        <div id="patchnotes-embed"> ${currentPatch} </div>
         <!-- div for each champion -->
+        <div id="champlist"> ${championDivs} </div>
     </div>
 </body>
 </html>

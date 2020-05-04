@@ -138,6 +138,11 @@ public class ChampConsts {
       add("Vayne");
       add("Veigar");
       add("Vel'koz");
+      add("Vi");
+      add("Viktor");
+      add("Vladimir");
+      add("Volibear");
+      add("Warwick");
       add("Wukong");
       add("Xayah");
       add("Xerath");

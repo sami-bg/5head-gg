@@ -1,15 +1,15 @@
-import Database.DatabaseEntryFiller;
-import Database.DatabaseHandler;
+package User;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class UserTest {
-    DatabaseHandler DHTest;
-    DatabaseEntryFiller DEFTest;
+    Database.DatabaseHandler DHTest;
+    Database.DatabaseEntryFiller DEFTest;
     @Before // setup()
     public void before() throws Exception {
-         DEFTest = new DatabaseEntryFiller();
-         DHTest = new DatabaseHandler();
+         DEFTest = new Database.DatabaseEntryFiller();
+         DHTest = new Database.DatabaseHandler();
     }
 
     @Test

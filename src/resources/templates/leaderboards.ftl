@@ -25,9 +25,9 @@
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="currpatch">Current  Patch</a>
+            <a class="sidebarlink" href="currpatch"><p>Current  Patch</p></a>
 
-            <a class="sidebarlink" href="mybets">Profile</a>
+            <a class="sidebarlink" href="mybets"><p>Profile</p></a>
 
             <a class="sidebarlink" href="leaderboard"><p style="font-weight: bold; color: #FEFEFE">Leaderboards</p></a>
         </div>
@@ -44,21 +44,7 @@
     </div>
     <div id="canvas">
         <div id="leaderboard">
-            <div class="leaderboard-entry" id="firstplace">
-                ${firstplace}
-            </div>
-
-            <div class="leaderboard-entry" id="secondplace">
-                ${secondplace}
-            </div>
-
-            <div class="leaderboard-entry" id="thirdplace">
-                ${thirdplace}
-            </div>
-
-            <!-- this should be a list of divs with the class "leaderboard-entry" -->
-            ${remainingLeaderboard}
-            
+            ${leaderboard}
         </div>
 
     </div>

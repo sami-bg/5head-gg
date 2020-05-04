@@ -9,12 +9,20 @@ body {
     grid-template-columns: 300px 1fr 1fr;
 }
 
+.sidebarlink {
+    color: #84929E;
+}
+
 .sidebarlink:link {
     text-decoration: none;
 }
 
 .sidebarlink:visited {
     text-decoration:none;
+}
+
+.sidebarlink:hover {
+    color: #FEFEFE !important;
 }
 
 #canvas {
@@ -58,15 +66,13 @@ body {
     display: flex;
     flex-direction: column;
     font-size: 18px;
-    width: 150vw;
+    width: 15vw;
     background-color: #181921;
     padding-left: 15px;
     padding-right: 15px;
 }
 
-.sidebarlink {
-    color: #84929E;
-}
+
 
 .patch-change-block {
     color: rgb(255, 255, 255);
@@ -191,14 +197,35 @@ color: rgb(255, 255, 255);
 
 #patchnotes-embed {
     grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    width: 42.5vw;
+    overflow: auto;
+    height: 100vh;
 }
 
 #champlist {
     grid-column: 2;
     flex-wrap: wrap;
     overflow: auto;
-    width: auto;
+    width: 42.5vw;
     height: 100vh;
     display: flex;
-    flex-wrap: wrap;
 }
+
+.patch-change-block {
+    margin: 0;
+}
+
+.blockquote.context {
+    margin: 3%;
+}
+
+.change-detail-title {
+    padding-top: 0;
+}
+
+#skins img {
+    width: 1vw;
+}
+

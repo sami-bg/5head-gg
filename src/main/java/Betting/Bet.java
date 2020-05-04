@@ -2,6 +2,7 @@ package Betting;
 
 import java.util.List;
 
+
 /**
  * Class to represent a bet made by a user.
  * @author sboughan
@@ -18,7 +19,10 @@ private final String betType;
 private final String betID;
 private final String userID;
 
-  /**
+    //public Bet(String hash, String testUser, int rep, double percentChange, String aatrox, Betting.TestGainFunction testGainFunction, String testType) {
+    //}
+
+    /**
    * Category getter.
    * @return the category (i.e. champion) the bet was put in.
    */
@@ -31,7 +35,7 @@ private final String userID;
    * and updates that field in the bet.
    * @param c The actual CHANGE that occurred
    */
-  protected void calculateChange(Double c) {
+  public void calculateChange(Double c) {
     this.percentChangeActual = c;
     this.gain = gainFunction.calculateGain(c, this);
   }
@@ -56,7 +60,7 @@ private final String userID;
    * Main.User reputation change getter for testing purposes.
    * @return the multiplier of the reputation of the user after the bet.
    */
-  protected Double getGain() {
+  public Double getGain() {
     return gain;
   }
 

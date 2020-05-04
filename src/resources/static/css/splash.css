@@ -13,9 +13,39 @@ body {
     font-family: Roboto;
     font-style: normal;
     color: #F9F9F9;
+    font-size: 80px;
 }
 
 img {
     width: 30vw;
     height: 30vh;
+    margin: 20px;
+}
+
+#login {
+    display: flex;
+    flex-direction: column;
+    color: #F9F9F9; 
+    margin: 50px;
+    font-weight: bold;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    margin: 15px;
+    border: none;
+    border-radius: 5px;
+    height: 30px
+}
+
+input[type=submit] {
+    background-color: #4E77FF;
+    height: 50px; 
+    color: white;
+    font-weight: bold;
 }

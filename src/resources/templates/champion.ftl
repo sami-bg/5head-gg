@@ -8,6 +8,7 @@
   <meta name="description" content="5Head.gg">
 
   <link rel="stylesheet" href="/css/champion.css">
+  <script src="/js/Chart.js"></script>
 
 </head>
 
@@ -25,11 +26,11 @@
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
+            <a class="sidebarlink" href="/currpatch"> <p style="font-weight: normal;">Current Patch</p></a>
 
-            <a class="sidebarlink" href="mybets">Profile</a>
+            <a class="sidebarlink" href="/mybets"><p style="font-weight: normal;">Profile</p></a>
 
-            <a class="sidebarlink" href="leaderboard">Leaderboards</a>
+            <a class="sidebarlink" href="/leaderboard"><p style="font-weight: normal;">Leaderboards</p></a>
         </div>
 
         <div id="bettingstatus">
@@ -44,41 +45,41 @@
     </div>
     <div id="canvas">
         <div id="champ-image" style="background-image: url('${champSplashimage}')">
+            <p id="champname"> ${champname} </p>
 
             <!-- winrate tab -- no submit button -->
             <div class="rate">
 
                 <div class="graph">
                     ${winrateGraph}
+                    <canvas id="wrgraph"> </canvas>
                 </div>
 
                 <div class="bet">
                     <div class="plus-button">
-                        +
+                        % CHANGE
                     </div>
-                    <form id="percentage">
-                        <input type="text">
-                    </form>
+                    <form method="POST">
+                        <input name="wpercentage" type="number" value="0">
                     <div class="minus-button">
-                        -
+                        
                     </div>
                 </div>
                 
                 <div class="amount">
                     <div class="plus-button">
-                        +
+                        REP STAKED
                     </div>
-                    <form id="stake">
-                        <input type="text">
-                    </form>
+                        <input name="wstaked" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
-                        -
+                        
                     </div>
                 </div>
 
-                <div class="winnings">
-                    9999
-                </div>
+                <div class=submit>
+                    <input class="button" type="submit" value="Submit Winrate Bet">
+                    </form>
+                </div> 
 
             </div>
 
@@ -87,35 +88,35 @@
 
                 <div class="graph">
                     ${pickrateGraph}
+                    <canvas id="prgraph"> </canvas>
+                    <#--  <script src="../js/prate.js"></script>  -->
                 </div>
 
                 <div class="bet">
                     <div class="plus-button">
-                        +
+                        % CHANGE
                     </div>
-                    <form id="percentage">
-                        <input type="text">
-                    </form>
+                    <form method="POST">
+                        <input name= "ppercentage" type="number" value="0">
                     <div class="minus-button">
-                        -
+                        
                     </div>
                 </div>
                 
                 <div class="amount">
                     <div class="plus-button">
-                        +
+                        REP STAKED
                     </div>
-                    <form id="stake">
-                        <input type="text">
-                    </form>
+                        <input name="pstaked" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
-                        -
+                        
                     </div>
                 </div>
 
-                <div class="winnings">
-                    9999
-                </div>
+                <div class=submit>
+                    <input class="button" type="submit" value="Submit Pickrate Bet">
+                    </form>
+                </div> 
 
             </div>
 
@@ -124,40 +125,40 @@
 
                 <div class="graph">
                     ${banrateGraph}
+                    <canvas id="brgraph"> </canvas>
+                    <#--  <script src="../js/brate.js"></script>  -->
                 </div>
 
                 <div class="bet">
                     <div class="plus-button">
-                        +
+                        % CHANGE
                     </div>
-                    <form id="percentage">
-                        <input type="text">
-                    </form>
+                    <form method="POST">
+                        <input name= "bpercentage" type="number" value="0">
                     <div class="minus-button">
-                        -
+                        
                     </div>
                 </div>
                 
                 <div class="amount">
                     <div class="plus-button">
-                        +
+                        REP STAKED
                     </div>
-                    <form id="stake">
-                        <input type="text">
-                    </form>
+                        <input name="bstake" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
-                        -
+                        
                     </div>
                 </div>
 
-                <div class="winnings">
-                    9999
-                </div>
-
+                <div class=submit>
+                    <input class="button" type="submit" value="Submit Banrate Bet">
+                    </form>
+                </div> 
             </div>
 
 
         </div>
     </div>
+    <script src="../js/wrate.js"></script>
 </body>
 </html>

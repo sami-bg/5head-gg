@@ -1,8 +1,5 @@
 package Betting;
 
-import Betting.GainFunction;
-import Betting.Bet;
-
 public class SigmoidAdjustedGain implements GainFunction {
 
   private final Double upperBound;
