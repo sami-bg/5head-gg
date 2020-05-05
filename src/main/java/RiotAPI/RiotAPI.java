@@ -159,7 +159,7 @@ public class RiotAPI {
     }
   }
 
-  private static String urlFriendlyName(String champname) {
+  static String urlFriendlyName(String champname) {
     String urlFriendlyName = champname.toLowerCase().replace("'", "");
     urlFriendlyName = urlFriendlyName.replace(" ", "");
     return urlFriendlyName;
