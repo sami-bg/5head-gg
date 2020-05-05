@@ -54,7 +54,10 @@
         <div id="champ-image" style="background-image: url('${champSplashimage}')">
             <p id="champname"> ${champname} </p>
 
-            <!-- winrate tab -- no submit button -->
+            <div id="error">
+                ${error}
+            </div>
+
             <div class="rate">
 
                 <div class="graph">
@@ -90,7 +93,6 @@
 
             </div>
 
-            <!-- pickrate tab -- no submit button -->
             <div class="rate">
 
                 <div class="graph">
@@ -127,13 +129,12 @@
 
             </div>
 
-            <!-- banrate tab -- no submit button -->
             <div class="rate">
 
                 <div class="graph">
                     ${banrateGraph}
-                    <canvas id="brgraph"> </canvas>
-                    <#--  <script src="../js/brate.js"></script>  -->
+                    <canvas id="prgraph"> </canvas>
+                    <#--  <script src="../js/prate.js"></script>  -->
                 </div>
 
                 <div class="bet">
@@ -151,7 +152,7 @@
                     <div class="plus-button">
                         REP STAKED
                     </div>
-                        <input name="bstake" type="number" value="100" min="100" step="100">
+                        <input name="bstaked" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
                         
                     </div>
@@ -161,7 +162,9 @@
                     <input class="button" type="submit" value="Submit Banrate Bet">
                     </form>
                 </div> 
+
             </div>
+            
 
 
         </div>

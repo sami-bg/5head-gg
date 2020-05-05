@@ -3,6 +3,7 @@ package Main;
 import Betting.Bet;
 import Database.DatabaseEntryFiller;
 import Database.DatabaseHandler;
+import Database.DatabaseHandler.RepException;
 import RiotAPI.ChampConsts;
 import RiotAPI.RiotAPI;
 import com.google.common.collect.ImmutableMap;
@@ -41,11 +42,11 @@ public final class Main {
 
     private void run() throws IOException, SQLException {
         // TODO Auto-generated method stub
-        //RiotAPI.test();
+        // RiotAPI.test();
 
         db.read("data/5Head.db");
         DatabaseEntryFiller DBEF = new DatabaseEntryFiller();
-        //I'm running this every time we run main so it might take a while on startup
+        // I'm running this every time we run main so it might take a while on startup
         RiotAPI.updateMapOfChamps();
         runSparkServer(4567);
     }
@@ -81,7 +82,7 @@ public final class Main {
         Spark.get("/champion/:champname", new ChampionPageHandler(), freeMarker);
         Spark.post("/champion/:champname", new ChampionBetHandler(), freeMarker);
 
-        //Spark.post("/mybets/success", new BetSuccessHandler(), freeMarker);
+        // Spark.post("/mybets/success", new BetSuccessHandler(), freeMarker);
 
     }
 
@@ -132,13 +133,9 @@ public final class Main {
                     e.printStackTrace();
                 }
                 Map<String, Object> variables = null;
-                variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "")
-                        .put("profileImage", "")
-                        .put("profileName", "")
-                        .put("leaderboard", leaderboards)
-                        .build();
+                variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
+                        .put("bettingStatus", "").put("profileImage", "").put("profileName", "")
+                        .put("leaderboard", leaderboards).build();
                 return new ModelAndView(variables, "leaderboards.ftl");
             }
         }
@@ -149,7 +146,7 @@ public final class Main {
         public ModelAndView handle(Request req, Response res) {
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword",
-                "Entered a blank username or password");
+                        "Entered a blank username or password");
 
                 return new ModelAndView(variables, "splash.ftl");
             } else {
@@ -159,11 +156,15 @@ public final class Main {
                 StringBuilder sb1 = new StringBuilder();
                 try {
                     for (Bet b : db.getUserBetsOnPatch(currentPatch, currentUser.getID())) {
-                        sb1.append("<div id=\"userbet\" style=\"background-image: url(" + getSplashByName(b.getCategory()) + ") \"><div class=\"champion\"><div class=\"line\">Champion</div>" + b.getCategory() +
-                                "</div> <div class=\"type\"> <div class=\"line\">Type</div>" + b.getBetType() + "rate" +
-                                "</div> <div class=\"percent\"> <div class=\"line\">Percent Predicted </div>" + b.getPercentChangePredicted() + "%" +
-                                "</div> <div class=\"wager\"> <div class=\"line\">Reputation Wagered </div>" + b.getRepWagered()
-                                + " </div> <div class=\"betpatch\"> <div class=\"line\">Patch</div>" + currentPatch + "</div></div>");
+                        sb1.append("<div id=\"userbet\" style=\"background-image: url("
+                                + getSplashByName(b.getCategory())
+                                + ") \"><div class=\"champion\"><div class=\"line\">Champion</div>" + b.getCategory()
+                                + "</div> <div class=\"type\"> <div class=\"line\">Type</div>" + b.getBetType() + "rate"
+                                + "</div> <div class=\"percent\"> <div class=\"line\">Percent Predicted </div>"
+                                + b.getPercentChangePredicted() + "%"
+                                + "</div> <div class=\"wager\"> <div class=\"line\">Reputation Wagered </div>"
+                                + b.getRepWagered() + " </div> <div class=\"betpatch\"> <div class=\"line\">Patch</div>"
+                                + currentPatch + "</div></div>");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -174,14 +175,9 @@ public final class Main {
                     sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
                 }
                 Map<String, Object> variables = null;
-                variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "")
-                        .put("profileImage", "")
-                        .put("profileName", "")
-                        .put("champOptions", sb.toString())
-                        .put("success", "true")
-                        .put("myBets", sb1.toString())
+                variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
+                        .put("bettingStatus", "").put("profileImage", "").put("profileName", "")
+                        .put("champOptions", sb.toString()).put("success", "true").put("myBets", sb1.toString())
                         .build();
                 return new ModelAndView(variables, "mybets.ftl");
             }
@@ -208,8 +204,8 @@ public final class Main {
                 successfulLogin = SessionHandler.loginUser(req, res, db);
             }
             if (successfulLogin == false) {
-                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Incorrect password or " +
-                        "that username has already been taken");
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword",
+                        "Incorrect password or " + "that username has already been taken");
 
                 return new ModelAndView(variables, "splash.ftl");
             }
@@ -220,11 +216,14 @@ public final class Main {
                 assert currentUser != null;
                 String id = String.valueOf(qm.value("username").hashCode());
                 for (Bet b : db.getUserBetsOnPatch(currentPatch, id)) {
-                    sb1.append("Champion: " + b.getCategory() +
-                            " Statistic: " + b.getBetType() +
-                            " Percent predicted: " + b.getPercentChangePredicted() +
-                            " Reputation Wagered: " + b.getRepWagered()
-                            + " Patch: " + currentPatch + "<br>");
+                    sb1.append("<div id=\"userbet\" style=\"background-image: url(" + getSplashByName(b.getCategory())
+                            + ") \"><div class=\"champion\"><div class=\"line\">Champion</div>" + b.getCategory()
+                            + "</div> <div class=\"type\"> <div class=\"line\">Type</div>" + b.getBetType() + "rate"
+                            + "</div> <div class=\"percent\"> <div class=\"line\">Percent Predicted </div>"
+                            + b.getPercentChangePredicted() + "%"
+                            + "</div> <div class=\"wager\"> <div class=\"line\">Reputation Wagered </div>"
+                            + b.getRepWagered() + " </div> <div class=\"betpatch\"> <div class=\"line\">Patch</div>"
+                            + currentPatch + "</div></div>");
                 }
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
@@ -233,14 +232,9 @@ public final class Main {
             }
 
             Map<String, Object> variables = null;
-            variables = ImmutableMap.<String, Object>builder()
-                    .put("userReputation", currentUser.getReputation())
-                    .put("bettingStatus", "")
-                    .put("profileImage", "")
-                    .put("profileName", "")
-                    .put("success", "")
-                    .put("myBets", sb1)
-                    .build();
+            variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
+                    .put("bettingStatus", "").put("profileImage", "").put("profileName", "").put("success", "")
+                    .put("myBets", sb1).build();
             return new ModelAndView(variables, "mybets.ftl");
         }
     }
@@ -266,24 +260,25 @@ public final class Main {
                     championDivs += "</div>";
                     championDivs += "</a>";
                 }
-                //getElementById("patch-notes-container") gets the entire patch notes, which is not useful. We
+                // getElementById("patch-notes-container") gets the entire patch notes, which is
+                // not useful. We
                 // do getElementsByClass("content-box") instead
                 org.jsoup.select.Elements patchNotes = Jsoup.connect(
                         // TODO: Link the current patch notes
-                        "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/")
-                        .get().getElementsByClass("patch-change-block");
+                        "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/").get()
+                        .getElementsByClass("patch-change-block");
                 String patchNotesString = (patchNotes).outerHtml();
                 Map<String, Object> variables = null;
                 ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
                 builder.put("userReputation", currentUser.getReputation());
-                builder.put("currentPatchLink", "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/");
+                builder.put("currentPatchLink",
+                        "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/");
                 builder.put("currentPatch", patchNotesString);
                 builder.put("bettingStatus", "");
                 builder.put("profileImage", "");
                 builder.put("profileName", "");
-                builder.put("championDivs", championDivs);//.put("userReputation", db.getUser(userID).getReputation())
-                variables = builder
-                        .build();
+                builder.put("championDivs", championDivs);// .put("userReputation", db.getUser(userID).getReputation())
+                variables = builder.build();
                 return new ModelAndView(variables, "patchnotes.ftl");
             }
         }
@@ -305,17 +300,10 @@ public final class Main {
                 String champName = req.params(":champname");
 
                 Map<String, Object> variables = null;
-                variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "")
-                        .put("profileImage", "")
-                        .put("profileName", "")
-                        .put("champSplashimage", getSplashByName(champName))
-                        .put("winrateGraph", "")
-                        .put("pickrateGraph", "")
-                        .put("banrateGraph", "")
-                        .put("champname", champName)
-                        .build();
+                variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
+                        .put("bettingStatus", "").put("profileImage", "").put("profileName", "")
+                        .put("champSplashimage", getSplashByName(champName)).put("winrateGraph", "")
+                        .put("pickrateGraph", "").put("banrateGraph", "").put("champname", champName).put("error", "").build();
 
                 return new ModelAndView(variables, "champion.ftl");
             }
@@ -346,34 +334,58 @@ public final class Main {
                 System.out.println(Arrays.asList(wper, pper, bper).toString());
 
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+                String error = "";
+
+
+
 
                 if (currentUser != null) {
+                    // if the winrate form is filled out, add a winrate bet
                     if (wper != null && Integer.parseInt(wstake) > 0) {
 
                         try {
-                            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Win" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", wper, wstake, currentPatch);
+                            db.createNewBet(
+                                    String.valueOf((currentUser.getID() + champName + "Win" + wper + wstake).hashCode()),
+                                                    currentUser.getID(), champName, "Win", wper, wstake, currentPatch);
                         } catch (SQLException e) {
                             System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+                        } catch (RepException e) {
+                            error = "Not enough reputation to add that bet!";
                         }
                     }
+
+                    // if the pickrate form is filled out, add a pickrate bet
                     if (pper != null && Integer.parseInt(pstake) > 0) {
 
                         try {
-                            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Pick" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", pper, wstake, currentPatch);
+                            db.createNewBet(
+                                    String.valueOf((currentUser.getID() + champName + "Pick" + pper + pstake).hashCode()),
+                                                    currentUser.getID(), champName, "Pick", pper, pstake, currentPatch);
                         } catch (SQLException e) {
                             System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+                        } catch (RepException e) {
+                            error = "Not enough reputation to add that bet!";
                         }
                     }
+
+                    // if the banerate form is filled out, add a banrate bet
                     if (bper != null && Integer.parseInt(bstake) > 0) {
 
                         try {
-                            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Ban" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", bper, wstake, currentPatch);
+                            db.createNewBet(
+                                    String.valueOf(
+                                            (currentUser.getID() + champName + "Ban" + bper + bstake).hashCode()),
+                                    currentUser.getID(), champName, "Ban", bper, bstake, currentPatch);
                         } catch (SQLException e) {
                             System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+                        } catch (RepException e) {
+                            error = "Not enough reputation to add that bet!";
                         }
                     }
                 }
-                
+
+                currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+
                 Map<String, Object> variables = null;
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
@@ -385,7 +397,7 @@ public final class Main {
                         .put("pickrateGraph", "")
                         .put("banrateGraph", "")
                         .put("champname", champName)
-                        .build();
+                        .put("error", error).build();
 
                 return new ModelAndView(variables, "champion.ftl");
             }
@@ -414,7 +426,8 @@ public final class Main {
 
                 }
 
-                Map<String, String> graphData = ImmutableMap.of("patches", patches, "winrates", winrates, "banrates", banrates, "pickrates", pickrates);
+                Map<String, String> graphData = ImmutableMap.of("patches", patches, "winrates", winrates, "banrates",
+                        banrates, "pickrates", pickrates);
 
                 return GSON.toJson(graphData);
             }

@@ -219,7 +219,7 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void updateReputation(String userID, String newRep) throws SQLException {
-		if (userID != null && !userID.equals("") && Integer.parseInt(newRep) > 0) {
+		if (userID != null && !userID.equals("") && Integer.parseInt(newRep) >= 0) {
 			updateData("UPDATE users SET reputation = ? WHERE userID = ? ;", Arrays.asList(newRep, userID));
 		} else {
 			throw new SQLException("User is not in database or has no information");
@@ -379,19 +379,35 @@ public class DatabaseHandler {
 	 * @param betPercentage What the user bet the resulting change will be
 	 * @param betAmount     The amount of reputation bet
 	 * @throws SQLException
+	 * @throws RepException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage,
-			String betAmount, String patch) throws SQLException {
+			String betAmount, String patch) throws SQLException, RepException {
 		if (this.isLocked) {
 			System.out.println("Attempt to update database while closed");
 			return;
 		}
 		System.out.println("Bet made with id " + betID);
+		if (getUser(userID).getReputation() - Integer.parseInt(betAmount) < 0) {
+			throw new RepException("User does not have enough reputation to place that bet");
+		}
 		updateData(
 				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount, patch) VALUES (?, ?, ?, ?, ?, ?, ?)",
 				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount, patch));
 		updateReputation(userID, String.valueOf(getUser(userID).getReputation() - Integer.parseInt(betAmount)));
 
+	}
+
+	public class RepException extends Exception {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 1L;
+		public RepException(String error){
+			super(error);
+		}
+		
 	}
 
 	/**
