@@ -142,17 +142,19 @@ public class DatabaseHandler {
 	 */
 	public User getUser(String userID) throws SQLException {
 		User user = null;
-		List<String> userStrings = new ArrayList<>();
+		List<List<String>> userStrings = new ArrayList<>();
 		if (userID != null && !userID.equals("")) {
-			userStrings = queryData("SELECT * FROM users WHERE userID = ? ;", Arrays.asList(userID)).get(0);
+			userStrings = queryData("SELECT * FROM users WHERE userID = ? ;", Arrays.asList(userID));
 		}
 		if (userStrings.size() != 0) {
-			user = new User(userStrings);
-		} else {
-			throw new SQLException("User is not in database or has no information");
+			List<String> foundUser = userStrings.get(0);
+			if (foundUser.size() != 0) {
+				user = new User(foundUser);
+			} else {
+				throw new SQLException("User is not in database or has no information");
+			}
 		}
 		return user;
-
 	}
 
 	/**
@@ -166,23 +168,21 @@ public class DatabaseHandler {
 	 */
 	public User getUser(String username, String password) throws SQLException {
 		User user = null;
-		System.out.println("F");
 		List<List<String>> qResults = new ArrayList<>();
 		List<String> userStrings = new ArrayList<>();
 		if ((username != null && !username.equals("")) && (password != null && !password.equals(""))) {
 			qResults = queryData("SELECT * FROM users WHERE username = ? AND authentication = ?;",
 					Arrays.asList(username, password));
 		}
-
 		if (qResults.size() > 0) {
 			userStrings = qResults.get(0);
 		} else {
 			throw new SQLException("User is not in database or has no information");
 		}
-
 		System.out.println("User Strings for current user: " + userStrings.toString());
 		if (userStrings.size() > 3) {
 			user = new User(userStrings);
+
 			System.out.println("Successfully got user with username " + username);
 		} else {
 			throw new SQLException("User is not in database or has no information");
@@ -418,9 +418,9 @@ public class DatabaseHandler {
 	}
 
 		/**
-	 * Method to get a bet from the database
+	 * Method to get the list of bets by a user on a certain patch
 	 * 
-	 * @param betID the ID of the bet to find
+	 * @param userID the ID of the bet to find
 	 * @return the Bet object with the given bet ID
 	 * @throws SQLException
 	 */
@@ -430,14 +430,15 @@ public class DatabaseHandler {
 		List<List<String>> betStrings = new ArrayList<>();
 		if (patch != null && !patch.equals("")) {
 			betStrings = queryData("SELECT * FROM Bets WHERE patch = ? and userID = ?;", Arrays.asList(patch, userID));
+			System.out.println(betStrings);
 		}
 		if (betStrings.size() != 0) {
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75, 0.0, 0.0);
 			for (List<String> string : betStrings){
-				bets.add(new Bet(gainFunc, string));
+				if(string.size() != 0){
+					bets.add(new Bet(gainFunc, string));
+				}
 			}
-		} else {
-			throw new SQLException("Bet is not in database or has no information");
 		}
 		return bets;
 

@@ -76,7 +76,7 @@
 	<input id="percentage" name="percentage" type="number" value="0" step="0.1">
     <input type="submit" alt="Submit">
     </form>  -->
-	${myBets}
+	<p style="font-weight: bold; color: #FEFEFE">${myBets}</p>
     </div>
 </body>
 </html>

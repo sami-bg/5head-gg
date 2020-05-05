@@ -18,6 +18,7 @@
       <p> Log in or create an account below.
       <br> 
       If you don't have an account, one will be made for you!</p>
+	  ${incorrectPassword}
       <form method="POST" action="/mybets">
       <input type=text name="username">
       <input type="password" name="password">

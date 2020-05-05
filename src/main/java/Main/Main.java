@@ -80,7 +80,7 @@ public final class Main {
         Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
         Spark.get("/champion/:champname", new ChampionPageHandler(), freeMarker);
         Spark.post("/champion/:champname", new ChampionBetHandler(), freeMarker);
-        
+
         //Spark.post("/mybets/success", new BetSuccessHandler(), freeMarker);
 
     }
@@ -91,7 +91,7 @@ public final class Main {
     private static class FrontHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
-            Map<String, Object> variables = ImmutableMap.of("userReputation", "");
+            Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "");
 
             return new ModelAndView(variables, "splash.ftl");
         }
@@ -103,7 +103,7 @@ public final class Main {
     private static class LogoutHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
-            Map<String, Object> variables = ImmutableMap.of("userReputation", "");
+            Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "You have been logged out");
             SessionHandler.logoutUser(res);
             return new ModelAndView(variables, "splash.ftl");
         }
@@ -116,8 +116,7 @@ public final class Main {
         @Override
         public ModelAndView handle(Request req, Response res) {
             if (!SessionHandler.isUserLoggedIn(req)) {
-                Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
-
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
                 return new ModelAndView(variables, "splash.ftl");
             } else {
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
@@ -150,7 +149,7 @@ public final class Main {
         public ModelAndView handle(Request req, Response res) {
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
-                
+
                 return new ModelAndView(variables, "splash.ftl");
             } else {
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
@@ -159,8 +158,11 @@ public final class Main {
                 StringBuilder sb1 = new StringBuilder();
                 try {
                     for (Bet b : db.getUserBetsOnPatch(currentPatch, currentUser.getID())) {
-                        sb1.append(
-                                "Category: " + b.getCategory() + " Reputation Wagered: " + b.getRepWagered() + "<br>");
+                        sb1.append("Champion: " + b.getCategory() +
+                                " Statistic: " + b.getBetType() +
+                                " Percent predicted: " + b.getPercentChangePredicted() +
+                                " Reputation Wagered: " + b.getRepWagered()
+                                + " Patch: " + currentPatch + "<br>");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -189,97 +191,56 @@ public final class Main {
 
         @Override
         public ModelAndView handle(Request req, Response res) {
-            User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+            User currentUser = null;
             String champOptions;
             StringBuilder sb = new StringBuilder();
             StringBuilder sb1 = new StringBuilder();
-            SessionHandler.loginUser(req, res, db);
+            QueryParamsMap qm = req.queryMap();
+            Boolean successfulLogin;
+            if (qm.value("username").equals("") || qm.value("password").equals("")) {
+                successfulLogin = false;
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword",
+                        "Entered a blank username or password");
+
+                return new ModelAndView(variables, "splash.ftl");
+            } else {
+                successfulLogin = SessionHandler.loginUser(req, res, db);
+            }
+            if (successfulLogin == false) {
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Incorrect password or " +
+                        "that username has already been taken");
+
+                return new ModelAndView(variables, "splash.ftl");
+            }
             try {
-                for (Bet b : db.getUserBetsOnPatch(currentPatch, currentUser.getID())) {
-                    sb1.append("Category: " + b.getCategory() + " Reputation Wagered: " + b.getRepWagered() + "<br>");
+                currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+                assert currentUser != null;
+                String id = String.valueOf(qm.value("username").hashCode());
+                for (Bet b : db.getUserBetsOnPatch(currentPatch, id)) {
+                    sb1.append("Champion: " + b.getCategory() +
+                            " Statistic: " + b.getBetType() +
+                            " Percent predicted: " + b.getPercentChangePredicted() +
+                            " Reputation Wagered: " + b.getRepWagered()
+                            + " Patch: " + currentPatch + "<br>");
                 }
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
+                System.out.println("sql error in login");
                 e.printStackTrace();
             }
-                List<String> champNames = ChampConsts.getChampNames();
-                for (int i = 0; i < champNames.size(); i++) {
-                    String currChamp = champNames.get(i);
-                    sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
-                }
-                Map<String, Object> variables = null;
-                variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "")
-                        .put("profileImage", "")
-                        .put("profileName", "")
-                        .put("champOptions", sb.toString())
-                        .put("success", "")
-                        .put("myBets", sb1)
-                        .build();
-                return new ModelAndView(variables, "mybets.ftl");
-            }
 
+            Map<String, Object> variables = null;
+            variables = ImmutableMap.<String, Object>builder()
+                    .put("userReputation", currentUser.getReputation())
+                    .put("bettingStatus", "")
+                    .put("profileImage", "")
+                    .put("profileName", "")
+                    .put("success", "")
+                    .put("myBets", sb1)
+                    .build();
+            return new ModelAndView(variables, "mybets.ftl");
+        }
     }
-
-    // private static class BetSuccessHandler implements TemplateViewRoute {
-    //     @Override
-    //     public ModelAndView handle(Request req, Response res) {
-    //         if (!SessionHandler.isUserLoggedIn(req)) {
-    //             Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
-
-    //             return new ModelAndView(variables, "splash.ftl");
-    //         } else {
-    //             StringBuilder sb1 = new StringBuilder();
-    //             for (Bet b : Patch.getBets(currentPatch, userID)){
-    //                 sb1.append("Category: " + b.getCategory() + " Reputation Wagered: " + b.getRepWagered() + "<br>");
-    //             }
-    //             QueryParamsMap qm = req.queryMap();
-    //             String rep = qm.value("rep");
-    //             String percentage = qm.value("percentage");
-    //             String champ = qm.value("champion");
-    //             String betType = qm.value("betType");
-    //             StringBuilder sb = new StringBuilder();
-    //             List<String> champNames = ChampConsts.getChampNames();
-    //             //TODO: add placed bet to database
-    //             for (int i = 0; i < champNames.size(); i++) {
-    //                 String currChamp = champNames.get(i);
-    //                 sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
-    //             }
-    //             Map<String, Object> variables = null;
-    //             try {
-    //                 if(rep == null || percentage == null || champ == null || betType == null || Integer.parseInt(rep) < 0){
-    //                     variables = ImmutableMap.<String, Object>builder()
-    //                             .put("userReputation", db.getUser(userID).getReputation())
-    //                             .put("bettingStatus", "")
-    //                             .put("profileImage", "")
-    //                             .put("profileName", "")
-    //                             .put("champOptions", sb.toString())
-    //                             .put("success", "Bet failed to submit")
-    //                             .put("myBets", sb1)
-    //                             .build();
-    //                 } else {
-    //                     db.getUser(userID).submitBet(Integer.parseInt(rep), percentage, champ, betType);
-    //                     variables = ImmutableMap.<String, Object>builder()
-    //                             .put("userReputation", db.getUser(userID).getReputation())
-    //                             .put("bettingStatus", "")
-    //                             .put("profileImage", "")
-    //                             .put("profileName", "")
-    //                             .put("champOptions", sb.toString())
-    //                             .put("success", "Bet success!")
-    //                             .put("myBets", sb1)
-    //                             .build();
-    //                 }
-
-    //             } catch (SQLException throwables) {
-    //                 throwables.printStackTrace();
-    //                 //TODO: display error message
-    //             }
-
-    //             return new ModelAndView(variables, "mybets.ftl");
-    //         }
-    //     }
-    // }
 
     /**
      * Handler for patch notes page.
@@ -288,7 +249,7 @@ public final class Main {
         @Override
         public ModelAndView handle(Request req, Response res) throws IOException {
             if (!SessionHandler.isUserLoggedIn(req)) {
-                Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
 
                 return new ModelAndView(variables, "splash.ftl");
             } else {
@@ -332,7 +293,7 @@ public final class Main {
         @Override
         public ModelAndView handle(Request req, Response res) {
             if (!SessionHandler.isUserLoggedIn(req)) {
-                Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
 
                 return new ModelAndView(variables, "splash.ftl");
             } else {
@@ -362,7 +323,7 @@ public final class Main {
         @Override
         public ModelAndView handle(Request req, Response res) {
             if (!SessionHandler.isUserLoggedIn(req)) {
-                Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
 
                 return new ModelAndView(variables, "splash.ftl");
             } else {
@@ -395,7 +356,7 @@ public final class Main {
                     if (pper != null && Integer.parseInt(pstake) > 0) {
 
                         try {
-                            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Pick" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", wper, wstake, currentPatch);
+                            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Pick" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", pper, wstake, currentPatch);
                         } catch (SQLException e) {
                             System.out.println("Error adding bet to user with username " + currentUser.getUsername());
                         }
@@ -403,7 +364,7 @@ public final class Main {
                     if (bper != null && Integer.parseInt(bstake) > 0) {
 
                         try {
-                            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Ban" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", wper, wstake, currentPatch);
+                            db.createNewBet(String.valueOf((currentUser.getID() + champName + "Ban" + wper + wstake).hashCode()), currentUser.getID(), champName, "Win", bper, wstake, currentPatch);
                         } catch (SQLException e) {
                             System.out.println("Error adding bet to user with username " + currentUser.getUsername());
                         }
@@ -433,7 +394,7 @@ public final class Main {
         @Override
         public Object handle(Request request, Response response) throws Exception {
             if (!SessionHandler.isUserLoggedIn(request)) {
-                Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
 
                 return new ModelAndView(variables, "splash.ftl");
             } else {

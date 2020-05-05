@@ -9,11 +9,11 @@ public class BettingSessionTest {
 	@Test
 	public void testBetSesh() {
 		final Bet testBet = new Bet("hash", "testUser", 51,
-				0.51, "Teemo", new TestGainFunction(), "win");
+				0.51, "Teemo", new TestGainFunction(), "win", "10.9");
 		final Bet testBet1 = new Bet("hash1", "testUser1", 52, 0.51,
-				"Teemo", new TestGainFunction(), "win");
+				"Teemo", new TestGainFunction(), "win", "10.9");
 		final Bet testBet2 = new Bet("hash2", "testUser", 51, 0.51,
-				"Taric", new TestGainFunction(), "ban:");
+				"Taric", new TestGainFunction(), "ban:", "10.9");
 		BettingSession testBetSesh = new BettingSession("winRate");
 		testBetSesh.addBet(testBet);
 		assertEquals(testBetSesh.getBetsFromUserID("testUser").get(0).getUserID(), "testUser");

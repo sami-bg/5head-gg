@@ -9,21 +9,42 @@ import java.sql.SQLException;
 public class SessionHandler {
     
 
-    public static void loginUser(Request request, Response response, DatabaseHandler db){
+    public static Boolean loginUser(Request request, Response response, DatabaseHandler db){
+        Boolean successfulLogin = false;
         String username = request.queryMap().value("username");
         String password = request.queryMap().value("password");
+        User user = null;
         try {
-            db.getUser(username, password);
-        } catch (SQLException e) {
-            // if it throws this exception, then the user is not in the database, so we should add them. 
-            try {
-                db.addNewUser(String.valueOf(username.hashCode()), username, "5000", username, password);
-            } catch (SQLException e1) {
-                System.out.println("There was a problem adding the user to the database");
-            }
+            user = db.getUser(String.valueOf(username.hashCode()));
+        } catch (SQLException throwables) {
+            System.out.println("threw sql error here");
+            throwables.printStackTrace();
         }
-        response.cookie("username", username, 3600);
-        response.cookie("password", password, 3600);
+        if(user == null) {
+                try {
+                    System.out.println("this branch");
+                    db.addNewUser(String.valueOf(username.hashCode()), username, "5000", username, password);
+                    response.cookie("username", username, 3600);
+                    response.cookie("password", password, 3600);
+                    successfulLogin = true;
+                } catch (SQLException e1) {
+                    System.out.println("There was a problem adding the user to the database");
+                    successfulLogin = false;
+                }
+                return successfulLogin;
+            }
+
+         if(user.getAuth().equals(password)){
+             System.out.println("this other branch");
+
+             response.cookie("username", username, 3600);
+                response.cookie("password", password, 3600);
+                successfulLogin = true;
+            } else {
+                successfulLogin = false;
+            }
+
+        return successfulLogin;
     }
 
 

@@ -94,16 +94,24 @@ public final class Bet {
     this.betType = dataFields.get(3);
     this.percentChangePredicted = Double.parseDouble(dataFields.get(4));
     this.repWagered = Integer.parseInt(dataFields.get(5));
-    this.userID = dataFields.get(6);
-    this.patch = dataFields.get(7);  
+    this.userID = dataFields.get(1);
+    this.patch = dataFields.get(6);
   }
 
   /**
-   * Main.User ID getter.
+   * User ID getter.
    * @return userID of the current bet
    */
   public String getUserID() {
     return userID;
+  }
+
+  /**
+   * Bet type getter.
+   * @return betType
+   */
+  public String getBetType() {
+    return betType;
   }
 }
 

@@ -66,6 +66,13 @@ public class User {
     }
 
     /**
+     * @return the reputation
+     */
+    protected String getAuth() {
+        return authentication;
+    }
+
+    /**
      * @param reputation the reputation to set
      */
     public void setReputation(int reputation) {

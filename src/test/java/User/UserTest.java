@@ -2,6 +2,8 @@ package User;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 
 public class UserTest {
     Database.DatabaseHandler DHTest;
@@ -17,6 +19,6 @@ public class UserTest {
         before();
     DHTest.addNewUser("testUser.", "testUser", "10000", "", "");
        // PreparedStatement prep = conn.prepareStatement("DELETE from Users");
-        
+        DHTest.updateData("", new ArrayList<>());
     }
 }
