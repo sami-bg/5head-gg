@@ -250,7 +250,7 @@ public class DatabaseHandler {
 
 		}
 		if (champStringsW.size() != 0 && champStringsB.size() != 0 && champStringsP.size() != 0) {
-			champ = new Champion(champStringsW, champStringsB, champStringsP);
+			champ = new Champion(champName, champStringsW, champStringsB, champStringsP);
 		} else {
 			throw new SQLException("Champion is not in database or has no information");
 		}
@@ -331,9 +331,9 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
-		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
-		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
-		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE WinRate ADD ? TEXT", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE BanRate ADD ? TEXT", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE PickRate ADD ? TEXT", Arrays.asList("Patch" + patchNum));
 	}
 
 	/**
@@ -388,7 +388,7 @@ public class DatabaseHandler {
 		}
 		System.out.println("Bet made with id " + betID);
 		updateData(
-				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount, patch) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount, patch, 0) VALUES (?, ?, ?, ?, ?, ?, ?)",
 				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount, patch));
 		updateReputation(userID, String.valueOf(getUser(userID).getReputation() - Integer.parseInt(betAmount)));
 
@@ -451,10 +451,10 @@ public class DatabaseHandler {
 	 *               champion
 	 * @throws SQLException
 	 */
-	public int countNumberOfBets(String champ) throws SQLException {
+	public int countNumberOfBets(String champ, String patch) throws SQLException {
 		int numBets = 0;
 		numBets = Integer.parseInt(
-				queryData("SELECT COUNT(champion) FROM Bets WHERE champion = ?; ", Arrays.asList(champ)).get(0).get(0));
+				queryData("SELECT COUNT(champion) FROM Bets WHERE champion = ? AND patch = ? ; ", Arrays.asList(champ, patch)).get(0).get(0));
 		return numBets;
 	}
 
