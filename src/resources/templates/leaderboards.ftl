@@ -37,9 +37,8 @@
         </div>
         
         <div id="profile">
-            ${profileImage}
-            ${profileName}
-            <a href="profile"><img src="up-arrow"></a>
+             ${profileImage}
+            <p style="font-weight: bold; color: #FEFEFE">${profileName}</p>
         </div>
 		<div id="logout">
 		<form action="/" method="post">
