@@ -6,7 +6,7 @@
 
   <title>5Head.gg</title>
   <meta name="description" content="5Head.gg">
-
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="/css/leaderboards.css">
 
 </head>

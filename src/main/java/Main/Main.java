@@ -148,7 +148,8 @@ public final class Main {
         @Override
         public ModelAndView handle(Request req, Response res) {
             if (!SessionHandler.isUserLoggedIn(req)) {
-                Map<String, Object> variables = ImmutableMap.of("userReputation", "", "googleLogin", "");
+                Map<String, Object> variables = ImmutableMap.of("incorrectPassword",
+                "Entered a blank username or password");
 
                 return new ModelAndView(variables, "splash.ftl");
             } else {
@@ -158,11 +159,11 @@ public final class Main {
                 StringBuilder sb1 = new StringBuilder();
                 try {
                     for (Bet b : db.getUserBetsOnPatch(currentPatch, currentUser.getID())) {
-                        sb1.append("Champion: " + b.getCategory() +
-                                " Statistic: " + b.getBetType() +
-                                " Percent predicted: " + b.getPercentChangePredicted() +
-                                " Reputation Wagered: " + b.getRepWagered()
-                                + " Patch: " + currentPatch + "<br>");
+                        sb1.append("<div id=\"userbet\" style=\"background-image: url(" + getSplashByName(b.getCategory()) + ") \"><div class=\"champion\"><div class=\"line\">Champion</div>" + b.getCategory() +
+                                "</div> <div class=\"type\"> <div class=\"line\">Type</div>" + b.getBetType() + "rate" +
+                                "</div> <div class=\"percent\"> <div class=\"line\">Percent Predicted </div>" + b.getPercentChangePredicted() + "%" +
+                                "</div> <div class=\"wager\"> <div class=\"line\">Reputation Wagered </div>" + b.getRepWagered()
+                                + " </div> <div class=\"betpatch\"> <div class=\"line\">Patch</div>" + currentPatch + "</div></div>");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -213,7 +214,9 @@ public final class Main {
                 return new ModelAndView(variables, "splash.ftl");
             }
             try {
-                currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+                String username = req.queryMap().value("username");
+                String password = req.queryMap().value("password");
+                currentUser = db.getUser(username, password);
                 assert currentUser != null;
                 String id = String.valueOf(qm.value("username").hashCode());
                 for (Bet b : db.getUserBetsOnPatch(currentPatch, id)) {
@@ -307,7 +310,7 @@ public final class Main {
                         .put("bettingStatus", "")
                         .put("profileImage", "")
                         .put("profileName", "")
-                        .put("champSplashimage", RiotAPI.getSplashByName(champName))
+                        .put("champSplashimage", getSplashByName(champName))
                         .put("winrateGraph", "")
                         .put("pickrateGraph", "")
                         .put("banrateGraph", "")

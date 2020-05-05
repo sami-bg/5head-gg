@@ -6,7 +6,7 @@
 
   <title>5Head.gg</title>
   <meta name="description" content="5Head.gg">
-
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="/css/profile.css">
 
 </head>
@@ -49,6 +49,8 @@
 		</div>
     </div>
     <div id="canvas">
+    <div id="title"> <h1> ACTIVE BETS </h1></div>
+    
 	<#--  ${success}  -->
        <#--  <form method="POST" action="/mybets/success">
     <label for="rep" style="font-family: georgia">
@@ -76,7 +78,7 @@
 	<input id="percentage" name="percentage" type="number" value="0" step="0.1">
     <input type="submit" alt="Submit">
     </form>  -->
-	<p style="font-weight: bold; color: #FEFEFE">${myBets}</p>
+  ${myBets}
     </div>
 </body>
 </html>
