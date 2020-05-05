@@ -28,13 +28,13 @@ public class User {
     }
 
 
-    public void submitBet(int rep, String percentChange, String champion, String stat) throws SQLException {
+    public void submitBet(int rep, String percentChange, String champion, String stat, String patch) throws SQLException {
         //add to bet database
         String betID = "";
         String IDandTime = id + System.currentTimeMillis();
         //think of a way to generate unique ids
         betID = String.valueOf(IDandTime.hashCode());
-        Main.db.createNewBet(betID, id, champion, stat, percentChange, String.valueOf(rep));
+        Main.db.createNewBet(betID, id, champion, stat, percentChange, String.valueOf(rep), patch);
         reputation -= rep;
         Main.db.updateReputation(id, String.valueOf(this.reputation - rep));
 

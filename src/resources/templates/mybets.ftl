@@ -7,7 +7,7 @@
   <title>5Head.gg</title>
   <meta name="description" content="5Head.gg">
 
-  <link rel="stylesheet" href="/css/patchnotes.css">
+  <link rel="stylesheet" href="/css/profile.css">
 
 </head>
 
@@ -20,16 +20,16 @@
 
         <div class="left-aligned" id="reputation">
             ${userReputation}
-            <p style="color:#84929B;">REPUTATION</p>
+            <p id="repsubtitle">REPUTATION</p>
 
         </div>
 
         <div class="left-aligned" id="buttons">
-            <a class="sidebarlink" href="/currpatch"> <p style="font-weight: bold; color: #FEFEFE">Current Patch</p></a>
+            <a class="sidebarlink" href="/currpatch"> <p>Current Patch</p></a>
 
-            <a class="sidebarlink" href="/mybets">Profile</a>
+            <a class="sidebarlink" href="/mybets"><p style="font-weight: bold; color: #FEFEFE">Profile</p></a>
 
-            <a class="sidebarlink" href="/leaderboard">Leaderboards</a>
+            <a class="sidebarlink" href="/leaderboard"><p>Leaderboards</p></a>
         </div>
 
         <div id="bettingstatus">
@@ -49,8 +49,8 @@
 		</div>
     </div>
     <div id="canvas">
-	${success}
-       <form method="POST" action="/mybets/success">
+	<#--  ${success}  -->
+       <#--  <form method="POST" action="/mybets/success">
     <label for="rep" style="font-family: georgia">
     Enter your bet here:
     </label><br>
@@ -75,7 +75,7 @@
   <p style="font-family: georgia"> <b>New percentage</b></p>
 	<input id="percentage" name="percentage" type="number" value="0" step="0.1">
     <input type="submit" alt="Submit">
-    </form>
+    </form>  -->
 	${myBets}
     </div>
 </body>

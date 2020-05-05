@@ -63,7 +63,7 @@ height: 50px;
 #reputation {
     color: #FEFEFE;
     border-bottom: 3px solid #0A0B1C;
-    font-size: 14px;
+    font-size: 30px;
 }
 
 #first-place {
@@ -143,4 +143,9 @@ height: 50px;
     flex-direction: row;
     justify-content: space-between;
     margin: 0.5%;
+}
+
+#repsubtitle {
+    color:#84929B; 
+    font-size: 12px;
 }

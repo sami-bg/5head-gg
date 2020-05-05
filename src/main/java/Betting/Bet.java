@@ -15,10 +15,10 @@ public final class Bet {
   private final GainFunction gainFunction;
   private Double gain = 0.0;
   private Double percentChangeActual;
-private final String betType;
-private final String betID;
-private final String userID;
-
+  private final String betType;
+  private final String betID;
+  private final String userID;
+  private final String patch;
     //public Bet(String hash, String testUser, int rep, double percentChange, String aatrox, Betting.TestGainFunction testGainFunction, String testType) {
     //}
 
@@ -71,7 +71,7 @@ private final String userID;
  * @param champion the champion whose change the user bet on
  * @param gainFunction the function to be used to calculate the user's gain/loss
  */
-  public Bet(String betID, String userID, int rep, Double percentChange, String champion, GainFunction gainFunction, String betType) {
+  public Bet(String betID, String userID, int rep, Double percentChange, String champion, GainFunction gainFunction, String betType, String patch) {
 	this.betID = betID;
 	this.userID = userID;
     this.repWagered = rep;
@@ -79,6 +79,7 @@ private final String userID;
     this.category = champion;
     this.gainFunction = gainFunction;
     this.betType = betType;
+    this.patch = patch;
   }
 
   /**
@@ -89,11 +90,12 @@ private final String userID;
   public Bet(GainFunction gainFunction, List<String> dataFields) {
     this.gainFunction = gainFunction;
     this.betID = dataFields.get(0);
-	this.category = dataFields.get(2);
-	this.betType = dataFields.get(3);
-	this.percentChangePredicted = Double.parseDouble(dataFields.get(4));
-	this.repWagered = Integer.parseInt(dataFields.get(5));
-	this.userID = dataFields.get(6);
+    this.category = dataFields.get(2);
+    this.betType = dataFields.get(3);
+    this.percentChangePredicted = Double.parseDouble(dataFields.get(4));
+    this.repWagered = Integer.parseInt(dataFields.get(5));
+    this.userID = dataFields.get(6);
+    this.patch = dataFields.get(7);  
   }
 
   /**

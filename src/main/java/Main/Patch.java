@@ -57,17 +57,17 @@ public class Patch {
 	 * @param id The ID of the user that made the bets
 	 * @return
 	 */
-	public static List<Bet> getBets(Patch patch, String id) {
+	public List<Bet> getBets(String id) {
 		List<Bet> userBets = new ArrayList<>();
-		List<Bet> banBets = patch.getBanBets().getBetsFromUserID(id);
+		List<Bet> banBets = this.getBanBets().getBetsFromUserID(id);
 		if (banBets != null) {
 			userBets.addAll(banBets);
 		}
-		List<Bet> winBets = patch.getWinBets().getBetsFromUserID(id);
+		List<Bet> winBets = this.getWinBets().getBetsFromUserID(id);
 		if (winBets != null) {
 			userBets.addAll(winBets);
 		}
-		List<Bet> pickBets = patch.getPickBets().getBetsFromUserID(id);
+		List<Bet> pickBets = this.getPickBets().getBetsFromUserID(id);
 		if (pickBets != null) {
 			userBets.addAll(pickBets);
 		}

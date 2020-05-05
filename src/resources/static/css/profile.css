@@ -1,0 +1,78 @@
+body {
+    background: #0A0B1C;
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+    font-style: normal;
+    display: flex;
+  
+}
+
+#logo {
+    background: #4E77FF;
+    height: 50px;
+}
+
+#bettingstatus {
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 14px;
+    display: flex;
+    align-items: flex-end;
+    text-align: center;
+
+    color: #F9F9F9;
+}
+#sidebar {
+
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    width: 15vw;
+    background-color: #181921;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 100vh;
+}
+
+.sidebarlink {
+    color: #84929E;
+}
+
+.sidebarlink:link {
+    text-decoration: none;
+}
+
+.sidebarlink:visited {
+    text-decoration:none;
+}
+
+.sidebarlink:hover {
+    color: #FEFEFE !important;
+}
+
+#left-aligned {
+    align-content: flex-start;
+}
+
+#profile {
+    margin-top: auto;
+    padding-bottom: 10px;
+}
+
+#reputation {
+    color: #FEFEFE;
+    border-bottom: 3px solid #0A0B1C;
+    font-size: 30px;
+}
+
+#repsubtitle {
+    color:#84929B; 
+    font-size: 12px;
+}
+
+#first-place {
+    background: #F7C64A;
+    border-radius: 25px;
+    font-size: 64px;
+}

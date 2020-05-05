@@ -21,7 +21,7 @@
 
         <div class="left-aligned" id="reputation">
             ${userReputation}
-            <p style="color:#84929B;">REPUTATION</p>
+            <p id="repsubtitle">REPUTATION</p>
 
         </div>
 

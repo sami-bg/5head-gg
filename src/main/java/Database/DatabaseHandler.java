@@ -15,12 +15,15 @@ public class DatabaseHandler {
 	private static Connection conn;
 	private final List<String> prevFiles;
 
+	private boolean isLocked;
+
 	/**
 	 * The constructor for the SqlDatabaseReader instantiates the list of previous
 	 * files to be kept track of in case a bad file is read in.
 	 */
 	public DatabaseHandler() {
 		prevFiles = new ArrayList<String>();
+		isLocked = false;
 	}
 
 	/**
@@ -96,7 +99,11 @@ public class DatabaseHandler {
 	 * @param query The SQL Query which will be called to the database
 	 * @param args  The argument which can be passed into the SQL call
 	 */
-	public static void updateData(String query, List<String> args) {
+	public void updateData(String query, List<String> args) {
+		if (this.isLocked) {
+			System.out.println("Attempt to update database while closed");
+			return;
+		}
 		try {
 			PreparedStatement prep = conn.prepareStatement(query);
 			if (args != null) {
@@ -154,8 +161,7 @@ public class DatabaseHandler {
 	 * 
 	 * @param username The username to query the database with
 	 * @param password The password to query the database with
-	 * @return The corresponding User object with the given username and
-	 *         password
+	 * @return The corresponding User object with the given username and password
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String username, String password) throws SQLException {
@@ -187,21 +193,27 @@ public class DatabaseHandler {
 
 	/**
 	 * Method that adds a new user to the database.
-	 * @param userID, the new user's id
-	 * @param username, the new user's username.
-	 * @param reputation, the user's initial reputation.
-	 * @param email, user's email.
+	 * 
+	 * @param userID,         the new user's id
+	 * @param username,       the new user's username.
+	 * @param reputation,     the user's initial reputation.
+	 * @param email,          user's email.
 	 * @param authentication, user's password.
 	 * @throws SQLException
 	 */
 	public void addNewUser(String userID, String username, String reputation, String email, String authentication)
 			throws SQLException {
+		if (this.isLocked) {
+			System.out.println("Attempt to update database while closed");
+			return;
+		}
 		updateData("INSERT INTO Users (userID, username, reputation, email, authentication) VALUES (?, ?, ?, ?, ?)",
 				Arrays.asList(userID, username, reputation, email, authentication));
 	}
-	
+
 	/**
 	 * Method that updates the reputation of a given user.
+	 * 
 	 * @param userID, user ID of user to change rep.
 	 * @param newRep, the new reputation of the user.
 	 * @throws SQLException
@@ -222,6 +234,7 @@ public class DatabaseHandler {
 	 * @throws SQLException if the champion is not found
 	 */
 	public Champion getChampion(String champName) throws SQLException {
+		
 		Champion champ = null;
 		List<String> champStringsW = new ArrayList<>();
 		List<String> champStringsB = new ArrayList<>();
@@ -259,8 +272,9 @@ public class DatabaseHandler {
 	public float getChampionWinRateFromPatch(String patchNum, String champ) throws SQLException {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")) {
-			winRate = Float.parseFloat(queryData("SELECT ? FROM WinRate WHERE champion = ? ;",
-					Arrays.asList("Patch" + patchNum, champ)).get(0).get(0));
+			winRate = Float.parseFloat(
+					queryData("SELECT ? FROM WinRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ))
+							.get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -279,8 +293,9 @@ public class DatabaseHandler {
 	public float getChampionPickRateFromPatch(String patchNum, String champ) throws SQLException {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")) {
-			pickRate = Float.parseFloat(queryData("SELECT ? FROM PickRate WHERE champion = ? ;",
-					Arrays.asList("Patch" + patchNum, champ)).get(0).get(0));
+			pickRate = Float.parseFloat(
+					queryData("SELECT ? FROM PickRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ))
+							.get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -299,8 +314,9 @@ public class DatabaseHandler {
 	public float getChampionBanRateFromPatch(String patchNum, String champ) throws SQLException {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")) {
-			banRate = Float.parseFloat(queryData("SELECT ? FROM BanRate WHERE champion = ? ;",
-					Arrays.asList("Patch" + patchNum, champ)).get(0).get(0));
+			banRate = Float.parseFloat(
+					queryData("SELECT ? FROM BanRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ))
+							.get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -332,10 +348,8 @@ public class DatabaseHandler {
 	 */
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate)
 			throws SQLException {
-		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;",
-				Arrays.asList("Patch" + patchNum, winRate, champ));
-		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;",
-				Arrays.asList("Patch" + patchNum, banRate, champ));
+		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, winRate, champ));
+		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, banRate, champ));
 		updateData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;",
 				Arrays.asList("Main.Patch" + patchNum, pickRate, champ));
 	}
@@ -355,22 +369,27 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * Creates a new bet and inserts it into the database, then decrements the user's reputation
+	 * Creates a new bet and inserts it into the database, then decrements the
+	 * user's reputation
 	 * 
-	 * @param betID The unique ID of the bet
-	 * @param userID The ID of the user who made the bet
-	 * @param champion The champion whose statistic is being bet on
-	 * @param betType The statistic that is being bet on
+	 * @param betID         The unique ID of the bet
+	 * @param userID        The ID of the user who made the bet
+	 * @param champion      The champion whose statistic is being bet on
+	 * @param betType       The statistic that is being bet on
 	 * @param betPercentage What the user bet the resulting change will be
-	 * @param betAmount The amount of reputation bet
+	 * @param betAmount     The amount of reputation bet
 	 * @throws SQLException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage,
-			String betAmount) throws SQLException {
+			String betAmount, String patch) throws SQLException {
+		if (this.isLocked) {
+			System.out.println("Attempt to update database while closed");
+			return;
+		}
 		System.out.println("Bet made with id " + betID);
 		updateData(
-				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount) VALUES (?, ?, ?, ?, ?, ?)",
-				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount));
+				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount, patch) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount, patch));
 		updateReputation(userID, String.valueOf(getUser(userID).getReputation() - Integer.parseInt(betAmount)));
 
 	}
@@ -395,6 +414,32 @@ public class DatabaseHandler {
 			throw new SQLException("Bet is not in database or has no information");
 		}
 		return bet;
+
+	}
+
+		/**
+	 * Method to get a bet from the database
+	 * 
+	 * @param betID the ID of the bet to find
+	 * @return the Bet object with the given bet ID
+	 * @throws SQLException
+	 */
+	public List<Bet> getUserBetsOnPatch(String patch, String userID) throws SQLException {
+		Bet bet = null;
+		List<Bet> bets = new ArrayList();
+		List<List<String>> betStrings = new ArrayList<>();
+		if (patch != null && !patch.equals("")) {
+			betStrings = queryData("SELECT * FROM Bets WHERE patch = ? and userID = ?;", Arrays.asList(patch, userID));
+		}
+		if (betStrings.size() != 0) {
+			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75, 0.0, 0.0);
+			for (List<String> string : betStrings){
+				bets.add(new Bet(gainFunc, string));
+			}
+		} else {
+			throw new SQLException("Bet is not in database or has no information");
+		}
+		return bets;
 
 	}
 

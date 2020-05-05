@@ -44,7 +44,7 @@ public class DatabaseEntryFiller {
 	 * @param numberOfBets, number of bets to add.
 	 * @throws SQLException
 	 */
-	public void addBets(int numberOfBets) throws SQLException {
+	public void addBets(int numberOfBets, String patch) throws SQLException {
 		
 		for(int i=0; i < numberOfBets; i++) {
 			Random rand = new Random(); 
@@ -64,7 +64,7 @@ public class DatabaseEntryFiller {
         userIDs.remove(rand_index);
 
 			
-			Main.db.createNewBet("bet " + i, userID , champ, betType, "0.5", String.valueOf(rand_index));
+			Main.db.createNewBet("bet " + i, userID , champ, betType, "0.5", String.valueOf(rand_index), patch);
 		}
 	}
 

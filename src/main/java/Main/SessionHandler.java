@@ -45,6 +45,15 @@ public class SessionHandler {
         response.removeCookie("password");
     }
 
+    public static boolean isUserLoggedIn(Request req){
+        String username = req.cookie("username");
+        String password = req.cookie("password");
+        if (username == null || username.equals("") || password == null || password.equals("")) {
+            return false;
+        }
+        return true;
+    }
+
 
 
 }

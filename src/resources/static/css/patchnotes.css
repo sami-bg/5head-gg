@@ -191,7 +191,7 @@ color: rgb(255, 255, 255);
     
     color: #FEFEFE;
     border-bottom: 0.5px solid #84929E;
-    font-size: 14px;
+    font-size: 30px;
 
 }
 
@@ -229,3 +229,7 @@ color: rgb(255, 255, 255);
     width: 1vw;
 }
 
+#repsubtitle {
+    color:#84929B; 
+    font-size: 12px;
+}
