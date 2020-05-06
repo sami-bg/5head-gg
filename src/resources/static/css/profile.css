@@ -9,7 +9,7 @@ body {
 }
 
 #logo {
-    background: #4E77FF;
+    /* background: #4E77FF; */
     height: 50px;
 }
 
@@ -23,12 +23,13 @@ body {
 
     color: #F9F9F9;
 }
+
 #sidebar {
 
     display: flex;
     flex-direction: column;
     font-size: 18px;
-    width: 15vw;
+    /* width: 15vw; */
     background-color: #181921;
     padding-left: 15px;
     padding-right: 15px;
@@ -51,27 +52,57 @@ body {
     color: #FEFEFE !important;
 }
 
-.logout{
- cursor: pointer;
-width: 10vw;
+#profile {
+    margin-top: auto;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 8%;
+    position: relative;
+    right: 10%;
+    /* padding: 0; */
+  }
+  
+  
+  #profile img {
+    margin: 0;
+    border-radius: 100px;
+    scale: 30%;
+    padding: 0;
+  }
+  
+  #profile p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #logout {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 4%;
+  }
+  
+  .logout{
+    cursor: pointer;
+    width: 10vw;
     color: white;
     background-color: #181921;
     opacity:0.6;
     transition-duration: 0.4s;
-}
-
-.logout:hover {
-  background-color: #FEFEFE; 
-  color: black;
-}
+    border-radius: 5px;
+    height: 5vh;
+    border-color: crimson;
+    align-self: center;
+  }
+  
+  .logout:hover {
+    background-color: crimson; 
+    color: white;
+  }
 
 #left-aligned {
     align-content: flex-start;
-}
-
-#profile {
-    margin-top: auto;
-    padding-bottom: 10px;
 }
 
 #reputation {
@@ -89,26 +120,6 @@ width: 10vw;
     background: #F7C64A;
     border-radius: 25px;
     font-size: 64px;
-}
-
-.champion {
-
-}
-
-.type {
-
-}
-
-.percentage {
-
-}
-
-.wager {
-
-}
-
-.betpatch {
-
 }
 
 #userbet {
@@ -166,6 +177,12 @@ width: 10vw;
 
 #title {
     text-align: center;
-    color: white;
-    width: 100%
+    color: #FEFEFE;
+    width: 100%;
+    border-bottom: 3px solid #84929E; 
+    height: max-content;
+    background-color: #181921;
+    border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+    border-image-slice: 1;
+    font-weight: bold;
 }

@@ -9,8 +9,8 @@ body {
 }
 
 #logo {
-    background: #4E77FF;
-height: 50px;
+    /* background: #4E77FF; */
+    height: 50px;
 }
 
 #bettingstatus {
@@ -29,7 +29,7 @@ height: 50px;
     display: flex;
     flex-direction: column;
     font-size: 18px;
-    width: 15vw;
+    /* width: 15vw; */
     background-color: #181921;
     padding-left: 15px;
     padding-right: 15px;
@@ -52,19 +52,6 @@ height: 50px;
     color: #FEFEFE !important;
 }
 
-.logout{
- cursor: pointer;
-width: 10vw;
-    color: white;
-    background-color: #181921;
-    opacity:0.6;
-    transition-duration: 0.4s;
-}
-
-.logout:hover {
-  background-color: #FEFEFE; 
-  color: black;
-}
 
 #left-aligned {
     align-content: flex-start;
@@ -131,7 +118,51 @@ width: 10vw;
 #profile {
     margin-top: auto;
     padding-bottom: 10px;
-}
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 8%;
+    position: relative;
+    right: 10%;
+    /* padding: 0; */
+  }
+  
+  
+  #profile img {
+    margin: 0;
+    border-radius: 100px;
+    scale: 30%;
+    padding: 0;
+  }
+  
+  #profile p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #logout {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 4%;
+  }
+  
+  .logout{
+    cursor: pointer;
+    width: 10vw;
+    color: white;
+    background-color: #181921;
+    opacity:0.6;
+    transition-duration: 0.4s;
+    border-radius: 5px;
+    height: 5vh;
+    border-color: crimson;
+    align-self: center;
+  }
+  
+  .logout:hover {
+    background-color: crimson; 
+    color: white;
+  }
 
 #top-50 {
     height: 65vh;
