@@ -45,7 +45,7 @@
 		
 		<div id="logout">
 		<form action="/" method="post">
-		<button type="submit">Logout</button>
+		<button class="logout" type="submit">Logout</button>
 		</form>
 		</div>
     </div>
