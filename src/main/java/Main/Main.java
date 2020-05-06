@@ -438,8 +438,8 @@ public final class Main {
                         .put("profileName", currentUser.getUsername())
                         .put("champSplashimage", getSplashByName(champName))
                         .put("winrateGraph", wrchart)
-                        .put("pickrateGraph", brchart)
-                        .put("banrateGraph", prchart)
+                        .put("pickrateGraph", prchart)
+                        .put("banrateGraph", brchart)
                         .put("champname", champName)
                         .put("error", error).build();
 

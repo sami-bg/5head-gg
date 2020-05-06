@@ -5,7 +5,9 @@ body {
     font-family: Roboto;
     font-style: normal;
     display: flex;
-  
+    background-image: url(https://wallup.net/wp-content/uploads/2018/09/25/596380-Bilgewater-League_of_Legends.jpg);
+    background-position: center;
+    background-size: cover;
 }
 
 #logo {
@@ -60,7 +62,6 @@ body {
     align-items: center;
     height: 8%;
     position: relative;
-    right: 10%;
     /* padding: 0; */
   }
   
@@ -68,9 +69,13 @@ body {
   #profile img {
     margin: 0;
     border-radius: 100px;
-    scale: 30%;
+    /* scale: 30%; */
     padding: 0;
+    height: auto;
+    width: 30%;
+    margin-right: 20%;
   }
+  
   
   #profile p {
     margin: 0;
@@ -86,9 +91,8 @@ body {
   .logout{
     cursor: pointer;
     width: 10vw;
-    color: white;
+    color: rgb(150, 150, 150);
     background-color: #181921;
-    opacity:0.6;
     transition-duration: 0.4s;
     border-radius: 5px;
     height: 5vh;
@@ -162,6 +166,8 @@ body {
     flex-wrap: wrap;
     height: 100vh;
     width: 100%;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) );
 }
 
 #userbet .line {
@@ -182,7 +188,7 @@ body {
     border-bottom: 3px solid #84929E; 
     height: max-content;
     background-color: #181921;
-    border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+    border-image-source: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(117,117,117,1) 50%, rgba(0,0,0,1) 100%);
     border-image-slice: 1;
     font-weight: bold;
 }
