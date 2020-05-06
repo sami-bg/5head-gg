@@ -81,9 +81,6 @@ public final class Main {
         Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
         Spark.get("/champion/:champname", new ChampionPageHandler(), freeMarker);
         Spark.post("/champion/:champname", new ChampionBetHandler(), freeMarker);
-
-        // Spark.post("/mybets/success", new BetSuccessHandler(), freeMarker);
-
     }
 
     /**
@@ -298,12 +295,15 @@ public final class Main {
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
 
                 String champName = req.params(":champname");
+                String wrchart = buildMetricChartForChampion(champName, "Win");
+                String brchart = buildMetricChartForChampion(champName, "Ban");
+                String prchart = buildMetricChartForChampion(champName, "Pick");
 
                 Map<String, Object> variables = null;
                 variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
                         .put("bettingStatus", "").put("profileImage", "").put("profileName", "")
-                        .put("champSplashimage", getSplashByName(champName)).put("winrateGraph", "")
-                        .put("pickrateGraph", "").put("banrateGraph", "").put("champname", champName).put("error", "").build();
+                        .put("champSplashimage", getSplashByName(champName)).put("winrateGraph", wrchart)
+                        .put("pickrateGraph", prchart).put("banrateGraph", brchart).put("champname", champName).put("error", "").build();
 
                 return new ModelAndView(variables, "champion.ftl");
             }
@@ -386,6 +386,11 @@ public final class Main {
 
                 currentUser = SessionHandler.getUserFromRequestCookie(req, db);
 
+                String wrchart = buildMetricChartForChampion(champName, "Win");
+                String brchart = buildMetricChartForChampion(champName, "Ban");
+                String prchart = buildMetricChartForChampion(champName, "Pick");
+
+
                 Map<String, Object> variables = null;
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
@@ -393,9 +398,9 @@ public final class Main {
                         .put("profileImage", "")
                         .put("profileName", "")
                         .put("champSplashimage", getSplashByName(champName))
-                        .put("winrateGraph", "")
-                        .put("pickrateGraph", "")
-                        .put("banrateGraph", "")
+                        .put("winrateGraph", wrchart)
+                        .put("pickrateGraph", brchart)
+                        .put("banrateGraph", prchart)
                         .put("champname", champName)
                         .put("error", error).build();
 
@@ -404,34 +409,80 @@ public final class Main {
         }
     }
 
-    private static class ChampGraphHandler implements Route {
+    private static String buildMetricChartForChampion(String champname, String metric)  {
+        
+        String jschart = "";
 
-        @Override
-        public Object handle(Request request, Response response) throws Exception {
-            if (!SessionHandler.isUserLoggedIn(request)) {
-                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
+        String labels = "";
+        String ratedata = "";
 
-                return new ModelAndView(variables, "splash.ftl");
-            } else {
-                String champname = request.queryMap().value("champ");
-                String winrates, pickrates, banrates, patches;
-                winrates = pickrates = banrates = patches = "";
-                List<List<String>> patchnums = db.getPatches();
-                for (List<String> patch : patchnums) {
-                    String p = patch.get(0);
-                    winrates += db.getChampionWinRateFromPatch(p, champname) + ",";
-                    banrates += db.getChampionBanRateFromPatch(p, champname) + ",";
-                    pickrates += db.getChampionPickRateFromPatch(p, champname) + ",";
-                    patches += patch + ",";
-
+        try {
+            List<List<String>> patches = db.getPatches();
+            if (patches.size() > 0) {
+                for (List<String> patch : patches) {
+                    labels += "'" + patch.get(0) + "',";
                 }
-
-                Map<String, String> graphData = ImmutableMap.of("patches", patches, "winrates", winrates, "banrates",
-                        banrates, "pickrates", pickrates);
-
-                return GSON.toJson(graphData);
+            } else {
+                return "";
             }
+
+            switch(metric){
+                case "Win":
+                    for (List<String> patch : patches) {
+                        Float rate = db.getChampionWinRateFromPatch(patch.get(0).substring(5), champname);
+                                ratedata += String.valueOf(rate);
+                    }
+                    break;
+                case "Pick":
+                    for (List<String> patch : patches) {
+                        Float rate = db.getChampionPickRateFromPatch(patch.get(0).substring(5), champname);
+                                ratedata += String.valueOf(rate);
+                    }
+                    break;
+                case "Ban":
+                    for (List<String> patch : patches) {
+                        Float rate = db.getChampionBanRateFromPatch(patch.get(0).substring(5), champname);
+                                ratedata += String.valueOf(rate);
+                    }
+                    break;
+            }
+
+        } catch (SQLException e) {
+           System.out.println("Problem connecting to SQL database while constructing chart");
         }
+        
+        jschart += "<script>";
+        jschart += "var myChart = new Chart(wrgraph, {"
+            + "type: 'line',"
+            + "data: {"
+            +    "labels:" + "[" + labels + "],"
+            +    "datasets: [{"
+            +        "label: 'Winrate',"
+            +            "data: [" + ratedata + "],"
+            // +            "backgroundColor: ["
+            // +                "'rgba(255, 99, 132, 0.2)',"
+            // +            "],"
+            +            "borderColor: ["
+            +                "'rgba(255, 99, 132, 1)',"
+            +            "],"
+            +            "borderWidth: 1"
+            +        "}]"
+            +    "},"
+            +    "options: {"
+            +        "scales: {"
+            +            "yAxes: [{"
+            +                "ticks: {"
+            +                    "beginAtZero: false"
+            +                "}"
+            +            "}]"
+            +        "}"
+            +    "}"
+            + "});";
+        jschart += "</script>";
+
+
+        return jschart.toString();
+
     }
 
     /**

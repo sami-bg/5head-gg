@@ -19,6 +19,7 @@ public class BettingSession {
   // Map of user ID to List<Bet>
   private final Map<String, List<Bet>> mapOfUserToBets = new HashMap<>();
 
+
   public Map<String, List<Bet>> getMapOfChampionToBets() {
     return this.mapOfChampionToBets;
   }
@@ -91,6 +92,16 @@ public class BettingSession {
     for (Bet b: mapOfChampionToBets.get(category)) {
       b.calculateChange(change);
     }
+  }
+
+  /**
+   * Gets a list of all the users
+   * @return a list of all the users in the betting session
+   */
+  public List<String> getUsers() {
+    List<String> users = new ArrayList<>();
+    users.addAll(mapOfUserToBets.keySet());
+    return users;
   }
 
 

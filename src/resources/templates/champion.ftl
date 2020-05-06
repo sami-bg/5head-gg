@@ -61,8 +61,8 @@
             <div class="rate">
 
                 <div class="graph">
-                    ${winrateGraph}
                     <canvas id="wrgraph"> </canvas>
+                    ${winrateGraph}
                 </div>
 
                 <div class="bet">
@@ -96,8 +96,8 @@
             <div class="rate">
 
                 <div class="graph">
-                    ${pickrateGraph}
                     <canvas id="prgraph"> </canvas>
+                    ${pickrateGraph}
                     <#--  <script src="../js/prate.js"></script>  -->
                 </div>
 
@@ -132,8 +132,8 @@
             <div class="rate">
 
                 <div class="graph">
-                    ${banrateGraph}
                     <canvas id="prgraph"> </canvas>
+                    ${banrateGraph}
                     <#--  <script src="../js/prate.js"></script>  -->
                 </div>
 
@@ -169,6 +169,6 @@
 
         </div>
     </div>
-    <script src="../js/wrate.js"></script>
+    <#--  <script src="../js/wrate.js"></script>  -->
 </body>
 </html>
