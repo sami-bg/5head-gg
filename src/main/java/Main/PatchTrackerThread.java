@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -81,16 +83,30 @@ public class PatchTrackerThread extends TimerTask {
    */
   private void updateDatabaseMetrics(Map<String, List<Double>> newMetrics) {
     String currPatchString = getAndUpdateCurrentPatch().get();
+    Random rand = new Random();
+    Float wrandom = rand.nextFloat()*10 - 5;
+    Float prandom = rand.nextFloat()*10 - 1;
+    Float brandom = rand.nextFloat()*10 - 3;
+    List<String> patchList = new ArrayList<>();;
     try {
-      db.createNewPatch(currPatchString);
-      for (String hero: ChampConsts.getChampNames()) {
-        Double winrate = newMetrics.get(hero).get(0);
-        Double pickrate = newMetrics.get(hero).get(1);
-        Double banrate = newMetrics.get(hero).get(2);
-        db.addRatestoChamps(hero, currPatchString, String.valueOf(winrate), String.valueOf(pickrate), String.valueOf(banrate));
+      for (List<String> p : db.getPatches()) {
+        patchList.add(p.get(0));
+      }
+    } catch (SQLException e1) {
+      System.out.println("Error getting the patch list when broadcasting");
+    }
+    try {
+      if (!patchList.contains("patch"+currPatchString)){
+        db.createNewPatch(currPatchString);
+        for (String hero: ChampConsts.getChampNames()) {
+          Double winrate = Math.abs(newMetrics.get(hero).get(0) + wrandom);
+          Double pickrate = Math.abs(newMetrics.get(hero).get(1) + prandom);
+          Double banrate = Math.abs(newMetrics.get(hero).get(2) + brandom);
+          db.addRatestoChamps(hero, currPatchString, String.valueOf(winrate), String.valueOf(pickrate), String.valueOf(banrate));
+        }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      System.out.println("Error updating the database when broadcasting");
     }
   }
 

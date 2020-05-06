@@ -396,7 +396,8 @@ public class DatabaseHandler {
 	 */
 	public List<User> getTopFifty() throws SQLException {
 		List<User> topFifty = new ArrayList<User>();
-		for (List<String> row : queryData("SELECT * FROM users ORDER BY reputation DESC LIMIT 50", null)) {
+		List<List<String>> topLists = queryData("SELECT * FROM users ORDER BY reputation + 0 DESC LIMIT 50", null);
+		for (List<String> row : topLists) {
 			topFifty.add(new User(row));
 		}
 		return topFifty;

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class SessionHandler {
 
 
-    private static final String startRep = "5000";
+    private static final String startRep = "20000";
     private static final int cookieDuration = 360000;
 
     /**

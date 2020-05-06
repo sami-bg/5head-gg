@@ -156,7 +156,8 @@ public final class Main {
                 List<String> top50 = new ArrayList<>();
                 String leaderboards = "<div class=\"no-users\">No users.<div>";
                 try {
-                    for (User u : db.getTopFifty()) {
+                    List<User> topUsers = db.getTopFifty();
+                    for (User u : topUsers) {
                         top50.add(u.getUsername() + "     " + u.getReputation());
                     }
                     leaderboards = LeaderboardBuilder.makeLeaderboard(top50);
@@ -509,7 +510,7 @@ public final class Main {
      */
     private static String buildMetricChartForChampion(String champname, String metric)  {
         
-        final int NUM_DATA_POINTS = 5;
+        final int NUM_DATA_POINTS = 4;
 
         String jschart = "";
         String labels = "";

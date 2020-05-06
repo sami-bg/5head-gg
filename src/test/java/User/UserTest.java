@@ -28,8 +28,8 @@ public class UserTest {
     @Test
     public void MakeUserTest() throws Exception {
         before();
-    DHTest.addNewUser("testUser.", "testUser", "10000", "", "a");
-    assertEquals(DHTest.getUser("testUser.").getReputation(), 10000);
+        DHTest.addNewUser("testUser.", "testUser", "10000", "", "a");
+        assertEquals(DHTest.getUser("testUser.").getReputation(), 10000);
         assertEquals(DHTest.getUser("testUser.").getAuth(), "a");
 
         assertEquals(DHTest.getUser("testUser", "a").getUsername(), "testUser");
