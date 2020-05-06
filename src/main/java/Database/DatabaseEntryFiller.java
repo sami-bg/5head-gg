@@ -73,4 +73,14 @@ public class DatabaseEntryFiller {
 		}
 	}
 
+	public static void addChampsToRatesTables(DatabaseHandler db){
+		for (String champ : ChampConsts.getChampNames()){
+			try {
+				db.addChampion(champ);
+			} catch (SQLException e) {
+				System.out.println("Table already initialized with " + champ);
+			}
+		}
+	}
+
 }

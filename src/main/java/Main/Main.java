@@ -40,18 +40,20 @@ import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
 public final class Main {
-
+    
     private static AtomicReference<String> currentPatch = new AtomicReference<>();
-
+    
     private static final Double MAX_ADJUSTMENT = 1.5;
     private static final Double MAX_GAIN_MULT = 2.0;
     private static final Double UPPER_BOUND = 2.5;
     private static final Double LOWER_BOUND = 0.2;
     private static final GainFunction gain = new SigmoidAdjustedGain(MAX_ADJUSTMENT, MAX_GAIN_MULT, UPPER_BOUND, LOWER_BOUND);
+    private static final Integer BROADCAST_INTERVAL_SECONDS = 60; // The interval at which we broadcast, in seconds
 
-    private static BettingSession wr = new BettingSession("winrate");
-    private static BettingSession pr = new BettingSession("pickrate");
-    private static BettingSession br = new BettingSession("pickrate");
+    
+    private static BettingSession wr = new BettingSession("winrate", ChampConsts.getChampNames());
+    private static BettingSession pr = new BettingSession("pickrate", ChampConsts.getChampNames());
+    private static BettingSession br = new BettingSession("pickrate", ChampConsts.getChampNames());
 
     
 
@@ -94,12 +96,18 @@ public final class Main {
 
     private void runSparkServer(int port) {
 
-        Integer INTERVAL = 10;
-        TimerTask patchTracker = new PatchTrackerThread(0, INTERVAL, wr, pr, br, db, currentPatch);
+
+        // Initializes the tables with all the champions 
+        // so that we can set values for them
+        DatabaseEntryFiller.addChampsToRatesTables(db);
+        
+        // Set up the thread that handles automatic broadcasting
+        TimerTask patchTracker = new PatchTrackerThread(0, BROADCAST_INTERVAL_SECONDS, wr, pr, br, db, currentPatch);
         PatchTrackerThread patchTracker2 = new PatchTrackerThread(0, 10, wr, pr, br, db, currentPatch);
+        
         currentPatch = patchTracker2.getAndUpdateCurrentPatch();
         Timer timer = new Timer();
-        timer.schedule(patchTracker, 0, INTERVAL * 1000);
+        timer.schedule(patchTracker, 0, BROADCAST_INTERVAL_SECONDS * 1000);
 
 
 
@@ -509,7 +517,7 @@ public final class Main {
                 case "Win":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionWinRateFromPatch(patch.get(0).substring(5), champname);
-                                ratedata += String.valueOf(rate);
+                        ratedata += String.valueOf(rate) + ",";
                     }
                     color = "'rgba(99, 255, 132, 1)'";
                     graphTitle = "wrgraph";
@@ -517,7 +525,7 @@ public final class Main {
                 case "Pick":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionPickRateFromPatch(patch.get(0).substring(5), champname);
-                                ratedata += String.valueOf(rate);
+                        ratedata += String.valueOf(rate) + ",";
                     }
                     graphTitle = "prgraph";
                     color = "'rgba(132, 99, 255, 1)'";
@@ -525,7 +533,7 @@ public final class Main {
                 case "Ban":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionBanRateFromPatch(patch.get(0).substring(5), champname);
-                                ratedata += String.valueOf(rate);
+                        ratedata += String.valueOf(rate) + ",";
                     }
                     color = "'rgba(255, 99, 132, 1)'";
                     graphTitle = "brgraph";

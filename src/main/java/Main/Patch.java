@@ -2,6 +2,7 @@ package Main;
 
 import Betting.Bet;
 import Betting.BettingSession;
+import RiotAPI.ChampConsts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +10,9 @@ import java.util.List;
 public class Patch {
 	private final String id;
 	private final List<String> users;
-	private final BettingSession winBets = new BettingSession("winRate");
-	private final BettingSession pickBets = new BettingSession("pickRate");
-	private final BettingSession banBets = new BettingSession("banRate");
+	private final BettingSession winBets = new BettingSession("winRate", ChampConsts.getChampNames());
+	private final BettingSession pickBets = new BettingSession("pickRate", ChampConsts.getChampNames());
+	private final BettingSession banBets = new BettingSession("banRate", ChampConsts.getChampNames());
 
 	/**
 	 * Patch constructor.

@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class BettingSession {
 
+
   private final String type;
 
   // Map of champion to List<Bet>
@@ -94,8 +95,12 @@ public class BettingSession {
    * @param type the statistic the bets in the session
    * will be made respect to
    */
-  public BettingSession(String type) {
+  public BettingSession(String type, List<String> champions) {
     this.type = type;
+    for (String champ : champions) {
+      mapOfChampionToBets.put(champ, new ArrayList<>());
+    }
+
   }
 
   /**

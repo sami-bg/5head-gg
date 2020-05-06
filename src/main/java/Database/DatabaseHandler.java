@@ -234,7 +234,7 @@ public class DatabaseHandler {
 	 * @throws SQLException if the champion is not found
 	 */
 	public Champion getChampion(String champName) throws SQLException {
-		
+
 		Champion champ = null;
 		List<String> champStringsW = new ArrayList<>();
 		List<String> champStringsB = new ArrayList<>();
@@ -264,13 +264,11 @@ public class DatabaseHandler {
 			System.out.println("Attempt to update database while closed");
 			return;
 		}
-		updateData("INSERT INTO Winrate (champion) VALUES (?)",
-				Arrays.asList(champ));
-		updateData("INSERT INTO Pickrate (champion) VALUES (?)",
-				Arrays.asList(champ));
-		updateData("INSERT INTO Banrate (champion) VALUES (?)",
-				Arrays.asList(champ));
+		updateData("INSERT INTO Winrate (champion) VALUES (?)", Arrays.asList(champ));
+		updateData("INSERT INTO Pickrate (champion) VALUES (?)", Arrays.asList(champ));
+		updateData("INSERT INTO Banrate (champion) VALUES (?)", Arrays.asList(champ));
 	}
+
 	/**
 	 * Gets the win rate of a certain champion during a certain patch.
 	 * 
@@ -283,9 +281,10 @@ public class DatabaseHandler {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")) {
 			String win = "SELECT %s FROM Winrate WHERE champion = ? ;";
-			win = String.format(win, "patch" + patchNum);
+			win = String.format(win, "\"patch" + patchNum + "\"");
 			List<List<String>> r = queryData(win, Arrays.asList(champ));
-			if (r.size() == 0){
+			if (r.size() == 0) {
+				System.out.println("No champion found");
 				return winRate;
 			}
 			winRate = Float.parseFloat(r.get(0).get(0));
@@ -308,9 +307,9 @@ public class DatabaseHandler {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")) {
 			String pick = "SELECT %s FROM Pickrate WHERE champion = ? ;";
-			pick = String.format(pick, "patch" + patchNum);
+			pick = String.format(pick, "\"patch" + patchNum + "\"");
 			List<List<String>> r = queryData(pick, Arrays.asList(champ));
-			if (r.size() == 0){
+			if (r.size() == 0) {
 				return pickRate;
 			}
 			pickRate = Float.parseFloat(r.get(0).get(0));
@@ -333,9 +332,9 @@ public class DatabaseHandler {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")) {
 			String ban = "SELECT %s FROM Banrate WHERE champion = ? ;";
-			ban = String.format(ban, "patch" + patchNum);
+			ban = String.format(ban, "\"patch" + patchNum + "\"");
 			List<List<String>> r = queryData(ban, Arrays.asList(champ));
-			if (r.size() == 0){
+			if (r.size() == 0) {
 				return banRate;
 			}
 			banRate = Float.parseFloat(r.get(0).get(0));
@@ -354,11 +353,11 @@ public class DatabaseHandler {
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
 		String win = "ALTER TABLE WinRate ADD %s TEXT ;";
-		win = String.format(win, "patch" + patchNum);
+		win = String.format(win, "\"patch" + patchNum + "\"");
 		String ban = "ALTER TABLE BanRate ADD %s TEXT ;";
-		ban = String.format(ban, "patch" + patchNum);
+		ban = String.format(ban, "\"patch" + patchNum + "\"");
 		String pick = "ALTER TABLE PickRate ADD %s TEXT ;";
-		pick = String.format(pick, "patch" + patchNum);
+		pick = String.format(pick, "\"patch" + patchNum + "\"");
 		updateData(win, null);
 		updateData(ban, null);
 		updateData(pick, null);
@@ -377,11 +376,11 @@ public class DatabaseHandler {
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate)
 			throws SQLException {
 		String win = " UPDATE WinRate SET %s = ? WHERE champion = ? ;";
-		win = String.format(win, "patch" + patchNum);
+		win = String.format(win, "\"patch" + patchNum + "\"");
 		String ban = " UPDATE BanRate SET %s = ? WHERE champion = ? ;";
-		ban = String.format(ban, "patch" + patchNum);
+		ban = String.format(ban, "\"patch" + patchNum + "\"");
 		String pick = " UPDATE PickRate SET %s = ? WHERE champion = ? ;";
-		pick = String.format(pick, "patch" + patchNum);
+		pick = String.format(pick, "\"patch" + patchNum + "\"");
 		updateData(win, Arrays.asList(winRate, champ));
 		updateData(ban, Arrays.asList(banRate, champ));
 		updateData(pick, Arrays.asList(pickRate, champ));
@@ -431,13 +430,23 @@ public class DatabaseHandler {
 
 	}
 
-  /**
-   * adds reputation to user.
-   * @param reputationChange - reputation to add
-   * @param userID - user to add reputation to
-   */
-  public void addToUserReputation(Integer reputationChange, String userID) {
-    updateData("UPDATE Users SET Reputation = Reputation + ? WHERE userID = ?", Arrays.asList(String.valueOf(reputationChange), userID));
+	/**
+	 * adds reputation to user.
+	 * 
+	 * @param reputationChange - reputation to add
+	 * @param userID           - user to add reputation to
+	 */
+	public void addToUserReputation(Integer reputationChange, String userID) {
+		int userRep;
+		try {
+			userRep = getUser(userID).getReputation();
+			if (userRep + reputationChange < 0) {
+				reputationChange = userRep;
+			}
+			updateData("UPDATE Users SET Reputation = Reputation + ? WHERE userID = ?", Arrays.asList(String.valueOf(reputationChange), userID));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
   }
 
   public class RepException extends Exception {
@@ -522,25 +531,6 @@ public class DatabaseHandler {
 				Arrays.asList());
 	}
 
-<<<<<<< HEAD
-  /**
-   *
-   * @param bet - bets to update gains for
-   *             Updates gains
-   */
-	public void updateBetGains(Bet bet) {
-      updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
-  }
-=======
-		/**
-	 * adds reputation to user.
-	 * @param reputationChange - reputation to add
-	 * @param userID - user to add reputation to
-	 */
-	public void addToUserReputation(Integer reputationChange, String userID) {
-		updateData("UPDATE Users SET Reputation = Reputation + ? WHERE userID = ?", Arrays.asList(String.valueOf(reputationChange), userID));
-	}
-
 		/**
 	 *
 	 * @param bet - bets to update gains for
@@ -550,5 +540,4 @@ public class DatabaseHandler {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
 	}
 
->>>>>>> c804a6754d747095a4c2b3dfc848b3f143654d49
 }

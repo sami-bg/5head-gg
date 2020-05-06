@@ -1,31 +1,23 @@
 package Main;
 
-import Betting.Bet;
-import Betting.BettingSession;
-import Database.DatabaseHandler;
-import RiotAPI.ChampConsts;
-import RiotAPI.RiotAPI;
-import com.google.common.util.concurrent.AbstractScheduledService;
-import com.google.common.util.concurrent.AbstractScheduledService.Scheduler.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static com.google.common.util.concurrent.AbstractScheduledService.Scheduler.newFixedRateSchedule;
+import Betting.Bet;
+import Betting.BettingSession;
+import Database.DatabaseHandler;
+import RiotAPI.ChampConsts;
+import RiotAPI.RiotAPI;
 
 
 public class PatchTrackerThread extends TimerTask {
@@ -35,6 +27,8 @@ public class PatchTrackerThread extends TimerTask {
   private final BettingSession brSession;
   private final DatabaseHandler db;
   private static AtomicReference<String> patch;
+  private double patchIncrement = 0.1;
+
   /**
    * IMPORTANT: Interval in SECONDS of how often to loop
    */
@@ -43,7 +37,7 @@ public class PatchTrackerThread extends TimerTask {
   protected void runOneIteration() {
     System.out.println("Running iteration with interval " + interval);
     getAndUpdateCurrentPatch();
-    if (hasPatchBeenReleasedWithin(0, this.interval)) {
+    if (hasPatchBeenReleasedWithin(0, 10000000)) {
       Map<String, List<Double>> oldMetrics = RiotAPI.getMapOfChampToWinPickBan();
       RiotAPI.updateMapOfChamps();
       Map<String, List<Double>> newMetrics = RiotAPI.getMapOfChampToWinPickBan();
@@ -72,6 +66,7 @@ public class PatchTrackerThread extends TimerTask {
       updateReputationForUsersInSession(brSession);
       //Add column of new patch's wrprbr in databse
       updateDatabaseMetrics(newMetrics);
+      patchIncrement += 0.1;
       // Reset the betting sessions
       this.wrSession.resetSession();
       this.prSession.resetSession();
@@ -129,6 +124,7 @@ public class PatchTrackerThread extends TimerTask {
     this.brSession = br;
     this.db = db;
     patch = patchRef;
+    patchIncrement = 0.1;
   }
   /**
    *
@@ -174,7 +170,7 @@ public class PatchTrackerThread extends TimerTask {
     try {
       Document uggAatroxPage = Jsoup.connect("https://u.gg/lol/champions/aatrox/build").get();
       Element patchNumberTag = uggAatroxPage.getElementsByClass("select-value-label").get(0);
-      patch.set(patchNumberTag.text());
+      patch.set(String.valueOf(Double.parseDouble(patchNumberTag.text()) + patchIncrement));
       System.out.println(patch.get());
       return patch;
     } catch (IOException e) {
