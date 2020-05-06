@@ -5,7 +5,16 @@ body {
     font-family: Roboto;
     font-style: normal;
     display: flex;
-  
+    background-image: url(https://i.pinimg.com/originals/da/ba/c1/dabac192ea77e56e437ce0cbb171e4ee.jpg);
+    background-size: cover;
+    background-position: left;
+}
+
+#canvas{
+    backdrop-filter: blur(5px);
+    background: linear-gradient(rgba(126, 90, 90, 0.2), rgba(0, 0, 0, 0.2) );
+    width: 100%;
+    font-size: 10%;
 }
 
 #logo {
@@ -70,25 +79,25 @@ body {
 #first-place {
     background: #F7C64A;
     border-radius: 25px;
-    font-size: 64px;
+    font-size: 5vw;
 }
 
 #second-place {
     background: #A4A4A4;
     border-radius: 20px;
     float: left;
-    font-size: 36px;   
+    font-size: 3vw;   
 }
 #third-place {
     background: #875A25;
     border-radius: 20px;
     float: right;
-    font-size: 36px;
+    font-size: 1.7vw;
 }
 
 #leaderboard {
     color: #FEFEFE;
-    font-size: 24px;
+    font-size: 1.5vw;
     width: 85vw;
 }
 
@@ -123,7 +132,7 @@ body {
     align-items: center;
     height: 8%;
     position: relative;
-    right: 10%;
+    /* right: 10%; */
     /* padding: 0; */
   }
   
@@ -131,8 +140,11 @@ body {
   #profile img {
     margin: 0;
     border-radius: 100px;
-    scale: 30%;
+    /* scale: 30%; */
     padding: 0;
+    height: auto;
+    width: 30%;
+    margin-right: 20%;
   }
   
   #profile p {
@@ -149,9 +161,8 @@ body {
   .logout{
     cursor: pointer;
     width: 10vw;
-    color: white;
+    color: rgb(150, 150, 150);
     background-color: #181921;
-    opacity:0.6;
     transition-duration: 0.4s;
     border-radius: 5px;
     height: 5vh;
