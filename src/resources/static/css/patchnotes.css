@@ -7,6 +7,7 @@ body {
     display: flex;
     grid-template-rows: 1fr;
     grid-template-columns: 300px 1fr 1fr;
+    
 }
 
 .sidebarlink {
@@ -23,20 +24,6 @@ body {
 
 .sidebarlink:hover {
     color: #FEFEFE !important;
-}
-
-.logout{
- cursor: pointer;
-width: 10vw;
-    color: white;
-    background-color: #181921;
-    opacity:0.6;
-    transition-duration: 0.4s;
-}
-
-.logout:hover {
-  background-color: #FEFEFE; 
-  color: black;
 }
 
 #canvas {
@@ -60,7 +47,7 @@ width: 10vw;
 }
 
 #logo {
-    background: #4E77FF;
+    /* background: #4E77FF; */
     height: 50px;
 }
 
@@ -80,7 +67,7 @@ width: 10vw;
     display: flex;
     flex-direction: column;
     font-size: 18px;
-    width: 15vw;
+    /* width: 15vw; */
     background-color: #181921;
     padding-left: 15px;
     padding-right: 15px;
@@ -202,7 +189,51 @@ color: rgb(255, 255, 255);
 #profile {
     margin-top: auto;
     padding-bottom: 10px;
-}
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 8%;
+    position: relative;
+    right: 10%;
+    /* padding: 0; */
+  }
+  
+  
+  #profile img {
+    margin: 0;
+    border-radius: 100px;
+    scale: 30%;
+    padding: 0;
+  }
+  
+  #profile p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #logout {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 4%;
+  }
+  
+  .logout{
+    cursor: pointer;
+    width: 10vw;
+    color: white;
+    background-color: #181921;
+    opacity:0.6;
+    transition-duration: 0.4s;
+    border-radius: 5px;
+    height: 5vh;
+    border-color: crimson;
+    align-self: center;
+  }
+  
+  .logout:hover {
+    background-color: crimson; 
+    color: white;
+  }
 
 #reputation {
     
@@ -213,12 +244,17 @@ color: rgb(255, 255, 255);
 }
 
 #patchnotes-embed {
+    border: none;
     grid-column: 1;
     display: flex;
     flex-direction: column;
     width: 42.5vw;
     overflow: auto;
     height: 100vh;
+}
+
+#patchnotes-embed ::-webkit-scrollbar {
+    display:none;
 }
 
 #champlist {
@@ -230,8 +266,13 @@ color: rgb(255, 255, 255);
     display: flex;
 }
 
+#champlist ::-webkit-scrollbar {
+    display:none;
+}
+
 .patch-change-block {
     margin: 0;
+    border: none;
 }
 
 .blockquote.context {
@@ -265,3 +306,4 @@ img {
     margin-right: 10px;
     border-radius: 10px;
 }
+
