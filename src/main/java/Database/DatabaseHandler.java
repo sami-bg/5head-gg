@@ -259,8 +259,18 @@ public class DatabaseHandler {
 
 	}
 
-	// have a champion table with rates, dont need rep query if its a field of user
-
+	public void addChampion(String champ) throws SQLException {
+		if (this.isLocked) {
+			System.out.println("Attempt to update database while closed");
+			return;
+		}
+		updateData("INSERT INTO Winrate (champion) VALUES (?)",
+				Arrays.asList(champ));
+		updateData("INSERT INTO Pickrate (champion) VALUES (?)",
+				Arrays.asList(champ));
+		updateData("INSERT INTO Banrate (champion) VALUES (?)",
+				Arrays.asList(champ));
+	}
 	/**
 	 * Gets the win rate of a certain champion during a certain patch.
 	 * 
@@ -272,7 +282,9 @@ public class DatabaseHandler {
 	public float getChampionWinRateFromPatch(String patchNum, String champ) throws SQLException {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")) {
-			List<List<String>> r = queryData("SELECT ? FROM WinRate WHERE champion = ? ;", Arrays.asList("patch" + patchNum, champ));
+			String win = "SELECT %s FROM Winrate WHERE champion = ? ;";
+			win = String.format(win, "patch" + patchNum);
+			List<List<String>> r = queryData(win, Arrays.asList(champ));
 			if (r.size() == 0){
 				return winRate;
 			}
@@ -295,7 +307,9 @@ public class DatabaseHandler {
 	public float getChampionPickRateFromPatch(String patchNum, String champ) throws SQLException {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")) {
-			List<List<String>> r = queryData("SELECT ? FROM PickRate WHERE champion = ? ;", Arrays.asList("patch" + patchNum, champ));
+			String pick = "SELECT %s FROM Pickrate WHERE champion = ? ;";
+			pick = String.format(pick, "patch" + patchNum);
+			List<List<String>> r = queryData(pick, Arrays.asList(champ));
 			if (r.size() == 0){
 				return pickRate;
 			}
@@ -318,7 +332,9 @@ public class DatabaseHandler {
 	public float getChampionBanRateFromPatch(String patchNum, String champ) throws SQLException {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")) {
-			List<List<String>> r = queryData("SELECT ? FROM Banrate WHERE champion = ? ;", Arrays.asList("patch" + patchNum, champ));
+			String ban = "SELECT %s FROM Banrate WHERE champion = ? ;";
+			ban = String.format(ban, "patch" + patchNum);
+			List<List<String>> r = queryData(ban, Arrays.asList(champ));
 			if (r.size() == 0){
 				return banRate;
 			}
@@ -337,9 +353,15 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
-		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("patch" + patchNum));
-		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("patch" + patchNum));
-		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("patch" + patchNum));
+		String win = "ALTER TABLE WinRate ADD %s TEXT ;";
+		win = String.format(win, "patch" + patchNum);
+		String ban = "ALTER TABLE BanRate ADD %s TEXT ;";
+		ban = String.format(ban, "patch" + patchNum);
+		String pick = "ALTER TABLE PickRate ADD %s TEXT ;";
+		pick = String.format(pick, "patch" + patchNum);
+		updateData(win, null);
+		updateData(ban, null);
+		updateData(pick, null);
 	}
 
 	/**
@@ -354,10 +376,15 @@ public class DatabaseHandler {
 	 */
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate)
 			throws SQLException {
-		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("patch" + patchNum, winRate, champ));
-		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("patch" + patchNum, banRate, champ));
-		updateData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;",
-				Arrays.asList("patch" + patchNum, pickRate, champ));
+		String win = " UPDATE WinRate SET %s = ? WHERE champion = ? ;";
+		win = String.format(win, "patch" + patchNum);
+		String ban = " UPDATE BanRate SET %s = ? WHERE champion = ? ;";
+		ban = String.format(ban, "patch" + patchNum);
+		String pick = " UPDATE PickRate SET %s = ? WHERE champion = ? ;";
+		pick = String.format(pick, "patch" + patchNum);
+		updateData(win, Arrays.asList(winRate, champ));
+		updateData(ban, Arrays.asList(banRate, champ));
+		updateData(pick, Arrays.asList(pickRate, champ));
 	}
 
 	/**
@@ -398,7 +425,7 @@ public class DatabaseHandler {
 			throw new RepException("User does not have enough reputation to place that bet");
 		}
 		updateData(
-				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount, patch, 0) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount, patch, gain) VALUES (?, ?, ?, ?, ?, ?, ?, 0) ;",
 				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount, patch));
 		updateReputation(userID, String.valueOf(getUser(userID).getReputation() - Integer.parseInt(betAmount)));
 
