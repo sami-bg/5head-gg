@@ -47,8 +47,11 @@
 		</form>
 		</div>
     </div>
+    <div id="title"> 
+        <h1> ACTIVE BETS </h1>
+    </div>
     <div id="canvas">
-    <div id="title"> <h1> ACTIVE BETS </h1></div>
+
     
 	
   ${myBets}

@@ -36,6 +36,7 @@ body {
     padding-left: 15px;
     padding-right: 15px;
     height: 100vh;
+    z-index: 10;
 }
 
 .sidebarlink {
@@ -164,7 +165,8 @@ body {
     flex-direction: row; 
     overflow:auto;
     flex-wrap: wrap;
-    height: 100vh;
+    height: 90vh;
+    padding-top: 10vh;
     width: 100%;
     backdrop-filter: blur(10px);
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) );
@@ -191,4 +193,6 @@ body {
     border-image-source: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(117,117,117,1) 50%, rgba(0,0,0,1) 100%);
     border-image-slice: 1;
     font-weight: bold;
+    position: fixed;
+    z-index: 5;
 }

@@ -27,7 +27,7 @@ public class PatchTrackerThread extends TimerTask {
   private final BettingSession brSession;
   private final DatabaseHandler db;
   private static AtomicReference<String> patch;
-  private double patchIncrement = 0.1;
+  private int patchIncrement;
 
   /**
    * IMPORTANT: Interval in SECONDS of how often to loop
@@ -66,7 +66,7 @@ public class PatchTrackerThread extends TimerTask {
       updateReputationForUsersInSession(brSession);
       //Add column of new patch's wrprbr in databse
       updateDatabaseMetrics(newMetrics);
-      patchIncrement += 0.1;
+      patchIncrement += 1;
       // Reset the betting sessions
       this.wrSession.resetSession();
       this.prSession.resetSession();
@@ -124,7 +124,7 @@ public class PatchTrackerThread extends TimerTask {
     this.brSession = br;
     this.db = db;
     patch = patchRef;
-    patchIncrement = 0.1;
+    patchIncrement = 1;
   }
   /**
    *
@@ -170,7 +170,9 @@ public class PatchTrackerThread extends TimerTask {
     try {
       Document uggAatroxPage = Jsoup.connect("https://u.gg/lol/champions/aatrox/build").get();
       Element patchNumberTag = uggAatroxPage.getElementsByClass("select-value-label").get(0);
-      patch.set(String.valueOf(Double.parseDouble(patchNumberTag.text()) + patchIncrement));
+      int lastDigit = Integer.parseInt(patchNumberTag.text().substring(3));
+      String prefix = patchNumberTag.text().substring(0, 3);
+      patch.set(prefix + String.valueOf(lastDigit+ patchIncrement));
       System.out.println(patch.get());
       return patch;
     } catch (IOException e) {

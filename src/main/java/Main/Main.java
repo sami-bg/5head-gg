@@ -496,6 +496,8 @@ public final class Main {
 
     private static String buildMetricChartForChampion(String champname, String metric)  {
         
+        final int NUM_DATA_POINTS = 5;
+
         String jschart = "";
 
         String labels = "";
@@ -504,7 +506,10 @@ public final class Main {
         String color = ""; 
 
         try {
+            // get the patches
             List<List<String>> patches = db.getPatches();
+            // only get the last N patches to keep load times reasonable
+            patches = patches.subList(patches.size()-NUM_DATA_POINTS, patches.size());
             if (patches.size() > 0) {
                 for (List<String> patch : patches) {
                     labels += "'" + patch.get(0) + "',";
@@ -519,7 +524,7 @@ public final class Main {
                         Float rate = db.getChampionWinRateFromPatch(patch.get(0).substring(5), champname);
                         ratedata += String.valueOf(rate) + ",";
                     }
-                    color = "'rgba(99, 255, 132, 1)'";
+                    color = "'rgba(99, 255, 132, 0.8)'";
                     graphTitle = "wrgraph";
                     break;
                 case "Pick":
@@ -528,14 +533,14 @@ public final class Main {
                         ratedata += String.valueOf(rate) + ",";
                     }
                     graphTitle = "prgraph";
-                    color = "'rgba(132, 99, 255, 1)'";
+                    color = "'rgba(132, 99, 255, 0.8)'";
                     break;
                 case "Ban":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionBanRateFromPatch(patch.get(0).substring(5), champname);
                         ratedata += String.valueOf(rate) + ",";
                     }
-                    color = "'rgba(255, 99, 132, 1)'";
+                    color = "'rgba(255, 99, 132, 0.8)'";
                     graphTitle = "brgraph";
                     break;
             }
@@ -552,9 +557,9 @@ public final class Main {
             +    "datasets: [{"
             +        "label: '" + metric + "rate',"
             +            "data: [" + ratedata + "],"
-            // +            "backgroundColor: ["
-            // +                "'rgba(255, 99, 132, 0.2)',"
-            // +            "],"
+            +            "backgroundColor: ["
+            +                color + ","
+            +            "],"
             +            "borderColor: ["
             +                color + ","
             +            "],"

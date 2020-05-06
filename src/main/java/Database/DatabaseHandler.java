@@ -286,6 +286,9 @@ public class DatabaseHandler {
 			if (r.size() == 0) {
 				System.out.println("No champion found");
 				return winRate;
+			} else if (r.get(0).get(0) == null){
+				System.out.println("Champion had null data");
+				return winRate;	
 			}
 			winRate = Float.parseFloat(r.get(0).get(0));
 		} else {
@@ -311,6 +314,9 @@ public class DatabaseHandler {
 			List<List<String>> r = queryData(pick, Arrays.asList(champ));
 			if (r.size() == 0) {
 				return pickRate;
+			} else if (r.get(0).get(0) == null){
+				System.out.println("Champion had null data");
+				return pickRate;	
 			}
 			pickRate = Float.parseFloat(r.get(0).get(0));
 		} else {
@@ -336,6 +342,9 @@ public class DatabaseHandler {
 			List<List<String>> r = queryData(ban, Arrays.asList(champ));
 			if (r.size() == 0) {
 				return banRate;
+			} else if (r.get(0).get(0) == null){
+				System.out.println("Champion had null data");
+				return banRate;	
 			}
 			banRate = Float.parseFloat(r.get(0).get(0));
 		} else {
