@@ -522,7 +522,7 @@ public final class Main {
             // get the patches
             List<List<String>> patches = db.getPatches();
             // only get the last N patches to keep load times reasonable
-            patches = patches.subList(patches.size()-NUM_DATA_POINTS, patches.size());
+            patches = patches.subList(Math.max(patches.size()-NUM_DATA_POINTS, 0), patches.size());
             if (patches.size() > 0) {
                 for (List<String> patch : patches) {
                     labels += "'" + patch.get(0) + "',";
