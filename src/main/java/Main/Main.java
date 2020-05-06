@@ -133,7 +133,7 @@ public final class Main {
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
                         .put("bettingStatus", "")
-                        .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                        .put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
                                 ChampConsts.getChampNames().get(
                                         (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
                                                 ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
@@ -183,7 +183,7 @@ public final class Main {
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
                         .put("bettingStatus", "")
-                        .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                        .put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
                                 ChampConsts.getChampNames().get(
                                         (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
                                                 ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
@@ -249,7 +249,7 @@ public final class Main {
             variables = ImmutableMap.<String, Object>builder()
                     .put("userReputation", currentUser.getReputation())
                     .put("bettingStatus", "")
-                    .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                    .put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
                             ChampConsts.getChampNames().get(
                                     (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
                                             ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
@@ -298,7 +298,7 @@ public final class Main {
                         "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/");
                 builder.put("currentPatch", patchNotesString);
                 builder.put("bettingStatus", "");
-                builder.put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                builder.put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
                         ChampConsts.getChampNames().get(
                                 (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
                                         ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
@@ -332,7 +332,11 @@ public final class Main {
 
                 Map<String, Object> variables = null;
                 variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "").put("profileImage", "").put("profileName", "")
+                        .put("bettingStatus", "").put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
+                            ChampConsts.getChampNames().get(
+                                    (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
+                                            ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
+                            + "\">").put("profileName", currentUser.getUsername())
                         .put("champSplashimage", getSplashByName(champName)).put("winrateGraph", wrchart)
                         .put("pickrateGraph", prchart).put("banrateGraph", brchart).put("champname", champName).put("error", "").build();
 
@@ -426,7 +430,7 @@ public final class Main {
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
                         .put("bettingStatus", "")
-                        .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                        .put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
                                 ChampConsts.getChampNames().get(
                                         (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
                                                 ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
@@ -450,6 +454,8 @@ public final class Main {
 
         String labels = "";
         String ratedata = "";
+        String graphTitle = "";
+        String color = ""; 
 
         try {
             List<List<String>> patches = db.getPatches();
@@ -467,18 +473,24 @@ public final class Main {
                         Float rate = db.getChampionWinRateFromPatch(patch.get(0).substring(5), champname);
                                 ratedata += String.valueOf(rate);
                     }
+                    color = "'rgba(99, 255, 132, 1)'";
+                    graphTitle = "wrgraph";
                     break;
                 case "Pick":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionPickRateFromPatch(patch.get(0).substring(5), champname);
                                 ratedata += String.valueOf(rate);
                     }
+                    graphTitle = "prgraph";
+                    color = "'rgba(132, 99, 255, 1)'";
                     break;
                 case "Ban":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionBanRateFromPatch(patch.get(0).substring(5), champname);
                                 ratedata += String.valueOf(rate);
                     }
+                    color = "'rgba(255, 99, 132, 1)'";
+                    graphTitle = "brgraph";
                     break;
             }
 
@@ -487,18 +499,18 @@ public final class Main {
         }
         
         jschart += "<script>";
-        jschart += "var myChart = new Chart(wrgraph, {"
+        jschart += "var myChart = new Chart(" + graphTitle + ", {"
             + "type: 'line',"
             + "data: {"
             +    "labels:" + "[" + labels + "],"
             +    "datasets: [{"
-            +        "label: 'Winrate',"
+            +        "label: '" + metric + "rate',"
             +            "data: [" + ratedata + "],"
             // +            "backgroundColor: ["
             // +                "'rgba(255, 99, 132, 0.2)',"
             // +            "],"
             +            "borderColor: ["
-            +                "'rgba(255, 99, 132, 1)',"
+            +                color + ","
             +            "],"
             +            "borderWidth: 1"
             +        "}]"

@@ -7,6 +7,9 @@ import spark.Response;
 import java.sql.SQLException;
 
 public class SessionHandler {
+
+    private static final String startRep = "5000";
+    private static final int cookieDuration = 360000;
     
 
     public static Boolean loginUser(Request request, Response response, DatabaseHandler db){
@@ -23,9 +26,9 @@ public class SessionHandler {
         if(user == null) {
                 try {
                     System.out.println("this branch");
-                    db.addNewUser(String.valueOf(username.hashCode()), username, "5000", username, password);
-                    response.cookie("username", username, 3600);
-                    response.cookie("password", password, 3600);
+                    db.addNewUser(String.valueOf(username.hashCode()), username, startRep , username, password);
+                    response.cookie("username", username, cookieDuration);
+                    response.cookie("password", password, cookieDuration);
                     successfulLogin = true;
                 } catch (SQLException e1) {
                     System.out.println("There was a problem adding the user to the database");
@@ -37,8 +40,8 @@ public class SessionHandler {
          if(user.getAuth().equals(password)){
              System.out.println("this other branch");
 
-             response.cookie("username", username, 3600);
-                response.cookie("password", password, 3600);
+             response.cookie("username", username, cookieDuration);
+                response.cookie("password", password, cookieDuration);
                 successfulLogin = true;
             } else {
                 successfulLogin = false;
