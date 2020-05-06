@@ -52,6 +52,20 @@ body {
   color: #84929e;
 }
 
+.logout{
+ cursor: pointer;
+width: 10vw;
+    color: white;
+    background-color: #181921;
+    opacity:0.6;
+    transition-duration: 0.4s;
+}
+
+.logout:hover {
+  background-color: #FEFEFE; 
+  color: black;
+}
+
 #left-aligned {
   align-content: flex-start;
 }

@@ -130,9 +130,17 @@ public final class Main {
                     e.printStackTrace();
                 }
                 Map<String, Object> variables = null;
-                variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "").put("profileImage", "").put("profileName", "")
-                        .put("leaderboard", leaderboards).build();
+                variables = ImmutableMap.<String, Object>builder()
+                        .put("userReputation", currentUser.getReputation())
+                        .put("bettingStatus", "")
+                        .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                                ChampConsts.getChampNames().get(
+                                        (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
+                                                ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
+                                + "\">")
+                        .put("profileName", currentUser.getUsername())
+                        .put("leaderboard", leaderboards)
+                        .build();
                 return new ModelAndView(variables, "leaderboards.ftl");
             }
         }
@@ -172,9 +180,18 @@ public final class Main {
                     sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
                 }
                 Map<String, Object> variables = null;
-                variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "").put("profileImage", "").put("profileName", "")
-                        .put("champOptions", sb.toString()).put("success", "true").put("myBets", sb1.toString())
+                variables = ImmutableMap.<String, Object>builder()
+                        .put("userReputation", currentUser.getReputation())
+                        .put("bettingStatus", "")
+                        .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                                ChampConsts.getChampNames().get(
+                                        (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
+                                                ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
+                                + "\">")
+                        .put("profileName", currentUser.getUsername())
+                        .put("champOptions", sb.toString())
+                        .put("success", "true")
+                        .put("myBets", sb1.toString())
                         .build();
                 return new ModelAndView(variables, "mybets.ftl");
             }
@@ -229,9 +246,18 @@ public final class Main {
             }
 
             Map<String, Object> variables = null;
-            variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
-                    .put("bettingStatus", "").put("profileImage", "").put("profileName", "").put("success", "")
-                    .put("myBets", sb1).build();
+            variables = ImmutableMap.<String, Object>builder()
+                    .put("userReputation", currentUser.getReputation())
+                    .put("bettingStatus", "")
+                    .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                            ChampConsts.getChampNames().get(
+                                    (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
+                                            ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
+                    + "\">")
+                    .put("profileName", currentUser.getUsername())
+                    .put("success", "")
+                    .put("myBets", sb1)
+                    .build();
             return new ModelAndView(variables, "mybets.ftl");
         }
     }
@@ -272,10 +298,15 @@ public final class Main {
                         "https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-9-notes/");
                 builder.put("currentPatch", patchNotesString);
                 builder.put("bettingStatus", "");
-                builder.put("profileImage", "");
-                builder.put("profileName", "");
-                builder.put("championDivs", championDivs);// .put("userReputation", db.getUser(userID).getReputation())
-                variables = builder.build();
+                builder.put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                        ChampConsts.getChampNames().get(
+                                (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
+                                        ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
+                        + "\">");
+                builder.put("profileName", currentUser.getUsername());
+                builder.put("championDivs", championDivs);//.put("userReputation", db.getUser(userID).getReputation())
+                variables = builder
+                        .build();
                 return new ModelAndView(variables, "patchnotes.ftl");
             }
         }
@@ -395,8 +426,12 @@ public final class Main {
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
                         .put("bettingStatus", "")
-                        .put("profileImage", "")
-                        .put("profileName", "")
+                        .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                                ChampConsts.getChampNames().get(
+                                        (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
+                                                ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
+                                + "\">")
+                        .put("profileName", currentUser.getUsername())
                         .put("champSplashimage", getSplashByName(champName))
                         .put("winrateGraph", wrchart)
                         .put("pickrateGraph", brchart)

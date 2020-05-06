@@ -37,47 +37,20 @@
         </div>
         
         <div id="profile">
-            ${profileImage}
-            ${profileName}
-            <a href="profile"></a>
+               ${profileImage}
+            <p style="font-weight: bold; color: #FEFEFE">${profileName}</p>
         </div>
 		
 		<div id="logout">
 		<form action="/" method="post">
-		<button type="submit">Logout</button>
+		<button class="logout" type="submit">Logout</button>
 		</form>
 		</div>
     </div>
     <div id="canvas">
     <div id="title"> <h1> ACTIVE BETS </h1></div>
     
-	<#--  ${success}  -->
-       <#--  <form method="POST" action="/mybets/success">
-    <label for="rep" style="font-family: georgia">
-    Enter your bet here:
-    </label><br>
-	  <p style="font-family: georgia"> <b>Amount of reputation:</b></p>
-<input type="number" id="rep" name="rep"
-       step="100" value="0">
-	   
-	   <b>Champion:</b>
-	   <select class="dropbtn" name="champion" value="Aatrox">
-  <div class="dropdown-content">
-    ${champOptions}
-	</select>
-  </div>
-  <b>Statistic of bet:</b>
-    <select class="dropbtn" name="betType" value="pick">
-  <div class="dropdown-content">
-    <option value="pick">Pick rate</option>
-    <option value="ban">Ban rate</option>
-	<option value="win">Win rate</option>
-	</select>
-  </div>
-  <p style="font-family: georgia"> <b>New percentage</b></p>
-	<input id="percentage" name="percentage" type="number" value="0" step="0.1">
-    <input type="submit" alt="Submit">
-    </form>  -->
+	
   ${myBets}
     </div>
 </body>
