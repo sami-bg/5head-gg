@@ -219,7 +219,7 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void updateReputation(String userID, String newRep) throws SQLException {
-		if (userID != null && !userID.equals("") && Integer.parseInt(newRep) > 0) {
+		if (userID != null && !userID.equals("") && Integer.parseInt(newRep) >= 0) {
 			updateData("UPDATE users SET reputation = ? WHERE userID = ? ;", Arrays.asList(newRep, userID));
 		} else {
 			throw new SQLException("User is not in database or has no information");
@@ -272,9 +272,11 @@ public class DatabaseHandler {
 	public float getChampionWinRateFromPatch(String patchNum, String champ) throws SQLException {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")) {
-			winRate = Float.parseFloat(
-					queryData("SELECT ? FROM WinRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ))
-							.get(0).get(0));
+			List<List<String>> r = queryData("SELECT ? FROM WinRate WHERE champion = ? ;", Arrays.asList("patch" + patchNum, champ));
+			if (r.size() == 0){
+				return winRate;
+			}
+			winRate = Float.parseFloat(r.get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -293,9 +295,11 @@ public class DatabaseHandler {
 	public float getChampionPickRateFromPatch(String patchNum, String champ) throws SQLException {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")) {
-			pickRate = Float.parseFloat(
-					queryData("SELECT ? FROM PickRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ))
-							.get(0).get(0));
+			List<List<String>> r = queryData("SELECT ? FROM PickRate WHERE champion = ? ;", Arrays.asList("patch" + patchNum, champ));
+			if (r.size() == 0){
+				return pickRate;
+			}
+			pickRate = Float.parseFloat(r.get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -314,9 +318,11 @@ public class DatabaseHandler {
 	public float getChampionBanRateFromPatch(String patchNum, String champ) throws SQLException {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")) {
-			banRate = Float.parseFloat(
-					queryData("SELECT ? FROM BanRate WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, champ))
-							.get(0).get(0));
+			List<List<String>> r = queryData("SELECT ? FROM Banrate WHERE champion = ? ;", Arrays.asList("patch" + patchNum, champ));
+			if (r.size() == 0){
+				return banRate;
+			}
+			banRate = Float.parseFloat(r.get(0).get(0));
 		} else {
 			throw new SQLException("No relevant entry. Try running stat fetcher API.");
 		}
@@ -331,9 +337,9 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
-		updateData("ALTER TABLE WinRate ADD ? TEXT", Arrays.asList("Patch" + patchNum));
-		updateData("ALTER TABLE BanRate ADD ? TEXT", Arrays.asList("Patch" + patchNum));
-		updateData("ALTER TABLE PickRate ADD ? TEXT", Arrays.asList("Patch" + patchNum));
+		updateData("ALTER TABLE WinRate ADD ? NUMERIC", Arrays.asList("patch" + patchNum));
+		updateData("ALTER TABLE BanRate ADD ? NUMERIC", Arrays.asList("patch" + patchNum));
+		updateData("ALTER TABLE PickRate ADD ? NUMERIC", Arrays.asList("patch" + patchNum));
 	}
 
 	/**
@@ -348,10 +354,10 @@ public class DatabaseHandler {
 	 */
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate)
 			throws SQLException {
-		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, winRate, champ));
-		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("Patch" + patchNum, banRate, champ));
+		updateData(" UPDATE WinRate SET ? = ? WHERE champion = ? ;", Arrays.asList("patch" + patchNum, winRate, champ));
+		updateData(" UPDATE BanRate SET ? = ? WHERE champion = ? ;", Arrays.asList("patch" + patchNum, banRate, champ));
 		updateData(" UPDATE PickRate SET ? = ? WHERE champion = ? ;",
-				Arrays.asList("Main.Patch" + patchNum, pickRate, champ));
+				Arrays.asList("patch" + patchNum, pickRate, champ));
 	}
 
 	/**
@@ -379,19 +385,35 @@ public class DatabaseHandler {
 	 * @param betPercentage What the user bet the resulting change will be
 	 * @param betAmount     The amount of reputation bet
 	 * @throws SQLException
+	 * @throws RepException
 	 */
 	public void createNewBet(String betID, String userID, String champion, String betType, String betPercentage,
-			String betAmount, String patch) throws SQLException {
+			String betAmount, String patch) throws SQLException, RepException {
 		if (this.isLocked) {
 			System.out.println("Attempt to update database while closed");
 			return;
 		}
 		System.out.println("Bet made with id " + betID);
+		if (getUser(userID).getReputation() - Integer.parseInt(betAmount) < 0) {
+			throw new RepException("User does not have enough reputation to place that bet");
+		}
 		updateData(
 				"INSERT INTO Bets (betID, userID, champion, betType, betPercentage, betAmount, patch, 0) VALUES (?, ?, ?, ?, ?, ?, ?)",
 				Arrays.asList(betID, userID, champion, betType, betPercentage, betAmount, patch));
 		updateReputation(userID, String.valueOf(getUser(userID).getReputation() - Integer.parseInt(betAmount)));
 
+	}
+
+	public class RepException extends Exception {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 1L;
+		public RepException(String error){
+			super(error);
+		}
+		
 	}
 
 	/**
@@ -460,7 +482,7 @@ public class DatabaseHandler {
 
 	public List<List<String>> getPatches() throws SQLException {
 		return queryData(
-				"SELECT col_name from (SELECT m.name AS table_name, p.cid AS col_id, p.name AS col_name, p.type AS col_type, p.pk AS col_is_pk, p.dflt_value AS col_default_val,p.[notnull] AS col_is_not_nullFROM sqlite_master mLEFT OUTER JOIN pragma_table_info((m.name)) p ON m.name <> p.name WHERE m.type = 'table' ORDER BY table_name, col_id) WHERE table_name=\"BanRate\" AND col_name != \"champion\"",
+				"SELECT col_name from (SELECT m.name AS table_name, p.cid AS col_id, p.name AS col_name, p.type AS col_type, p.pk AS col_is_pk, p.dflt_value AS col_default_val,p.[notnull] AS col_is_not_null FROM sqlite_master m LEFT OUTER JOIN pragma_table_info((m.name)) p ON m.name <> p.name WHERE m.type = 'table' ORDER BY table_name, col_id) WHERE table_name=\"BanRate\" AND col_name != \"champion\";",
 				Arrays.asList());
 	}
 

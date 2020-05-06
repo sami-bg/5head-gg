@@ -39,14 +39,13 @@
         </div>
         
         <div id="profile">
-            ${profileImage}
-            ${profileName}
-            <a href="profile"><img src="up-arrow"></a>
+                        ${profileImage}
+            <p style="font-weight: bold; color: #FEFEFE">${profileName}</p>
         </div>
 		
 		<div id="logout">
 		<form action="/" method="post">
-		<button type="submit">Logout</button>
+		<button class="logout" type="submit">Logout</button>
 		</form>
 		</div>
     </div>
@@ -54,12 +53,15 @@
         <div id="champ-image" style="background-image: url('${champSplashimage}')">
             <p id="champname"> ${champname} </p>
 
-            <!-- winrate tab -- no submit button -->
+            <div id="error">
+                ${error}
+            </div>
+
             <div class="rate">
 
                 <div class="graph">
-                    ${winrateGraph}
                     <canvas id="wrgraph"> </canvas>
+                    ${winrateGraph}
                 </div>
 
                 <div class="bet">
@@ -90,12 +92,11 @@
 
             </div>
 
-            <!-- pickrate tab -- no submit button -->
             <div class="rate">
 
                 <div class="graph">
-                    ${pickrateGraph}
                     <canvas id="prgraph"> </canvas>
+                    ${pickrateGraph}
                     <#--  <script src="../js/prate.js"></script>  -->
                 </div>
 
@@ -127,13 +128,12 @@
 
             </div>
 
-            <!-- banrate tab -- no submit button -->
             <div class="rate">
 
                 <div class="graph">
+                    <canvas id="prgraph"> </canvas>
                     ${banrateGraph}
-                    <canvas id="brgraph"> </canvas>
-                    <#--  <script src="../js/brate.js"></script>  -->
+                    <#--  <script src="../js/prate.js"></script>  -->
                 </div>
 
                 <div class="bet">
@@ -151,7 +151,7 @@
                     <div class="plus-button">
                         REP STAKED
                     </div>
-                        <input name="bstake" type="number" value="100" min="100" step="100">
+                        <input name="bstaked" type="number" value="100" min="100" step="100">
                     <div class="minus-button">
                         
                     </div>
@@ -161,11 +161,13 @@
                     <input class="button" type="submit" value="Submit Banrate Bet">
                     </form>
                 </div> 
+
             </div>
+            
 
 
         </div>
     </div>
-    <script src="../js/wrate.js"></script>
+    <#--  <script src="../js/wrate.js"></script>  -->
 </body>
 </html>
