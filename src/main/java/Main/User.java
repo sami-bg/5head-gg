@@ -1,9 +1,6 @@
 package Main;
 
-import java.sql.SQLException;
 import java.util.List;
-
-import Database.DatabaseHandler.RepException;
 
 public class User {
     private final String id;
@@ -12,6 +9,14 @@ public class User {
     private final String email;
     private final String authentication;
 
+    /**
+     * Constructor for User.
+     * @param id The unique ID of the user
+     * @param username The user name shown in the website and leaderboards
+     * @param reputation The amount of reputation a user has
+     * @param email The email of the user (not used)
+     * @param authentication The password of the user
+     */
     public User(String id, String username, int reputation, String email, String authentication) {
         this.authentication = authentication;
         this.email = email;
@@ -20,30 +25,16 @@ public class User {
         this.reputation = reputation;
     }
 
+    /**
+     * Alternate constructor that uses a list that contains the data for the user.
+     * @param dataFields List that contains the same data as the above constructor
+     */
     public User(List<String> dataFields) {
         this.id = dataFields.get(0);
         this.username = dataFields.get(1);
         this.reputation = Integer.parseInt(dataFields.get(2));
         this.email = dataFields.get(3);
         this.authentication = dataFields.get(4);
-    }
-
-    public void submitBet(int rep, String percentChange, String champion, String stat, String patch)
-            throws SQLException {
-        // add to bet database
-        String betID = "";
-        String IDandTime = id + System.currentTimeMillis();
-        // think of a way to generate unique ids
-        betID = String.valueOf(IDandTime.hashCode());
-        try {
-            Main.db.createNewBet(betID, id, champion, stat, percentChange, String.valueOf(rep), patch);
-        } catch (RepException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        reputation -= rep;
-        Main.db.updateReputation(id, String.valueOf(this.reputation - rep));
-
     }
 
     /**
@@ -65,6 +56,7 @@ public class User {
     }
 
     /**
+     * Reputation getter.
      * @return the reputation
      */
     public int getReputation() {
@@ -72,21 +64,20 @@ public class User {
     }
 
     /**
-     * @return the reputation
+     * Password getter (only used for testing purposes!)
+     * @return the authentication
      */
-    protected String getAuth() {
+    public String getAuth() {
         return authentication;
     }
 
     /**
+     * Reputation setter.
      * @param reputation the reputation to set
      */
     public void setReputation(int reputation) {
         this.reputation = reputation;
     }
 
-    public void viewHistory() {
-
-    }
 
 }

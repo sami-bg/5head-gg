@@ -56,10 +56,10 @@ public class RiotAPI {
       // NOTE: Original champname gets put into map. i.e. Jarvan IV NOT jarvaniv
       mapOfChampToWinPickBan.put(champname, listOfWrPrBr);
 
+      //gets the links to the splash image and the icon of the champions
       List<String> splashIconList = new ArrayList<>();
       Elements background = document.getElementsByClass("champion-profile-container");
       String style = background.get(0).attr("style");
-      //System.out.println(style);
       String splash = style.substring(style.indexOf("https://"), style.indexOf(".jpg") + 4);
       String icon = document.getElementsByClass("champion-image").attr("src");
       splashIconList.add(icon);
@@ -80,17 +80,19 @@ public class RiotAPI {
    */
   public static void updateMapOfChamps() {
     for (String champname : ChampConsts.getChampNames()) {
-      //System.out.println(champname);
       updateMapOfChamps(champname);
       cleanupChampInMaps(champname);
-
     }
   }
 
-  //This checks if anything's value is null in any map, and sets it to a non-null value if it is.
-  //NOTE: Meant to be called after updateMapOfChamps
+  /**
+   * Checks if anything's value is null in any map, and sets it to a non-null value if it is;
+   * NOTE: Meant to be called after updateMapOfChamps
+   * @param champname The champion to be "cleaned up."
+   */
   private static void cleanupChampInMaps(String champname) {
     String urlName = urlFriendlyName(champname);
+    //default icon and splash
     String icon;
     if (getIconByName(champname) == null) {
       icon = "";
@@ -126,7 +128,7 @@ public class RiotAPI {
   }
 
   /**
-   *
+   * Gets a champion's icon.
    * @param champname - Champ name for which to get Icon for: its a .png
    *
    * @return String denoting icon url
@@ -143,7 +145,7 @@ public class RiotAPI {
   }
 
   /**
-   *
+   * Gets a champion's splash image.
    * @param champname - Champ name for which to get Splash for: its a .jpg
    *
    * @return String denoting icon url
@@ -159,6 +161,12 @@ public class RiotAPI {
     }
   }
 
+  /**
+   * Changes a champion's name to a URL friendly name by making all letters lowercase
+   * and removing all apostrophes and spaces
+   * @param champname The name to be replaced.
+   * @return A name to be used in URLs.
+   */
   static String urlFriendlyName(String champname) {
     String urlFriendlyName = champname.toLowerCase().replace("'", "");
     urlFriendlyName = urlFriendlyName.replace(" ", "");

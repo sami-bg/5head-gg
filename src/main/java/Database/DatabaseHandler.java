@@ -29,7 +29,7 @@ public class DatabaseHandler {
 	/**
 	 * This method reads in a new database.
 	 *
-	 * @param filename The database file to be read in
+	 * @param filename The path to the database file to be read in
 	 */
 	public void read(String filename) {
 		try {
@@ -37,16 +37,9 @@ public class DatabaseHandler {
 		} catch (ClassNotFoundException e) {
 			System.out.println("Read error: org.sqlite.JDBC not found");
 		}
-
 		String urlToDB = "jdbc:sqlite:" + filename;
 		try {
 			conn = DriverManager.getConnection(urlToDB);
-			/*
-			 * Statement stat = conn.createStatement();
-			 * stat.executeUpdate("PRAGMA foreign_keys=ON;");
-			 * System.out.println("Connected to " + filename); prevFiles.add(filename);
-			 * stat.close();
-			 */
 		} catch (SQLException e) {
 			System.out.println("SQLException when creating connection to database -- Database doesn't exist");
 		}
@@ -137,7 +130,8 @@ public class DatabaseHandler {
 	 * Gets the user with the corresponding userID from the database.
 	 * 
 	 * @param userID The user ID to query the database with
-	 * @return The corresponding User object with the given user ID
+	 * @return The corresponding User object with the given user ID,
+	 * or null if there is no such user
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String userID) throws SQLException {
@@ -163,7 +157,8 @@ public class DatabaseHandler {
 	 * 
 	 * @param username The username to query the database with
 	 * @param password The password to query the database with
-	 * @return The corresponding User object with the given username and password
+	 * @return The corresponding User object with the given username and password,
+	 * or null if there is no such user
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String username, String password) throws SQLException {
@@ -179,11 +174,9 @@ public class DatabaseHandler {
 		} else {
 			throw new SQLException("User is not in database or has no information");
 		}
-		System.out.println("User Strings for current user: " + userStrings.toString());
+		//creates a User object with the information found in the database
 		if (userStrings.size() > 3) {
 			user = new User(userStrings);
-
-			System.out.println("Successfully got user with username " + username);
 		} else {
 			throw new SQLException("User is not in database or has no information");
 		}
@@ -212,7 +205,7 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * Method that updates the reputation of a given user.
+	 * Method that updates the reputation of a given user in the database.
 	 * 
 	 * @param userID, user ID of user to change rep.
 	 * @param newRep, the new reputation of the user.
@@ -384,6 +377,7 @@ public class DatabaseHandler {
 	 * @param betType       The statistic that is being bet on
 	 * @param betPercentage What the user bet the resulting change will be
 	 * @param betAmount     The amount of reputation bet
+	 * @param patch 		The patch the bet was made on
 	 * @throws SQLException
 	 * @throws RepException
 	 */
@@ -393,7 +387,6 @@ public class DatabaseHandler {
 			System.out.println("Attempt to update database while closed");
 			return;
 		}
-		System.out.println("Bet made with id " + betID);
 		if (getUser(userID).getReputation() - Integer.parseInt(betAmount) < 0) {
 			throw new RepException("User does not have enough reputation to place that bet");
 		}
@@ -425,10 +418,12 @@ public class DatabaseHandler {
 	 */
 	public Bet getBet(String betID) throws SQLException {
 		Bet bet = null;
+		//gets the information of the bet stored in the database
 		List<String> betStrings = new ArrayList<>();
 		if (betID != null && !betID.equals("")) {
 			betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID)).get(0);
 		}
+		//creates a Bet object from the information
 		if (betStrings.size() != 0) {
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75, 0.0, 0.0);
 			bet = new Bet(gainFunc, betStrings);
@@ -480,6 +475,11 @@ public class DatabaseHandler {
 		return numBets;
 	}
 
+	/**
+	 * Gets a list of patches.
+	 * @return
+	 * @throws SQLException
+	 */
 	public List<List<String>> getPatches() throws SQLException {
 		return queryData(
 				"SELECT col_name from (SELECT m.name AS table_name, p.cid AS col_id, p.name AS col_name, p.type AS col_type, p.pk AS col_is_pk, p.dflt_value AS col_default_val,p.[notnull] AS col_is_not_null FROM sqlite_master m LEFT OUTER JOIN pragma_table_info((m.name)) p ON m.name <> p.name WHERE m.type = 'table' ORDER BY table_name, col_id) WHERE table_name=\"BanRate\" AND col_name != \"champion\";",

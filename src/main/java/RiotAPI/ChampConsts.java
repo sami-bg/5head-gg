@@ -5,6 +5,9 @@ import java.util.List;
 
 public class ChampConsts {
 
+  /**
+   * List of the names of all champions in League of Legends.
+   */
   private static final List<String> ChampNames = new ArrayList<String>(){
     {
       add("Aatrox");
