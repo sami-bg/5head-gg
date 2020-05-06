@@ -113,5 +113,9 @@ public final class Bet {
   public String getBetType() {
     return betType;
   }
+
+  public String getBetID() {
+    return betID;
+  }
 }
 

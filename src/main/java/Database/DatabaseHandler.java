@@ -1,7 +1,7 @@
 package Database;
 
 import Betting.Bet;
-import Betting.SigmoidAdjustedGain;
+import Main.SigmoidAdjustedGain;
 import Main.Champion;
 import Main.User;
 
@@ -404,7 +404,16 @@ public class DatabaseHandler {
 
 	}
 
-	public class RepException extends Exception {
+  /**
+   * adds reputation to user.
+   * @param reputationChange - reputation to add
+   * @param userID - user to add reputation to
+   */
+  public void addToUserReputation(Integer reputationChange, String userID) {
+    updateData("UPDATE Users SET Reputation = Reputation + ? WHERE userID = ?", Arrays.asList(String.valueOf(reputationChange), userID));
+  }
+
+  public class RepException extends Exception {
 
 		/**
 		 *
@@ -486,4 +495,12 @@ public class DatabaseHandler {
 				Arrays.asList());
 	}
 
+  /**
+   *
+   * @param bet - bets to update gains for
+   *             Updates gains
+   */
+	public void updateBetGains(Bet bet) {
+      updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
+  }
 }

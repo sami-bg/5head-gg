@@ -53,9 +53,8 @@ public class Patch {
 
 	/**
 	 *
-	 * @param patch The patch where the bets occurred
 	 * @param id The ID of the user that made the bets
-	 * @return
+	 * @return - List of bets
 	 */
 	public List<Bet> getBets(String id) {
 		List<Bet> userBets = new ArrayList<>();
