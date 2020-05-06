@@ -1,35 +1,61 @@
 package Main;
 
-import Betting.Bet;
-import Database.DatabaseEntryFiller;
-import Database.DatabaseHandler;
-import Database.DatabaseHandler.RepException;
-import Main.LeaderboardBuilder;
-import Main.SessionHandler;
-import Main.User;
-import RiotAPI.ChampConsts;
-import RiotAPI.RiotAPI;
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import freemarker.template.Configuration;
-import org.jsoup.Jsoup;
-import spark.*;
-import spark.template.freemarker.FreeMarkerEngine;
+import static RiotAPI.RiotAPI.getSplashByName;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static RiotAPI.RiotAPI.getSplashByName;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+
+import org.jsoup.Jsoup;
+
+import Betting.Bet;
+import Betting.BettingSession;
+import Betting.GainFunction;
+import Betting.SigmoidAdjustedGain;
+import Database.DatabaseEntryFiller;
+import Database.DatabaseHandler;
+import Database.DatabaseHandler.RepException;
+import RiotAPI.ChampConsts;
+import RiotAPI.RiotAPI;
+import freemarker.template.Configuration;
+import spark.ExceptionHandler;
+import spark.ModelAndView;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
+import spark.TemplateViewRoute;
+import spark.template.freemarker.FreeMarkerEngine;
 
 public final class Main {
 
-    public static DatabaseHandler db = new DatabaseHandler();
+    private static AtomicReference<String> currentPatch = new AtomicReference<>();
 
-    private static final String currentPatch = "10.9";
+    private static final Double MAX_ADJUSTMENT = 1.5;
+    private static final Double MAX_GAIN_MULT = 2.0;
+    private static final Double UPPER_BOUND = 2.5;
+    private static final Double LOWER_BOUND = 0.2;
+    private static final GainFunction gain = new SigmoidAdjustedGain(MAX_ADJUSTMENT, MAX_GAIN_MULT, UPPER_BOUND, LOWER_BOUND);
+
+    private static BettingSession wr = new BettingSession("winrate");
+    private static BettingSession pr = new BettingSession("pickrate");
+    private static BettingSession br = new BettingSession("pickrate");
+
+    
+
+    public static DatabaseHandler db = new DatabaseHandler();
 
     private static final Gson GSON = new Gson();
 
@@ -67,6 +93,16 @@ public final class Main {
     }
 
     private void runSparkServer(int port) {
+
+        Integer INTERVAL = 10;
+        TimerTask patchTracker = new PatchTrackerThread(0, INTERVAL, wr, pr, br, db, currentPatch);
+        PatchTrackerThread patchTracker2 = new PatchTrackerThread(0, 10, wr, pr, br, db, currentPatch);
+        currentPatch = patchTracker2.getAndUpdateCurrentPatch();
+        Timer timer = new Timer();
+        timer.schedule(patchTracker, 0, INTERVAL * 1000);
+
+
+
         Spark.port(port);
         Spark.externalStaticFileLocation("src/resources/static");
         Spark.exception(Exception.class, new ExceptionPrinter());
@@ -163,7 +199,7 @@ public final class Main {
                 StringBuilder sb = new StringBuilder();
                 StringBuilder sb1 = new StringBuilder();
                 try {
-                    for (Bet b : db.getUserBetsOnPatch(currentPatch, currentUser.getID())) {
+                    for (Bet b : db.getUserBetsOnPatch(currentPatch.get(), currentUser.getID())) {
                         sb1.append("<div id=\"userbet\" style=\"background-image: url("
                                 + getSplashByName(b.getCategory())
                                 + ") \"><div class=\"champion\"><div class=\"line\">Champion</div>" + b.getCategory()
@@ -232,7 +268,7 @@ public final class Main {
                 currentUser = db.getUser(username, password);
                 assert currentUser != null;
                 String id = String.valueOf(qm.value("username").hashCode());
-                for (Bet b : db.getUserBetsOnPatch(currentPatch, id)) {
+                for (Bet b : db.getUserBetsOnPatch(currentPatch.get(), id)) {
                     sb1.append("<div id=\"userbet\" style=\"background-image: url(" + getSplashByName(b.getCategory())
                             + ") \"><div class=\"champion\"><div class=\"line\">Champion</div>" + b.getCategory()
                             + "</div> <div class=\"type\"> <div class=\"line\">Type</div>" + b.getBetType() + "rate"
@@ -240,7 +276,7 @@ public final class Main {
                             + b.getPercentChangePredicted() + "%"
                             + "</div> <div class=\"wager\"> <div class=\"line\">Reputation Wagered </div>"
                             + b.getRepWagered() + " </div> <div class=\"betpatch\"> <div class=\"line\">Patch</div>"
-                            + currentPatch + "</div></div>");
+                            + currentPatch.get() + "</div></div>");
                 }
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
@@ -351,105 +387,104 @@ public final class Main {
     private static class ChampionBetHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
-            if (!SessionHandler.isUserLoggedIn(req)) {
-                Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
-
-                return new ModelAndView(variables, "splash.ftl");
-            } else {
-                String champName = req.params(":champname");
-
-                QueryParamsMap qm = req.queryMap();
-                System.out.println(qm.toString());
-
-                String wper = req.queryMap().value("wpercentage");
-                String pper = req.queryMap().value("ppercentage");
-                String bper = req.queryMap().value("bpercentage");
-
-                String wstake = req.queryMap().value("wstaked");
-                String pstake = req.queryMap().value("pstaked");
-                String bstake = req.queryMap().value("bstaked");
-
-                System.out.println(Arrays.asList(wper, pper, bper).toString());
-
-                User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
-                String error = "";
-
-
-
-
-                if (currentUser != null) {
-                    // if the winrate form is filled out, add a winrate bet
-                    if (wper != null && Integer.parseInt(wstake) > 0) {
-
-                        try {
-                            db.createNewBet(
-                                    String.valueOf((currentUser.getID() + champName + "Win" + wper + wstake).hashCode()),
-                                                    currentUser.getID(), champName, "Win", wper, wstake, currentPatch);
-                        } catch (SQLException e) {
-                            System.out.println("Error adding bet to user with username " + currentUser.getUsername());
-                        } catch (RepException e) {
-                            error = "Not enough reputation to add that bet!";
-                        }
-                    }
-
-                    // if the pickrate form is filled out, add a pickrate bet
-                    if (pper != null && Integer.parseInt(pstake) > 0) {
-
-                        try {
-                            db.createNewBet(
-                                    String.valueOf((currentUser.getID() + champName + "Pick" + pper + pstake).hashCode()),
-                                                    currentUser.getID(), champName, "Pick", pper, pstake, currentPatch);
-                        } catch (SQLException e) {
-                            System.out.println("Error adding bet to user with username " + currentUser.getUsername());
-                        } catch (RepException e) {
-                            error = "Not enough reputation to add that bet!";
-                        }
-                    }
-
-                    // if the banerate form is filled out, add a banrate bet
-                    if (bper != null && Integer.parseInt(bstake) > 0) {
-
-                        try {
-                            db.createNewBet(
-                                    String.valueOf(
-                                            (currentUser.getID() + champName + "Ban" + bper + bstake).hashCode()),
-                                    currentUser.getID(), champName, "Ban", bper, bstake, currentPatch);
-                        } catch (SQLException e) {
-                            System.out.println("Error adding bet to user with username " + currentUser.getUsername());
-                        } catch (RepException e) {
-                            error = "Not enough reputation to add that bet!";
-                        }
-                    }
+          if (!SessionHandler.isUserLoggedIn(req)) {
+            Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
+    
+            return new ModelAndView(variables, "splash.ftl");
+          } else {
+            String champName = req.params(":champname");
+    
+            QueryParamsMap qm = req.queryMap();
+            System.out.println(qm.toString());
+    
+            String wper = req.queryMap().value("wpercentage");
+            String pper = req.queryMap().value("ppercentage");
+            String bper = req.queryMap().value("bpercentage");
+    
+            String wstake = req.queryMap().value("wstaked");
+            String pstake = req.queryMap().value("pstaked");
+            String bstake = req.queryMap().value("bstaked");
+    
+            System.out.println(Arrays.asList(wper, pper, bper).toString());
+    
+            User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+            String error = "";
+            if (currentUser != null) {
+              // if the winrate form is filled out, add a winrate bet
+              if (wper != null && Integer.parseInt(wstake) > 0) {
+                try {
+                  String betID = String.valueOf((currentUser.getID() + champName + "Win" + wper + wstake).hashCode());
+                  db.createNewBet(betID, currentUser.getID(), champName, "Win", wper, wstake, currentPatch.get());
+                  Bet b = new Bet(betID, currentUser.getID(), Integer.parseInt(wstake),
+                      Double.parseDouble(wper), champName, gain, "Win", currentPatch.get());
+                  wr.addBet(b);
+                } catch (SQLException e) {
+                  System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+                } catch (RepException e) {
+                  error = "Not enough reputation to add that bet!";
                 }
-
-                currentUser = SessionHandler.getUserFromRequestCookie(req, db);
-
-                String wrchart = buildMetricChartForChampion(champName, "Win");
-                String brchart = buildMetricChartForChampion(champName, "Ban");
-                String prchart = buildMetricChartForChampion(champName, "Pick");
-
-
-                Map<String, Object> variables = null;
-                variables = ImmutableMap.<String, Object>builder()
-                        .put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "")
-                        .put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
-                                ChampConsts.getChampNames().get(
-                                        (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
-                                                ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
-                                + "\">")
-                        .put("profileName", currentUser.getUsername())
-                        .put("champSplashimage", getSplashByName(champName))
-                        .put("winrateGraph", wrchart)
-                        .put("pickrateGraph", prchart)
-                        .put("banrateGraph", brchart)
-                        .put("champname", champName)
-                        .put("error", error).build();
-
-                return new ModelAndView(variables, "champion.ftl");
+              }
+    
+              // if the pickrate form is filled out, add a pickrate bet
+              if (pper != null && Integer.parseInt(pstake) > 0) {
+    
+                try {
+                  String betID = String.valueOf((currentUser.getID() + champName + "Pick" + pper + pstake).hashCode());
+                  db.createNewBet(betID, currentUser.getID(), champName, "Pick", pper, pstake, currentPatch.get());
+                  Bet b = new Bet(betID, currentUser.getID(), Integer.parseInt(pstake),
+                      Double.parseDouble(pper), champName, gain, "Pick", currentPatch.get());
+                  pr.addBet(b);
+                } catch (SQLException e) {
+                  System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+                } catch (RepException e) {
+                  error = "Not enough reputation to add that bet!";
+                }
+              }
+    
+              // if the banerate form is filled out, add a banrate bet
+              if (bper != null && Integer.parseInt(bstake) > 0) {
+                try {
+                  String betID = String.valueOf((currentUser.getID() + champName + "Ban" + bper + bstake).hashCode());
+                  db.createNewBet(betID, currentUser.getID(), champName, "Ban", bper, bstake, currentPatch.get());
+                  Bet b = new Bet(betID, currentUser.getID(), Integer.parseInt(bstake),
+                      Double.parseDouble(bper), champName, gain, "Ban", currentPatch.get());
+                  br.addBet(b);
+                } catch (SQLException e) {
+                  System.out.println("Error adding bet to user with username " + currentUser.getUsername());
+                } catch (RepException e) {
+                  error = "Not enough reputation to add that bet!";
+                }
+              }
             }
+    
+            currentUser = SessionHandler.getUserFromRequestCookie(req, db);
+    
+            String wrchart = buildMetricChartForChampion(champName, "Win");
+            String brchart = buildMetricChartForChampion(champName, "Ban");
+            String prchart = buildMetricChartForChampion(champName, "Pick");
+    
+    
+            Map<String, Object> variables = null;
+            variables = ImmutableMap.<String, Object>builder()
+                .put("userReputation", currentUser.getReputation())
+                .put("bettingStatus", "")
+                .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                    ChampConsts.getChampNames().get(
+                        (Integer.parseInt(currentUser.getID()) % ChampConsts.getChampNames().size() +
+                            ChampConsts.getChampNames().size()) % ChampConsts.getChampNames().size()))
+                    + "\">")
+                .put("profileName", currentUser.getUsername())
+                .put("champSplashimage", getSplashByName(champName))
+                .put("winrateGraph", wrchart)
+                .put("pickrateGraph", prchart)
+                .put("banrateGraph", brchart)
+                .put("champname", champName)
+                .put("error", error).build();
+    
+            return new ModelAndView(variables, "champion.ftl");
+          }
         }
-    }
+      }
 
     private static String buildMetricChartForChampion(String champname, String metric)  {
         
