@@ -1,10 +1,9 @@
 package Betting;
 
+import RiotAPI.ChampConsts;
 import org.junit.Test;
 
-import RiotAPI.ChampConsts;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class BettingSessionTest {
 
@@ -26,5 +25,19 @@ public class BettingSessionTest {
 		testBetSesh.addBet(testBet2);
 		assertEquals(testBetSesh.getBetsFromUserID("testUser").get(1).getCategory(), "Taric");
 		assertEquals(testBetSesh.getMapOfChampionToBets().get("Taric").get(0).getUserID(), "testUser");
+		assertTrue(testBetSesh.getUsers().contains("testUser"));
+		assertTrue(testBetSesh.getUsers().contains("testUser1"));
+		assertTrue(!testBetSesh.getUsers().contains("hash"));
+		assertThrows(NullPointerException.class, () -> testBetSesh.broadcast(0.51, 0.51, "Eevee"));
+		testBetSesh.broadcast(0.51, 0.51,"Taric");
+		assertEquals(testBetSesh.getMapOfChampionToBets().get("Taric").get(0).getGain() , 0.51 * -1, 0.001);
+		assertEquals(testBetSesh.getType(), "winRate");
+		assertThrows(NullPointerException.class, () -> testBetSesh.getBetsFromUserID("testUser2").get(0));
+		testBetSesh.resetSession();
+		assertThrows(IndexOutOfBoundsException.class, () -> testBetSesh.getMapOfChampionToBets().get("Taric").get(0));
+		assertThrows(IndexOutOfBoundsException.class, () -> testBetSesh.getBetsFromUserID("testUser").get(0));
+		assertThrows(NullPointerException.class, () -> testBetSesh.getBetsFromUserID("testUser2").get(0));
+		assertThrows(NullPointerException.class, () -> testBetSesh.getMapOfChampionToBets().get("Eevee").get(0));
+
 	}
 }
