@@ -6,6 +6,8 @@ import Database.DatabaseHandler;
 import RiotAPI.ChampConsts;
 import RiotAPI.RiotAPI;
 import com.google.common.util.concurrent.AbstractScheduledService;
+import com.google.common.util.concurrent.AbstractScheduledService.Scheduler.*;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,14 +15,20 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.google.common.util.concurrent.AbstractScheduledService.Scheduler.newFixedRateSchedule;
 
-public class PatchTrackerThread extends AbstractScheduledService {
+
+public class PatchTrackerThread extends TimerTask {
 
   private final BettingSession wrSession;
   private final BettingSession prSession;
@@ -32,8 +40,8 @@ public class PatchTrackerThread extends AbstractScheduledService {
    */
   private Integer interval;
 
-  @Override
   protected void runOneIteration() {
+    System.out.println("Running iteration with interval " + interval);
     getAndUpdateCurrentPatch();
     if (hasPatchBeenReleasedWithin(0, this.interval)) {
       Map<String, List<Double>> oldMetrics = RiotAPI.getMapOfChampToWinPickBan();
@@ -109,21 +117,7 @@ public class PatchTrackerThread extends AbstractScheduledService {
     }
   }
 
-  @Override
-  protected Scheduler scheduler() {
-    return new CustomScheduler() {
-      @Override
-      protected Schedule getNextSchedule() throws Exception {
-        long a = interval; //number you can randomize to your heart's content
-        return new Schedule(a, TimeUnit.SECONDS);
-      }
-    };
-    // Every day, checks if patch has been released within interval seconds (this runs every interval seconds).
-    // We don't specify day here because we already account for that in this.interval. day is only specified for
-    // external static use.
-  }
-
-  PatchTrackerThread(Integer day, Integer seconds,
+  public PatchTrackerThread(Integer day, Integer seconds,
                      BettingSession wr,
                      BettingSession pr,
                      BettingSession br,
@@ -145,7 +139,7 @@ public class PatchTrackerThread extends AbstractScheduledService {
   public static Boolean hasPatchBeenReleasedWithin(Integer day, Integer seconds) {
     //Integer representing SECONDS of interval to check when patch was released.
     Integer interval = (day * 24 * 3600) + seconds;
-    long howManyDaysAgoHasPatchBeenReleased = ChronoUnit.SECONDS.between(getPreviousPatchDate(), LocalDate.now());
+    long howManyDaysAgoHasPatchBeenReleased = ChronoUnit.SECONDS.between(getPreviousPatchDate(), LocalDateTime.now());
     return howManyDaysAgoHasPatchBeenReleased <= interval;
   }
 
@@ -154,7 +148,7 @@ public class PatchTrackerThread extends AbstractScheduledService {
    * to turn it into LocalDate format.
    * @return
    */
-  public static LocalDate getPreviousPatchDate() {
+  public static LocalDateTime getPreviousPatchDate() {
     //We get the first <time> tag from the url above.
     //Parse the datetime feature within that time tag and return it
     try {
@@ -162,8 +156,9 @@ public class PatchTrackerThread extends AbstractScheduledService {
       Element firstTimeTag = patchPage.getElementsByTag("time").get(0);
       String tagString = firstTimeTag.toString();
       String datetime = tagString.substring(tagString.indexOf("datetime="), tagString.indexOf("class"));
-      datetime = datetime.substring(datetime.indexOf("=") + 2, datetime.indexOf("T"));
-      return LocalDate.parse(datetime);
+      datetime = datetime.substring(datetime.indexOf("=") + 2, datetime.indexOf("Z") - 1);
+      datetime = datetime.replace("Z\" ", "");
+      return LocalDateTime.parse(datetime);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -180,6 +175,7 @@ public class PatchTrackerThread extends AbstractScheduledService {
       Document uggAatroxPage = Jsoup.connect("https://u.gg/lol/champions/aatrox/build").get();
       Element patchNumberTag = uggAatroxPage.getElementsByClass("select-value-label").get(0);
       patch.set(patchNumberTag.text());
+      System.out.println(patch.get());
       return patch;
     } catch (IOException e) {
       e.printStackTrace();
@@ -188,6 +184,8 @@ public class PatchTrackerThread extends AbstractScheduledService {
   }
 
 
-
-
+  @Override
+  public void run() {
+    runOneIteration();
+  }
 }
