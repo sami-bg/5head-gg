@@ -1,4 +1,7 @@
-package Betting;
+package Main;
+
+import Betting.Bet;
+import Betting.GainFunction;
 
 public class SigmoidAdjustedGain implements GainFunction {
 
@@ -51,5 +54,9 @@ public class SigmoidAdjustedGain implements GainFunction {
     Double boundsPreMultiplication = 7.0;
     //Sigmoid:
     return maxAdjustment / (1 + Math.exp(-1 * (steepnessMultiplier * boundsPreMultiplication / range) * (distance + upperBound)));
+  }
+
+  public static Integer calculateSigmoidReputationChange(Integer reputation, Double multiplier) {
+    return (int) (reputation * multiplier);
   }
 }

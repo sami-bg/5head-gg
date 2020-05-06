@@ -131,7 +131,7 @@
             <div class="rate">
 
                 <div class="graph">
-                    <canvas id="prgraph"> </canvas>
+                    <canvas id="brgraph"> </canvas>
                     ${banrateGraph}
                     <#--  <script src="../js/prate.js"></script>  -->
                 </div>

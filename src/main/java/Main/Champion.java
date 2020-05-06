@@ -12,11 +12,13 @@ public class Champion {
 
 	/**
 	 * Default constructor.
+	 * @param name
 	 * @param winRate
 	 * @param banRate
 	 * @param pickRate
 	 */
-	public Champion(List<String> winRate, List<String> banRate, List<String> pickRate) {
+	public Champion(String name, List<String> winRate, List<String> banRate, List<String> pickRate) {
+		this.name = name;
 		this.winRate = winRate;
 		this.banRate = banRate;
 		this.pickRate = pickRate;

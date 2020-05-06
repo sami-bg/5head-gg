@@ -7,6 +7,8 @@ body {
     display: flex;
     grid-template-rows: 1fr;
     grid-template-columns: 300px 1fr 1fr;
+    background-image: url(https://konachan.com/image/08db4073fe48d8c9e89d8ba1ca63da7d/Konachan.com%20-%20156155%20building%20cherry_blossoms%20city%20clouds%20flowers%20fom_%28lifotai%29%20landscape%20nobody%20original%20scenic%20water%20waterfall.jpg);
+    
 }
 
 .sidebarlink {
@@ -25,25 +27,13 @@ body {
     color: #FEFEFE !important;
 }
 
-.logout{
- cursor: pointer;
-width: 10vw;
-    color: white;
-    background-color: #181921;
-    opacity:0.6;
-    transition-duration: 0.4s;
-}
-
-.logout:hover {
-  background-color: #FEFEFE; 
-  color: black;
-}
-
 #canvas {
     display: flex;
     flex-direction: row;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) );
 }
 
 .iconsdiv {
@@ -51,16 +41,18 @@ width: 10vw;
     border-radius: 50%;
     width: 100px;
     height: 100px;
+    transition-duration: 0.4s;
 
 }
 .icons {
     scale: 105%;
     width: 100px;
     height: auto;
+    transition-duration: 0.4s;
 }
 
 #logo {
-    background: #4E77FF;
+    /* background: #4E77FF; */
     height: 50px;
 }
 
@@ -80,7 +72,7 @@ width: 10vw;
     display: flex;
     flex-direction: column;
     font-size: 18px;
-    width: 15vw;
+    /* width: 15vw; */
     background-color: #181921;
     padding-left: 15px;
     padding-right: 15px;
@@ -91,15 +83,15 @@ width: 10vw;
 .patch-change-block {
     color: rgb(255, 255, 255);
     padding-bottom: 100px;
+
 }
 
 .patch-change-block {
     display: block;
     position: relative;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(36, 44, 54);
-    border-image: initial;
+    border-top: 1px solid white;
+    border-image-source: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(117,117,117,1) 50%, rgba(0,0,0,1) 100%);
+    border-image-slice: 1;
     margin: 3.57143%;
     padding: 3.57143%;
     cursor: default;
@@ -132,15 +124,15 @@ width: 10vw;
 }
 
 .attribute {
-	color: rgb(134, 134, 134);
+	color: rgb(255, 255, 255);
 text-transform: uppercase;
 }
 .attribute-before {
-    color: rgb(134, 134, 134);
+    color: rgb(255, 134, 134);
     text-decoration: line-through;
 }
 .attribute-after {
-    color: rgb(255, 255, 255);
+    color: rgb(250, 238, 134);
 }
 
 .white-stone.accent-before {
@@ -150,7 +142,7 @@ color: rgb(255, 255, 255);
 
 .new {
     background-color: rgb(78, 166, 78);
-position: relative;
+    position: relative;
     top: -1px;
     margin-right: 4px;
     font-size: 0.4375rem;
@@ -202,7 +194,51 @@ color: rgb(255, 255, 255);
 #profile {
     margin-top: auto;
     padding-bottom: 10px;
-}
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 8%;
+    position: relative;
+  }
+  
+  
+  #profile img {
+    margin: 0;
+    border-radius: 100px;
+    padding: 0;
+    height: auto;
+    width: 30%;
+    margin-right: 20%;
+  }
+  
+  
+  #profile p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #logout {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 4%;
+  }
+  
+  .logout{
+    cursor: pointer;
+    width: 10vw;
+    color: rgb(150, 150, 150);
+    background-color: #181921;
+    transition-duration: 0.4s;
+    border-radius: 5px;
+    height: 5vh;
+    border-color: crimson;
+    align-self: center;
+  }
+  
+  .logout:hover {
+    background-color: crimson; 
+    color: white;
+  }
 
 #reputation {
     
@@ -213,21 +249,30 @@ color: rgb(255, 255, 255);
 }
 
 #patchnotes-embed {
+    border: none;
     grid-column: 1;
     display: flex;
     flex-direction: column;
-    width: 42.5vw;
+    width: 50%;
     overflow: auto;
     height: 100vh;
+}
+
+#patchnotes-embed ::-webkit-scrollbar {
+    display:none;
 }
 
 #champlist {
     grid-column: 2;
     flex-wrap: wrap;
     overflow: auto;
-    width: 42.5vw;
+    width: 50%;
     height: 100vh;
     display: flex;
+}
+
+#champlist ::-webkit-scrollbar {
+    display:none;
 }
 
 .patch-change-block {
@@ -265,3 +310,14 @@ img {
     margin-right: 10px;
     border-radius: 10px;
 }
+
+.iconsdiv:hover {
+    background-color: rgb(200, 200, 200);
+    box-shadow: 0px 0px 0px 1px rgb(50, 50, 50);
+}
+
+.icons:hover {
+    opacity: 0.85;
+    scale: 100%;
+}
+

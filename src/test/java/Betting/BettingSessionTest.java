@@ -2,6 +2,8 @@ package Betting;
 
 import org.junit.Test;
 
+import RiotAPI.ChampConsts;
+
 import static org.junit.Assert.assertEquals;
 
 public class BettingSessionTest {
@@ -14,7 +16,7 @@ public class BettingSessionTest {
 				"Teemo", new TestGainFunction(), "win", "10.9");
 		final Bet testBet2 = new Bet("hash2", "testUser", 51, 0.51,
 				"Taric", new TestGainFunction(), "ban:", "10.9");
-		BettingSession testBetSesh = new BettingSession("winRate");
+		BettingSession testBetSesh = new BettingSession("winRate", ChampConsts.getChampNames());
 		testBetSesh.addBet(testBet);
 		assertEquals(testBetSesh.getBetsFromUserID("testUser").get(0).getUserID(), "testUser");
 		assertEquals(testBetSesh.getBetsFromUserID("testUser").get(0).getCategory(), "Teemo");

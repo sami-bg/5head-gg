@@ -5,11 +5,13 @@ body {
     font-family: Roboto;
     font-style: normal;
     display: flex;
-  
+    background-image: url(https://wallup.net/wp-content/uploads/2018/09/25/596380-Bilgewater-League_of_Legends.jpg);
+    background-position: center;
+    background-size: cover;
 }
 
 #logo {
-    background: #4E77FF;
+    /* background: #4E77FF; */
     height: 50px;
 }
 
@@ -23,16 +25,18 @@ body {
 
     color: #F9F9F9;
 }
+
 #sidebar {
 
     display: flex;
     flex-direction: column;
     font-size: 18px;
-    width: 15vw;
+    /* width: 15vw; */
     background-color: #181921;
     padding-left: 15px;
     padding-right: 15px;
     height: 100vh;
+    z-index: 10;
 }
 
 .sidebarlink {
@@ -51,27 +55,59 @@ body {
     color: #FEFEFE !important;
 }
 
-.logout{
- cursor: pointer;
-width: 10vw;
-    color: white;
-    background-color: #181921;
-    opacity:0.6;
-    transition-duration: 0.4s;
-}
-
-.logout:hover {
-  background-color: #FEFEFE; 
-  color: black;
-}
-
-#left-aligned {
-    align-content: flex-start;
-}
-
 #profile {
     margin-top: auto;
     padding-bottom: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 8%;
+    position: relative;
+    /* padding: 0; */
+  }
+  
+  
+  #profile img {
+    margin: 0;
+    border-radius: 100px;
+    /* scale: 30%; */
+    padding: 0;
+    height: auto;
+    width: 30%;
+    margin-right: 20%;
+  }
+  
+  
+  #profile p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #logout {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 4%;
+  }
+  
+  .logout{
+    cursor: pointer;
+    width: 10vw;
+    color: rgb(150, 150, 150);
+    background-color: #181921;
+    transition-duration: 0.4s;
+    border-radius: 5px;
+    height: 5vh;
+    border-color: crimson;
+    align-self: center;
+  }
+  
+  .logout:hover {
+    background-color: crimson; 
+    color: white;
+  }
+
+#left-aligned {
+    align-content: flex-start;
 }
 
 #reputation {
@@ -89,26 +125,6 @@ width: 10vw;
     background: #F7C64A;
     border-radius: 25px;
     font-size: 64px;
-}
-
-.champion {
-
-}
-
-.type {
-
-}
-
-.percentage {
-
-}
-
-.wager {
-
-}
-
-.betpatch {
-
 }
 
 #userbet {
@@ -149,8 +165,11 @@ width: 10vw;
     flex-direction: row; 
     overflow:auto;
     flex-wrap: wrap;
-    height: 100vh;
+    height: 90vh;
+    padding-top: 10vh;
     width: 100%;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) );
 }
 
 #userbet .line {
@@ -166,6 +185,14 @@ width: 10vw;
 
 #title {
     text-align: center;
-    color: white;
-    width: 100%
+    color: #FEFEFE;
+    width: 100%;
+    border-bottom: 3px solid #84929E; 
+    height: max-content;
+    background-color: #181921;
+    border-image-source: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(117,117,117,1) 50%, rgba(0,0,0,1) 100%);
+    border-image-slice: 1;
+    font-weight: bold;
+    position: fixed;
+    z-index: 5;
 }

@@ -8,6 +8,10 @@ import java.sql.SQLException;
 
 public class SessionHandler {
 
+
+    private static final String startRep = "5000";
+    private static final int cookieDuration = 360000;
+
     /**
      * Logs in a user using the request and response cookies.
      * @param request The post request sent from Spark
@@ -30,9 +34,9 @@ public class SessionHandler {
         if(user == null) {
                 try {
                     //creates new user in the database
-                    db.addNewUser(String.valueOf(username.hashCode()), username, "5000", username, password);
-                    response.cookie("username", username, 3600);
-                    response.cookie("password", password, 3600);
+                    db.addNewUser(String.valueOf(username.hashCode()), username, startRep , username, password);
+                    response.cookie("username", username, cookieDuration);
+                    response.cookie("password", password, cookieDuration);
                     successfulLogin = true;
                 } catch (SQLException e1) {
                     System.out.println("There was a problem adding the user to the database");
@@ -44,8 +48,8 @@ public class SessionHandler {
         //to the stored password
          if(user.getAuth().equals(password)){
 
-             response.cookie("username", username, 3600);
-                response.cookie("password", password, 3600);
+             response.cookie("username", username, cookieDuration);
+                response.cookie("password", password, cookieDuration);
                 successfulLogin = true;
             } else {
                 successfulLogin = false;
