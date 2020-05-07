@@ -21,9 +21,18 @@ public class RiotAPITest {
         assertEquals(RiotAPI.urlFriendlyName("ga 'ga0j9G"), "gaga0j9g");
         RiotAPI.updateMapOfChamps("Jarvan IV");
         RiotAPI.updateMapOfChamps("Kog'Maw");
-        assertThrows(StringIndexOutOfBoundsException.class, () -> {RiotAPI.updateMapOfChamps("fakechamp");});
         assertEquals(RiotAPI.getIconByName("Jarvan IV"), "https://static.u.gg/assets/lol/riot_static/10.9.1/img/champion/JarvanIV.png");
         assertEquals(RiotAPI.getIconByName("Kog'Maw"), "https://static.u.gg/assets/lol/riot_static/10.9.1/img/champion/KogMaw.png");
         assertEquals(RiotAPI.getMapOfChampToWinPickBan().get("Kog'Maw").size(), 3);
+        RiotAPI.cleanupChampInMaps("Jarvan IV");
+        assertEquals(RiotAPI.getIconByName("Jarvan IV"), "https://static.u.gg/assets/lol/riot_static/10.9.1/img/champion/JarvanIV.png");
+        assertEquals(RiotAPI.getMapOfChampToWinPickBan().get("fakechamp"), null);
+        RiotAPI.cleanupChampInMaps("fakechamp");
+        assertEquals(RiotAPI.getIconByName("fakechamp"), "");
+        assertEquals(RiotAPI.getMapOfChampToWinPickBan().get("fakechamp").get(0), (Double) 50.0);
+        assertThrows(StringIndexOutOfBoundsException.class, () -> {RiotAPI.updateMapOfChamps("fakechamp");});
+        assertEquals(RiotAPI.getMapOfChampToImageURL().get("fakechamp").get(0), "");
+        assertEquals(RiotAPI.getMapOfChampToImageURL().get("fakechamp").get(1), "");
+
     }
 }

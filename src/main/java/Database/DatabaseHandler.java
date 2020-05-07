@@ -92,7 +92,7 @@ public class DatabaseHandler {
 	 * @param query The SQL Query which will be called to the database
 	 * @param args  The argument which can be passed into the SQL call
 	 */
-	public void updateData(String query, List<String> args) {
+	public void updateData(String query, List<String> args) throws SQLException{
 		if (this.isLocked) {
 			System.out.println("Attempt to update database while closed");
 			return;
@@ -108,9 +108,6 @@ public class DatabaseHandler {
 			prep.close();
 		} catch (NullPointerException e) {
 			System.out.println("ERROR: Database is not connected");
-		} catch (SQLException e) {
-			System.out.println("Error: SQL connection error");
-			e.printStackTrace();
 		}
 	}
 
@@ -476,7 +473,11 @@ public class DatabaseHandler {
 		//gets the information of the bet stored in the database
 		List<String> betStrings = new ArrayList<>();
 		if (betID != null && !betID.equals("")) {
-			betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID)).get(0);
+			try {
+				betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID)).get(0);
+			} catch (IndexOutOfBoundsException e){
+				throw new SQLException("Bet is not in database or has no information");
+			}
 		}
 		//creates a Bet object from the information
 		if (betStrings.size() != 0) {
@@ -548,7 +549,7 @@ public class DatabaseHandler {
 	 * Updates how much reputation each bet gained
 	 * @param bet - bets to update gains for
 	 */
-	public void updateBetGains(Bet bet) {
+	public void updateBetGains(Bet bet) throws SQLException {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
 	}
 

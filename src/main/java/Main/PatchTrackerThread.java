@@ -35,7 +35,7 @@ public class PatchTrackerThread extends TimerTask {
    */
   private Integer interval;
 
-  protected void runOneIteration() {
+  protected void runOneIteration() throws SQLException {
     //System.out.println("Running iteration with interval " + interval);
     getAndUpdateCurrentPatch();
     if (hasPatchBeenReleasedWithin(0, 10000000)) {
@@ -131,7 +131,7 @@ public class PatchTrackerThread extends TimerTask {
    * Updates the bets made this session with the gains of the bets.
    * @param session The session to update
    */
-  private void updateBetGainsForSession(BettingSession session) {
+  private void updateBetGainsForSession(BettingSession session) throws SQLException {
     //gets the list of all users that bet this session
     List<String> users = session.getUsers();
     for (String user: users) {
@@ -226,6 +226,10 @@ public class PatchTrackerThread extends TimerTask {
 
   @Override
   public void run() {
-    runOneIteration();
+    try {
+      runOneIteration();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
   }
 }
