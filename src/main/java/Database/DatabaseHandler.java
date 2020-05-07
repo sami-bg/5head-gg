@@ -461,7 +461,7 @@ public class DatabaseHandler {
   public class RepException extends Exception {
 
 		/**
-		 *
+		 * Exception for invalid user reputation changes
 		 */
 		private static final long serialVersionUID = 1L;
 		public RepException(String error){
@@ -534,19 +534,35 @@ public class DatabaseHandler {
 		return numBets;
 	}
 
+	/**
+	 * Method that retrieves patches
+	 * @return, a list of lists of strings that represent patches.
+	 * @throws SQLException
+	 */
 	public List<List<String>> getPatches() throws SQLException {
 		return queryData(
 				"SELECT col_name from (SELECT m.name AS table_name, p.cid AS col_id, p.name AS col_name, p.type AS col_type, p.pk AS col_is_pk, p.dflt_value AS col_default_val,p.[notnull] AS col_is_not_null FROM sqlite_master m LEFT OUTER JOIN pragma_table_info((m.name)) p ON m.name <> p.name WHERE m.type = 'table' ORDER BY table_name, col_id) WHERE table_name=\"BanRate\" AND col_name != \"champion\";",
 				Arrays.asList());
 	}
 
-		/**
-	 *
+	/**
+	 * Method that updates the bet gain
 	 * @param bet - bets to update gains for
 	 *             Updates gains
 	 */
 	public void updateBetGains(Bet bet) {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
+	}
+
+	/**
+	 * Method that deletes all rows from a table.
+	 * @param table, table to delete rows from
+	 * @throws SQLException
+	 */
+	public void deleteData(String table) throws SQLException {
+		String delete = "DELETE FROM %s";
+		delete = String.format(delete, table);
+		updateData(delete, null);
 	}
 
 }
