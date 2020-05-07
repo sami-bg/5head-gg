@@ -48,9 +48,14 @@
 		</div>
     </div>
     <div id="canvas">
-        <div id="patchnotes-embed"> ${currentPatch} </div>
+        <div id="patchnotes-embed"> 
+		<div id="patchexplanation"><p style="font-weight: bold; color: #FEFEFE">Current Patch Notes:</p></div><br>
+		${currentPatch} </div>
         <!-- div for each champion -->
-        <div id="champlist"> ${championDivs} </div>
+        <div id="champlist"><div id="champexplanation">
+		<p style="font-weight: bold; color: #FEFEFE">Click on a portrait to go to that champion's page!</p>
+		</div>
+		${championDivs} </div>
     </div>
 </body>
 </html>

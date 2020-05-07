@@ -80,6 +80,7 @@ body {
 
 
 
+
 .patch-change-block {
     color: rgb(255, 255, 255);
     padding-bottom: 100px;
@@ -269,10 +270,21 @@ color: rgb(255, 255, 255);
     width: 50%;
     height: 100vh;
     display: flex;
+   
 }
 
 #champlist ::-webkit-scrollbar {
     display:none;
+}
+
+
+#champexplanation {
+flex: 0 0 100%;
+  text-align: center;
+}
+
+#patchexplanation {
+  text-align: center;
 }
 
 .patch-change-block {
