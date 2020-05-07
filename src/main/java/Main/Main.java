@@ -33,7 +33,7 @@ public final class Main {
     private static final Double MAX_GAIN_MULT = 3.0;
     private static final Double UPPER_BOUND = 2.0;
     private static final Double LOWER_BOUND = 0.2;
-    private static final GainFunction gain = new SigmoidAdjustedGain(MIN_GAIN_MULT, MAX_GAIN_MULT, UPPER_BOUND, LOWER_BOUND);
+    private static final GainFunction gain = new SigmoidAdjustedGain(MAX_GAIN_MULT, MIN_GAIN_MULT, UPPER_BOUND, LOWER_BOUND);
     private static final Integer BROADCAST_INTERVAL_SECONDS = 60; // The interval at which we broadcast, in seconds
 
     

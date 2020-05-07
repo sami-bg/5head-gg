@@ -43,6 +43,8 @@ public class TestSigmoidAdjustedGain {
     System.out.println(apacheLogistic.value(1.6));
     System.out.println(apacheLogistic.value(2.0));
 
+    System.out.println(apacheLogistic.value(10.0));
+    System.out.println(apacheLogistic.value(50.0));
 
 
 
