@@ -21,11 +21,6 @@ DatabaseHandler db = null;
         db.read("data/5HeadTest.db");
     }
 
-    @After
-    public void tearDown(String table) throws Exception {
-        db.deleteData(table);
-    }
-
     @Test
     public void testUserQueries() {
         User usr1 = new User("usrID", "usrName", 320, "brown.edu", "pswrd");
@@ -38,7 +33,7 @@ DatabaseHandler db = null;
             assertEquals(db.getUser("usrName1", "pswrd1").getID(), usr2.getID());
             db.updateReputation("usrID", "1000");
             assertEquals(db.getUser("usrID").getReputation(), 1000);
-            tearDown("Users");
+            db.deleteData("Users");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,20 +54,18 @@ DatabaseHandler db = null;
         try {
             setUp();
             db.addChampion("Aatrox");
-            db.createNewPatch("10.10");
-            db.createNewPatch("10.11");
             db.addRatestoChamps("Aatrox", "10.10", "0.55", "0.75", "0.45");
             assertEquals(db.getChampion("Aatrox").name, aatrox.name);
-            assertTrue(db.getChampionWinRateFromPatch("10.10", "Aatrox") == 0.55);
-            assertTrue(db.getChampionBanRateFromPatch("10.10", "Aatrox") == 0.75);
-            assertTrue(db.getChampionPickRateFromPatch("10.10", "Aatrox") == 0.45);
-            db.createNewPatch("10.11");
+            System.out.println("Print: " + db.getChampionWinRateFromPatch("10.10", "Aatrox"));
+            assertEquals(db.getChampionWinRateFromPatch("10.10", "Aatrox"), 0.55f, 0.0f);
+            assertEquals(db.getChampionBanRateFromPatch("10.10", "Aatrox"),0.75f, 0.0f);
+            assertEquals(db.getChampionPickRateFromPatch("10.10", "Aatrox"), 0.45f, 0.0f);
             db.addRatestoChamps("Aatrox", "10.11", "0.35", "0.25", "0.45");
-            assertTrue(db.getChampionWinRateFromPatch("10.11", "Aatrox") == 0.35);
+            assertEquals(db.getChampionWinRateFromPatch("10.11", "Aatrox"), 0.35f, 0.0f);
 
-            tearDown("WinRate");
-            tearDown("BanRate");
-            tearDown("PickRate");
+            db.deleteData("WinRate");
+            db.deleteData("BanRate");
+            db.deleteData("PickRate");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,11 +92,11 @@ DatabaseHandler db = null;
             db.createNewBet("3", "usr_ID_1", "Aatrox", "Win", "0.5", "50", "10.11");
 
             assertEquals(db.getBet("1").getUserID(), bet1.getUserID());
-            assertEquals(db.getUserBetsOnPatch("10.10", "usr_ID_1"), bets);
+            assertEquals(db.getUserBetsOnPatch("10.10", "usr_ID_1").get(0).getBetID(), bets.get(0).getBetID());
             assertTrue(db.countNumberOfBets("Aatrox", "10.10") == 2);
 
-            tearDown("Bets");
-            tearDown("Users");
+            db.deleteData("Bets");
+            db.deleteData("Users");
         } catch (Exception e) {
             e.printStackTrace();
 
