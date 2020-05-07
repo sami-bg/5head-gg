@@ -1,4 +1,5 @@
 package User;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,4 +38,5 @@ public class UserTest {
         assertEquals(DHTest.getUserBetsOnPatch("10.9", "testUser.").get(0).getBetType(), "win");
         after();
     }
+
 }

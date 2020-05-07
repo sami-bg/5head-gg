@@ -1,8 +1,9 @@
 package RiotAPI;
 
-import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class RiotAPITest {
 
@@ -20,7 +21,7 @@ public class RiotAPITest {
         assertEquals(fa.urlFriendlyName("ga 'ga0j9G"), "gaga0j9g");
         fa.updateMapOfChamps("Jarvan IV");
         fa.updateMapOfChamps("Kog'Maw");
-        Assert.assertThrows(StringIndexOutOfBoundsException.class, () -> {fa.updateMapOfChamps("fakechamp");});
+        assertThrows(StringIndexOutOfBoundsException.class, () -> {fa.updateMapOfChamps("fakechamp");});
         assertEquals(fa.getIconByName("Jarvan IV"), "https://static.u.gg/assets/lol/riot_static/10.9.1/img/champion/JarvanIV.png");
         assertEquals(fa.getIconByName("Kog'Maw"), "https://static.u.gg/assets/lol/riot_static/10.9.1/img/champion/KogMaw.png");
         assertEquals(fa.getMapOfChampToWinPickBan().get("Kog'Maw").size(), 3);
