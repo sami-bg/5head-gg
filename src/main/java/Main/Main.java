@@ -1,57 +1,45 @@
 package Main;
 
-import static RiotAPI.RiotAPI.getSplashByName;
+import Betting.Bet;
+import Betting.BettingSession;
+import Betting.GainFunction;
+import Database.DatabaseEntryFiller;
+import Database.DatabaseHandler;
+import Database.DatabaseHandler.RepException;
+import RiotAPI.ChampConsts;
+import RiotAPI.RiotAPI;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import freemarker.template.Configuration;
+import org.jsoup.Jsoup;
+import spark.*;
+import spark.template.freemarker.FreeMarkerEngine;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-
-import org.jsoup.Jsoup;
-
-import Betting.Bet;
-import Betting.BettingSession;
-import Betting.GainFunction;
-import Main.SigmoidAdjustedGain;
-import Database.DatabaseEntryFiller;
-import Database.DatabaseHandler;
-import Database.DatabaseHandler.RepException;
-import RiotAPI.ChampConsts;
-import RiotAPI.RiotAPI;
-import freemarker.template.Configuration;
-import spark.ExceptionHandler;
-import spark.ModelAndView;
-import spark.QueryParamsMap;
-import spark.Request;
-import spark.Response;
-import spark.Spark;
-import spark.TemplateViewRoute;
-import spark.template.freemarker.FreeMarkerEngine;
+import static RiotAPI.RiotAPI.getSplashByName;
 
 public final class Main {
-
+    
     private static AtomicReference<String> currentPatch = new AtomicReference<>();
-
+    
     private static final Double MAX_ADJUSTMENT = 1.5;
     private static final Double MAX_GAIN_MULT = 2.0;
     private static final Double UPPER_BOUND = 2.5;
     private static final Double LOWER_BOUND = 0.2;
     private static final GainFunction gain = new SigmoidAdjustedGain(MAX_ADJUSTMENT, MAX_GAIN_MULT, UPPER_BOUND, LOWER_BOUND);
+    private static final Integer BROADCAST_INTERVAL_SECONDS = 60; // The interval at which we broadcast, in seconds
 
-    private static BettingSession wr = new BettingSession("winrate");
-    private static BettingSession pr = new BettingSession("pickrate");
-    private static BettingSession br = new BettingSession("pickrate");
+    
+    private static BettingSession wr = new BettingSession("winrate", ChampConsts.getChampNames());
+    private static BettingSession pr = new BettingSession("pickrate", ChampConsts.getChampNames());
+    private static BettingSession br = new BettingSession("pickrate", ChampConsts.getChampNames());
 
     
 
@@ -70,12 +58,8 @@ public final class Main {
     }
 
     private void run() throws IOException, SQLException {
-        // TODO Auto-generated method stub
-        // RiotAPI.test();
-
         db.read("data/5Head.db");
         DatabaseEntryFiller DBEF = new DatabaseEntryFiller();
-        // I'm running this every time we run main so it might take a while on startup
         RiotAPI.updateMapOfChamps();
         runSparkServer(4567);
     }
@@ -92,14 +76,24 @@ public final class Main {
         return new FreeMarkerEngine(config);
     }
 
+    /**
+     * Runs the Spark server.
+     * @param port The port on which to run the Spark server.
+     */
     private void runSparkServer(int port) {
 
-        Integer INTERVAL = 10;
-        TimerTask patchTracker = new PatchTrackerThread(0, INTERVAL, wr, pr, br, db, currentPatch);
+
+        // Initializes the tables with all the champions 
+        // so that we can set values for them
+        DatabaseEntryFiller.addChampsToRatesTables(db);
+        
+        // Set up the thread that handles automatic broadcasting
+        TimerTask patchTracker = new PatchTrackerThread(0, BROADCAST_INTERVAL_SECONDS, wr, pr, br, db, currentPatch);
         PatchTrackerThread patchTracker2 = new PatchTrackerThread(0, 10, wr, pr, br, db, currentPatch);
+        
         currentPatch = patchTracker2.getAndUpdateCurrentPatch();
         Timer timer = new Timer();
-        timer.schedule(patchTracker, 0, INTERVAL * 1000);
+        timer.schedule(patchTracker, 0, BROADCAST_INTERVAL_SECONDS * 1000);
 
 
 
@@ -135,7 +129,7 @@ public final class Main {
     }
 
     /**
-     * Handler for front page.
+     * Handler for front page after logging out.
      */
     private static class LogoutHandler implements TemplateViewRoute {
         @Override
@@ -152,10 +146,12 @@ public final class Main {
     private static class LeaderboardHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
+            //checks to see if user is logged in and redirects to main page if not
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
                 return new ModelAndView(variables, "splash.ftl");
             } else {
+                //makes the leaderboard from the top 50 users by reputation
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
                 List<String> top50 = new ArrayList<>();
                 String leaderboards = "<div class=\"no-users\">No users.<div>";
@@ -165,10 +161,10 @@ public final class Main {
                     }
                     leaderboards = LeaderboardBuilder.makeLeaderboard(top50);
                 } catch (SQLException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 Map<String, Object> variables = null;
+                //maps all the variables in the HTML to their elements
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
                         .put("bettingStatus", "")
@@ -185,19 +181,23 @@ public final class Main {
         }
     }
 
+    /**
+     * Handler for the mybets/profiles page.
+     */
     private static class MyBetHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
+            //checks to see if user is logged in and redirects to main page if not
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword",
                         "Entered a blank username or password");
-
                 return new ModelAndView(variables, "splash.ftl");
             } else {
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
                 String champOptions;
                 StringBuilder sb = new StringBuilder();
                 StringBuilder sb1 = new StringBuilder();
+                //builds and styles the list of all the user's bets
                 try {
                     for (Bet b : db.getUserBetsOnPatch(currentPatch.get(), currentUser.getID())) {
                         sb1.append("<div id=\"userbet\" style=\"background-image: url("
@@ -213,12 +213,8 @@ public final class Main {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                List<String> champNames = ChampConsts.getChampNames();
-                for (int i = 0; i < champNames.size(); i++) {
-                    String currChamp = champNames.get(i);
-                    sb.append("<option value=\"" + currChamp + "\">" + currChamp + "</option>");
-                }
                 Map<String, Object> variables = null;
+                //maps all the variables in the HTML to their elements
                 variables = ImmutableMap.<String, Object>builder()
                         .put("userReputation", currentUser.getReputation())
                         .put("bettingStatus", "")
@@ -228,7 +224,6 @@ public final class Main {
                                                 ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
                                 + "\">")
                         .put("profileName", currentUser.getUsername())
-                        .put("champOptions", sb.toString())
                         .put("success", "true")
                         .put("myBets", sb1.toString())
                         .build();
@@ -237,6 +232,9 @@ public final class Main {
         }
     }
 
+    /**
+     * Handler for the main/login page.
+     */
     private static class LoginPageHandler implements TemplateViewRoute {
 
         @Override
@@ -247,6 +245,7 @@ public final class Main {
             StringBuilder sb1 = new StringBuilder();
             QueryParamsMap qm = req.queryMap();
             Boolean successfulLogin;
+            //checks to see if user is logged in and redirects to main page if not
             if (qm.value("username").equals("") || qm.value("password").equals("")) {
                 successfulLogin = false;
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword",
@@ -268,6 +267,7 @@ public final class Main {
                 currentUser = db.getUser(username, password);
                 assert currentUser != null;
                 String id = String.valueOf(qm.value("username").hashCode());
+                //builds and styles the list of all the user's bets
                 for (Bet b : db.getUserBetsOnPatch(currentPatch.get(), id)) {
                     sb1.append("<div id=\"userbet\" style=\"background-image: url(" + getSplashByName(b.getCategory())
                             + ") \"><div class=\"champion\"><div class=\"line\">Champion</div>" + b.getCategory()
@@ -285,6 +285,7 @@ public final class Main {
             }
 
             Map<String, Object> variables = null;
+            //maps all the variables in the HTML to their elements
             variables = ImmutableMap.<String, Object>builder()
                     .put("userReputation", currentUser.getReputation())
                     .put("bettingStatus", "")
@@ -307,13 +308,13 @@ public final class Main {
     private static class PatchNoteHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) throws IOException {
+            //checks to see if user is logged in and redirects to main page if not
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
-
                 return new ModelAndView(variables, "splash.ftl");
             } else {
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
-
+                //creates all the champion's icons
                 String championDivs = "";
                 for (String champname : ChampConsts.getChampNames()) {
                     championDivs += "<a href=\"/champion/" + champname + "\">";
@@ -331,6 +332,7 @@ public final class Main {
                         .getElementsByClass("patch-change-block");
                 String patchNotesString = (patchNotes).outerHtml();
                 Map<String, Object> variables = null;
+                //maps all the variables in the HTML to their elements
                 ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
                 builder.put("userReputation", currentUser.getReputation());
                 builder.put("currentPatchLink",
@@ -357,6 +359,8 @@ public final class Main {
     private static class ChampionPageHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
+            //checks to see if user is logged in and redirects to main page if not
+
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
 
@@ -365,28 +369,40 @@ public final class Main {
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
 
                 String champName = req.params(":champname");
+                //builds the charts for each statistic
                 String wrchart = buildMetricChartForChampion(champName, "Win");
                 String brchart = buildMetricChartForChampion(champName, "Ban");
                 String prchart = buildMetricChartForChampion(champName, "Pick");
 
                 Map<String, Object> variables = null;
+                //maps all the variables in the HTML to their elements
+
                 variables = ImmutableMap.<String, Object>builder().put("userReputation", currentUser.getReputation())
-                        .put("bettingStatus", "").put("profileImage", "<img  src=\"" + RiotAPI.getIconByName(
-                            ChampConsts.getChampNames().get(
-                                    (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
-                                            ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
-                            + "\">").put("profileName", currentUser.getUsername())
+                        .put("bettingStatus", "")
+                        .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
+                                ChampConsts.getChampNames().get(
+                                        (Integer.parseInt(currentUser.getID())%ChampConsts.getChampNames().size() +
+                                                ChampConsts.getChampNames().size())%ChampConsts.getChampNames().size()))
+                                + "\">")
+                        .put("profileName", currentUser.getUsername())
                         .put("champSplashimage", getSplashByName(champName)).put("winrateGraph", wrchart)
-                        .put("pickrateGraph", prchart).put("banrateGraph", brchart).put("champname", champName).put("error", "").build();
+                        .put("pickrateGraph", prchart)
+                        .put("banrateGraph", brchart)
+                        .put("champname", champName)
+                        .put("error", "").build();
 
                 return new ModelAndView(variables, "champion.ftl");
             }
         }
     }
 
+    /**
+     * Handler for making a bet on a champion's page.
+     */
     private static class ChampionBetHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
+            //checks to see if user is logged in and redirects to main page if not
           if (!SessionHandler.isUserLoggedIn(req)) {
             Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
     
@@ -395,18 +411,15 @@ public final class Main {
             String champName = req.params(":champname");
     
             QueryParamsMap qm = req.queryMap();
-            System.out.println(qm.toString());
+
+            String wper = qm.value("wpercentage");
+            String pper = qm.value("ppercentage");
+            String bper = qm.value("bpercentage");
     
-            String wper = req.queryMap().value("wpercentage");
-            String pper = req.queryMap().value("ppercentage");
-            String bper = req.queryMap().value("bpercentage");
-    
-            String wstake = req.queryMap().value("wstaked");
-            String pstake = req.queryMap().value("pstaked");
-            String bstake = req.queryMap().value("bstaked");
-    
-            System.out.println(Arrays.asList(wper, pper, bper).toString());
-    
+            String wstake = qm.value("wstaked");
+            String pstake = qm.value("pstaked");
+            String bstake = qm.value("bstaked");
+
             User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
             String error = "";
             if (currentUser != null) {
@@ -458,14 +471,16 @@ public final class Main {
             }
     
             currentUser = SessionHandler.getUserFromRequestCookie(req, db);
-    
+            //builds the charts for each statistic
             String wrchart = buildMetricChartForChampion(champName, "Win");
             String brchart = buildMetricChartForChampion(champName, "Ban");
             String prchart = buildMetricChartForChampion(champName, "Pick");
     
     
             Map<String, Object> variables = null;
-            variables = ImmutableMap.<String, Object>builder()
+              //maps all the variables in the HTML to their elements
+
+              variables = ImmutableMap.<String, Object>builder()
                 .put("userReputation", currentUser.getReputation())
                 .put("bettingStatus", "")
                 .put("profileImage", "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(
@@ -486,17 +501,28 @@ public final class Main {
         }
       }
 
+    /**
+     * Builds a chart for the given champion and metric.
+     * @param champname The champion for which to build the chart
+     * @param metric Whether the chart is for win/pick/ban rate
+     * @return A string containing the JS for the chart
+     */
     private static String buildMetricChartForChampion(String champname, String metric)  {
         
-        String jschart = "";
+        final int NUM_DATA_POINTS = 5;
 
+        String jschart = "";
         String labels = "";
         String ratedata = "";
         String graphTitle = "";
         String color = ""; 
 
+        //gets the list of patches and uses them as labels
         try {
+            // get the patches
             List<List<String>> patches = db.getPatches();
+            // only get the last N patches to keep load times reasonable
+            patches = patches.subList(Math.max(patches.size()-NUM_DATA_POINTS, 0), patches.size());
             if (patches.size() > 0) {
                 for (List<String> patch : patches) {
                     labels += "'" + patch.get(0) + "',";
@@ -509,25 +535,25 @@ public final class Main {
                 case "Win":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionWinRateFromPatch(patch.get(0).substring(5), champname);
-                                ratedata += String.valueOf(rate);
+                        ratedata += String.valueOf(rate) + ",";
                     }
-                    color = "'rgba(99, 255, 132, 1)'";
+                    color = "'rgba(99, 255, 132, 0.8)'";
                     graphTitle = "wrgraph";
                     break;
                 case "Pick":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionPickRateFromPatch(patch.get(0).substring(5), champname);
-                                ratedata += String.valueOf(rate);
+                        ratedata += String.valueOf(rate) + ",";
                     }
                     graphTitle = "prgraph";
-                    color = "'rgba(132, 99, 255, 1)'";
+                    color = "'rgba(132, 99, 255, 0.8)'";
                     break;
                 case "Ban":
                     for (List<String> patch : patches) {
                         Float rate = db.getChampionBanRateFromPatch(patch.get(0).substring(5), champname);
-                                ratedata += String.valueOf(rate);
+                        ratedata += String.valueOf(rate) + ",";
                     }
-                    color = "'rgba(255, 99, 132, 1)'";
+                    color = "'rgba(255, 99, 132, 0.8)'";
                     graphTitle = "brgraph";
                     break;
             }
@@ -535,7 +561,10 @@ public final class Main {
         } catch (SQLException e) {
            System.out.println("Problem connecting to SQL database while constructing chart");
         }
-        
+
+        /**
+         * Adds the JS
+         */
         jschart += "<script>";
         jschart += "var myChart = new Chart(" + graphTitle + ", {"
             + "type: 'line',"
@@ -544,9 +573,9 @@ public final class Main {
             +    "datasets: [{"
             +        "label: '" + metric + "rate',"
             +            "data: [" + ratedata + "],"
-            // +            "backgroundColor: ["
-            // +                "'rgba(255, 99, 132, 0.2)',"
-            // +            "],"
+            +            "backgroundColor: ["
+            +                color + ","
+            +            "],"
             +            "borderColor: ["
             +                color + ","
             +            "],"
@@ -564,8 +593,6 @@ public final class Main {
             +    "}"
             + "});";
         jschart += "</script>";
-
-
         return jschart.toString();
 
     }

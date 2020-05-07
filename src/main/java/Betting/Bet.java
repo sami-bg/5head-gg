@@ -19,8 +19,6 @@ public final class Bet {
   private final String betID;
   private final String userID;
   private final String patch;
-    //public Bet(String hash, String testUser, int rep, double percentChange, String aatrox, Betting.TestGainFunction testGainFunction, String testType) {
-    //}
 
     /**
    * Category getter.
@@ -90,11 +88,11 @@ public final class Bet {
   public Bet(GainFunction gainFunction, List<String> dataFields) {
     this.gainFunction = gainFunction;
     this.betID = dataFields.get(0);
+    this.userID = dataFields.get(1);
     this.category = dataFields.get(2);
     this.betType = dataFields.get(3);
     this.percentChangePredicted = Double.parseDouble(dataFields.get(4));
     this.repWagered = Integer.parseInt(dataFields.get(5));
-    this.userID = dataFields.get(1);
     this.patch = dataFields.get(6);
   }
 

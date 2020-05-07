@@ -29,7 +29,7 @@ public class DatabaseHandler {
 	/**
 	 * This method reads in a new database.
 	 *
-	 * @param filename The database file to be read in
+	 * @param filename The path to the database file to be read in
 	 */
 	public void read(String filename) {
 		try {
@@ -37,16 +37,9 @@ public class DatabaseHandler {
 		} catch (ClassNotFoundException e) {
 			System.out.println("Read error: org.sqlite.JDBC not found");
 		}
-
 		String urlToDB = "jdbc:sqlite:" + filename;
 		try {
 			conn = DriverManager.getConnection(urlToDB);
-			/*
-			 * Statement stat = conn.createStatement();
-			 * stat.executeUpdate("PRAGMA foreign_keys=ON;");
-			 * System.out.println("Connected to " + filename); prevFiles.add(filename);
-			 * stat.close();
-			 */
 		} catch (SQLException e) {
 			System.out.println("SQLException when creating connection to database -- Database doesn't exist");
 		}
@@ -137,7 +130,8 @@ public class DatabaseHandler {
 	 * Gets the user with the corresponding userID from the database.
 	 * 
 	 * @param userID The user ID to query the database with
-	 * @return The corresponding User object with the given user ID
+	 * @return The corresponding User object with the given user ID,
+	 * or null if there is no such user
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String userID) throws SQLException {
@@ -163,7 +157,8 @@ public class DatabaseHandler {
 	 * 
 	 * @param username The username to query the database with
 	 * @param password The password to query the database with
-	 * @return The corresponding User object with the given username and password
+	 * @return The corresponding User object with the given username and password,
+	 * or null if there is no such user
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String username, String password) throws SQLException {
@@ -179,11 +174,9 @@ public class DatabaseHandler {
 		} else {
 			throw new SQLException("User is not in database or has no information");
 		}
-		System.out.println("User Strings for current user: " + userStrings.toString());
+		//creates a User object with the information found in the database
 		if (userStrings.size() > 3) {
 			user = new User(userStrings);
-
-			System.out.println("Successfully got user with username " + username);
 		} else {
 			throw new SQLException("User is not in database or has no information");
 		}
@@ -212,7 +205,7 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * Method that updates the reputation of a given user.
+	 * Method that updates the reputation of a given user in the database.
 	 * 
 	 * @param userID, user ID of user to change rep.
 	 * @param newRep, the new reputation of the user.
@@ -234,7 +227,7 @@ public class DatabaseHandler {
 	 * @throws SQLException if the champion is not found
 	 */
 	public Champion getChampion(String champName) throws SQLException {
-		
+
 		Champion champ = null;
 		List<String> champStringsW = new ArrayList<>();
 		List<String> champStringsB = new ArrayList<>();
@@ -264,13 +257,11 @@ public class DatabaseHandler {
 			System.out.println("Attempt to update database while closed");
 			return;
 		}
-		updateData("INSERT INTO Winrate (champion) VALUES (?)",
-				Arrays.asList(champ));
-		updateData("INSERT INTO Pickrate (champion) VALUES (?)",
-				Arrays.asList(champ));
-		updateData("INSERT INTO Banrate (champion) VALUES (?)",
-				Arrays.asList(champ));
+		updateData("INSERT INTO Winrate (champion) VALUES (?)", Arrays.asList(champ));
+		updateData("INSERT INTO Pickrate (champion) VALUES (?)", Arrays.asList(champ));
+		updateData("INSERT INTO Banrate (champion) VALUES (?)", Arrays.asList(champ));
 	}
+
 	/**
 	 * Gets the win rate of a certain champion during a certain patch.
 	 * 
@@ -283,10 +274,14 @@ public class DatabaseHandler {
 		float winRate = 0;
 		if (champ != null && !champ.equals("")) {
 			String win = "SELECT %s FROM Winrate WHERE champion = ? ;";
-			win = String.format(win, "patch" + patchNum);
+			win = String.format(win, "\"patch" + patchNum + "\"");
 			List<List<String>> r = queryData(win, Arrays.asList(champ));
-			if (r.size() == 0){
+			if (r.size() == 0) {
+				System.out.println("No champion found");
 				return winRate;
+			} else if (r.get(0).get(0) == null){
+				System.out.println("Champion had null data");
+				return winRate;	
 			}
 			winRate = Float.parseFloat(r.get(0).get(0));
 		} else {
@@ -308,10 +303,13 @@ public class DatabaseHandler {
 		float pickRate = 0;
 		if (champ != null && !champ.equals("")) {
 			String pick = "SELECT %s FROM Pickrate WHERE champion = ? ;";
-			pick = String.format(pick, "patch" + patchNum);
+			pick = String.format(pick, "\"patch" + patchNum + "\"");
 			List<List<String>> r = queryData(pick, Arrays.asList(champ));
-			if (r.size() == 0){
+			if (r.size() == 0) {
 				return pickRate;
+			} else if (r.get(0).get(0) == null){
+				System.out.println("Champion had null data");
+				return pickRate;	
 			}
 			pickRate = Float.parseFloat(r.get(0).get(0));
 		} else {
@@ -333,10 +331,13 @@ public class DatabaseHandler {
 		float banRate = 0;
 		if (champ != null && !champ.equals("")) {
 			String ban = "SELECT %s FROM Banrate WHERE champion = ? ;";
-			ban = String.format(ban, "patch" + patchNum);
+			ban = String.format(ban, "\"patch" + patchNum + "\"");
 			List<List<String>> r = queryData(ban, Arrays.asList(champ));
-			if (r.size() == 0){
+			if (r.size() == 0) {
 				return banRate;
+			} else if (r.get(0).get(0) == null){
+				System.out.println("Champion had null data");
+				return banRate;	
 			}
 			banRate = Float.parseFloat(r.get(0).get(0));
 		} else {
@@ -354,11 +355,11 @@ public class DatabaseHandler {
 	 */
 	public void createNewPatch(String patchNum) throws SQLException {
 		String win = "ALTER TABLE WinRate ADD %s TEXT ;";
-		win = String.format(win, "patch" + patchNum);
+		win = String.format(win, "\"patch" + patchNum + "\"");
 		String ban = "ALTER TABLE BanRate ADD %s TEXT ;";
-		ban = String.format(ban, "patch" + patchNum);
+		ban = String.format(ban, "\"patch" + patchNum + "\"");
 		String pick = "ALTER TABLE PickRate ADD %s TEXT ;";
-		pick = String.format(pick, "patch" + patchNum);
+		pick = String.format(pick, "\"patch" + patchNum + "\"");
 		updateData(win, null);
 		updateData(ban, null);
 		updateData(pick, null);
@@ -377,11 +378,11 @@ public class DatabaseHandler {
 	public void addRatestoChamps(String champ, String patchNum, String winRate, String banRate, String pickRate)
 			throws SQLException {
 		String win = " UPDATE WinRate SET %s = ? WHERE champion = ? ;";
-		win = String.format(win, "patch" + patchNum);
+		win = String.format(win, "\"patch" + patchNum + "\"");
 		String ban = " UPDATE BanRate SET %s = ? WHERE champion = ? ;";
-		ban = String.format(ban, "patch" + patchNum);
+		ban = String.format(ban, "\"patch" + patchNum + "\"");
 		String pick = " UPDATE PickRate SET %s = ? WHERE champion = ? ;";
-		pick = String.format(pick, "patch" + patchNum);
+		pick = String.format(pick, "\"patch" + patchNum + "\"");
 		updateData(win, Arrays.asList(winRate, champ));
 		updateData(ban, Arrays.asList(banRate, champ));
 		updateData(pick, Arrays.asList(pickRate, champ));
@@ -411,6 +412,7 @@ public class DatabaseHandler {
 	 * @param betType       The statistic that is being bet on
 	 * @param betPercentage What the user bet the resulting change will be
 	 * @param betAmount     The amount of reputation bet
+	 * @param patch 		The patch the bet was made on
 	 * @throws SQLException
 	 * @throws RepException
 	 */
@@ -420,7 +422,6 @@ public class DatabaseHandler {
 			System.out.println("Attempt to update database while closed");
 			return;
 		}
-		System.out.println("Bet made with id " + betID);
 		if (getUser(userID).getReputation() - Integer.parseInt(betAmount) < 0) {
 			throw new RepException("User does not have enough reputation to place that bet");
 		}
@@ -430,6 +431,25 @@ public class DatabaseHandler {
 		updateReputation(userID, String.valueOf(getUser(userID).getReputation() - Integer.parseInt(betAmount)));
 
 	}
+
+	/**
+	 * Adds reputation to a user in the database.
+	 * 
+	 * @param reputationChange - reputation to add
+	 * @param userID           - user to add reputation to
+	 */
+	public void addToUserReputation(Integer reputationChange, String userID) {
+		int userRep;
+		try {
+			userRep = getUser(userID).getReputation();
+			if (userRep + reputationChange < 0) {
+				reputationChange = userRep;
+			}
+			updateData("UPDATE Users SET Reputation = Reputation + ? WHERE userID = ?", Arrays.asList(String.valueOf(reputationChange), userID));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+  }
 
   public class RepException extends Exception {
 
@@ -452,10 +472,12 @@ public class DatabaseHandler {
 	 */
 	public Bet getBet(String betID) throws SQLException {
 		Bet bet = null;
+		//gets the information of the bet stored in the database
 		List<String> betStrings = new ArrayList<>();
 		if (betID != null && !betID.equals("")) {
 			betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID)).get(0);
 		}
+		//creates a Bet object from the information
 		if (betStrings.size() != 0) {
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75, 0.0, 0.0);
 			bet = new Bet(gainFunc, betStrings);
@@ -479,10 +501,10 @@ public class DatabaseHandler {
 		List<List<String>> betStrings = new ArrayList<>();
 		if (patch != null && !patch.equals("")) {
 			betStrings = queryData("SELECT * FROM Bets WHERE patch = ? and userID = ?;", Arrays.asList(patch, userID));
-			System.out.println(betStrings);
 		}
 		if (betStrings.size() != 0) {
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75, 0.0, 0.0);
+			//makes a new bet object from each bet in the database
 			for (List<String> string : betStrings){
 				if(string.size() != 0){
 					bets.add(new Bet(gainFunc, string));
@@ -496,7 +518,9 @@ public class DatabaseHandler {
 	/**
 	 * Method that counts the number of bets for a given champion.
 	 * 
-	 * @param champ, the champion's name @return, number of bets submitted for that
+	 * @param champ the champion's name
+	 * @param patch The patch for the bet
+	 * @return number of bets submitted for that
 	 *               champion
 	 * @throws SQLException
 	 */
@@ -507,6 +531,11 @@ public class DatabaseHandler {
 		return numBets;
 	}
 
+	/**
+	 * Gets a list of patches from the database.
+	 * @return List of patches
+	 * @throws SQLException
+	 */
 	public List<List<String>> getPatches() throws SQLException {
 		return queryData(
 				"SELECT col_name from (SELECT m.name AS table_name, p.cid AS col_id, p.name AS col_name, p.type AS col_type, p.pk AS col_is_pk, p.dflt_value AS col_default_val,p.[notnull] AS col_is_not_null FROM sqlite_master m LEFT OUTER JOIN pragma_table_info((m.name)) p ON m.name <> p.name WHERE m.type = 'table' ORDER BY table_name, col_id) WHERE table_name=\"BanRate\" AND col_name != \"champion\";",
@@ -514,18 +543,8 @@ public class DatabaseHandler {
 	}
 
 		/**
-	 * adds reputation to user.
-	 * @param reputationChange - reputation to add
-	 * @param userID - user to add reputation to
-	 */
-	public void addToUserReputation(Integer reputationChange, String userID) {
-		updateData("UPDATE Users SET Reputation = Reputation + ? WHERE userID = ?", Arrays.asList(String.valueOf(reputationChange), userID));
-	}
-
-		/**
-	 *
+	 * Updates how much reputation each bet gained
 	 * @param bet - bets to update gains for
-	 *             Updates gains
 	 */
 	public void updateBetGains(Bet bet) {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));

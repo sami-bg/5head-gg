@@ -1,5 +1,6 @@
 package Database;
 
+import Database.DatabaseHandler.RepException;
 import Main.Main;
 import RiotAPI.ChampConsts;
 
@@ -7,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import Database.DatabaseHandler.RepException;
 
 /**
  * Class that populates the database for testing purposes.
@@ -20,7 +19,6 @@ public class DatabaseEntryFiller {
 
 	List<Integer> userIDs = new ArrayList<Integer>();
 
-	// Im thinking we should have all elements in db as strings for simplicity.
 	/**
 	 * Adds users to database.
 	 * 
@@ -63,12 +61,21 @@ public class DatabaseEntryFiller {
 			int rand_index = rand.nextInt(userIDs.size());
 			String userID = String.valueOf(userIDs.get(rand_index));
 			userIDs.remove(rand_index);
-
+			//adds bets with random user IDs, bet types, champions, and reputations
 			try {
 				Main.db.createNewBet("bet " + i, userID, champ, betType, "0.5", String.valueOf(rand_index), patch);
 			} catch (RepException e) {
 				// TODO Auto-generated catch block
-				
+			}
+		}
+	}
+
+	public static void addChampsToRatesTables(DatabaseHandler db){
+		for (String champ : ChampConsts.getChampNames()){
+			try {
+				db.addChampion(champ);
+			} catch (SQLException e) {
+				System.out.println("Table already initialized with " + champ);
 			}
 		}
 	}
