@@ -431,15 +431,6 @@ public class DatabaseHandler {
 
 	}
 
-  /**
-   * adds reputation to user.
-   * @param reputationChange - reputation to add
-   * @param userID - user to add reputation to
-   */
-  public void addToUserReputation(Integer reputationChange, String userID) {
-    updateData("UPDATE Users SET Reputation = Reputation + ? WHERE userID = ?", Arrays.asList(String.valueOf(reputationChange), userID));
-  }
-
   public class RepException extends Exception {
 
 		/**
@@ -522,16 +513,6 @@ public class DatabaseHandler {
 				Arrays.asList());
 	}
 
-<<<<<<< HEAD
-  /**
-   *
-   * @param bet - bets to update gains for
-   *             Updates gains
-   */
-	public void updateBetGains(Bet bet) {
-      updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
-  }
-=======
 		/**
 	 * adds reputation to user.
 	 * @param reputationChange - reputation to add
@@ -550,5 +531,4 @@ public class DatabaseHandler {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
 	}
 
->>>>>>> c804a6754d747095a4c2b3dfc848b3f143654d49
 }

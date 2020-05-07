@@ -2,58 +2,42 @@ package Main;
 
 import Betting.Bet;
 import Betting.GainFunction;
+import org.apache.commons.math3.analysis.function.Logistic;
 
 public class SigmoidAdjustedGain implements GainFunction {
 
-  private final Double upperBound;
-  private final Double lowerBound;
-  private Double maxAdjustment = 0.75;
-  private Double maxGainMult = 1.5;
-
+  private Logistic logisticFunction;
   /**
-   *
-   * @param maxGainMult - Highest gain multiplier possible. Defaults to 1.5:
-   *                    calculateGain returns 1.5 when within some epsilon of
-   *                    actual.
-   * @param maxAdjustment - Highest gain reduction possible. Defaults to 0.75.
-   *                      This is the maximum number that is subtracted from maxGainMult
-   *                      in case of worst accuracy. -0.75 is subtracted from default of 1.5
-   *                      when not within some delta of actual.
-   * @param upperBound - Upper bound before sigmoid evaluates to maxAdjustment:
-   *                   This is the farthest distance from actual before maxAdjustment is removed
-   *                   from maxGainMult.
-   * @param lowerBound - Lower bound before gain reduction evaluates to 0:
-   *                   This is the distance within actual you need to be so that
-   *                   you get the maximum gain multiplier.
-   *
+   * Multiplies reputation by maxGainMult when predicted change within lowerBound of true change.
+   * Multiplies reputation by minGainMult when predicted change outside upperBound of true change.
+   * @param maxGainMult - Highest gain multiplier possible.
+   * @param minGainMult - Lowest gain multiplier possible.
+   * @param upperBound - Upper bound before gain is minGainMult.
+   * @param lowerBound - Lower bound before gain is maxGainMult.
    */
   //We account for popularity elsewhere. this class returns raw main multiplier.
-  public SigmoidAdjustedGain(Double maxGainMult, Double maxAdjustment, Double upperBound, Double lowerBound) {
-    this.maxGainMult = maxGainMult;
-    this.upperBound = upperBound;
-    this.lowerBound = lowerBound;
-    this.maxAdjustment = maxAdjustment;
+  public SigmoidAdjustedGain(Double maxGainMult, Double minGainMult, Double upperBound, Double lowerBound) {
+    /**
+     k - If b > 0, value of the function for x going towards +∞. If b < 0, value of the function for x going towards -∞.
+     m - Abscissa of maximum growth - point at which gradient is highest
+     b - Growth rate.
+     q - Parameter that affects the position of the curve along the ordinate axis.
+     a - If b > 0, value of the function for x going towards -∞. If b < 0, value of the function for x going towards +∞.
+     n - Parameter that affects near which asymptote the maximum growth occurs.
+     */
+    double k = maxGainMult;
+    double m = 0.3 * (upperBound + lowerBound);
+    double b = -4;
+    double q = 1.0;
+    double a = minGainMult;
+    double n = 1;
+    this.logisticFunction = new Logistic(k, m, b, q, a, n);
   }
 
   @Override
   public Double calculateGain(Double change, Bet b) {
-    return maxGainMult - calculateAdjustment(b.getPercentChangePredicted() - change, 1.0);
-  }
-
-  /**
-   *
-   * @param distance - distance from actual bet result.
-   * @param steepnessMultiplier - a multiplier to scale the steepness of adjusted sigmoid.
-   *                            Original bounds are -7 to 7, steepness is a linear multiplier
-   *                            of those bounds.
-   * @return - adjustment that is subtracted from maxGainMult.
-   * In best case scenario, this is 0. In worst case, this is maxAdjustment.
-   */
-  private Double calculateAdjustment(double distance, Double steepnessMultiplier) {
-    double range = Math.abs(this.upperBound - this.lowerBound);
-    Double boundsPreMultiplication = 7.0;
-    //Sigmoid:
-    return maxAdjustment / (1 + Math.exp(-1 * (steepnessMultiplier * boundsPreMultiplication / range) * (distance + upperBound)));
+    Double distance = Math.abs(b.getPercentChangePredicted() - change);
+    return logisticFunction.value(distance);
   }
 
   public static Integer calculateSigmoidReputationChange(Integer reputation, Double multiplier) {
