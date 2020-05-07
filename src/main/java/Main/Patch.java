@@ -23,7 +23,11 @@ public class Patch {
 		this.id =id;
 		this.users = users;
 	}
-	
+
+	/**
+	 * Users getter.
+	 * @return the list of users
+	 */
 	public List<String> getUsers() {
 		return users;
 	}
@@ -53,12 +57,14 @@ public class Patch {
 	}
 
 	/**
-	 *
+	 * Gets all bets for the current patch.
 	 * @param id The ID of the user that made the bets
 	 * @return - List of bets
 	 */
 	public List<Bet> getBets(String id) {
 		List<Bet> userBets = new ArrayList<>();
+		//separately gets the ban bets, win bets, and pick bets
+		//and adds the list if they are null
 		List<Bet> banBets = this.getBanBets().getBetsFromUserID(id);
 		if (banBets != null) {
 			userBets.addAll(banBets);

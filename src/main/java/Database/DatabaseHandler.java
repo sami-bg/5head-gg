@@ -29,7 +29,7 @@ public class DatabaseHandler {
 	/**
 	 * This method reads in a new database.
 	 *
-	 * @param filename The database file to be read in
+	 * @param filename The path to the database file to be read in
 	 */
 	public void read(String filename) {
 		try {
@@ -37,16 +37,9 @@ public class DatabaseHandler {
 		} catch (ClassNotFoundException e) {
 			System.out.println("Read error: org.sqlite.JDBC not found");
 		}
-
 		String urlToDB = "jdbc:sqlite:" + filename;
 		try {
 			conn = DriverManager.getConnection(urlToDB);
-			/*
-			 * Statement stat = conn.createStatement();
-			 * stat.executeUpdate("PRAGMA foreign_keys=ON;");
-			 * System.out.println("Connected to " + filename); prevFiles.add(filename);
-			 * stat.close();
-			 */
 		} catch (SQLException e) {
 			System.out.println("SQLException when creating connection to database -- Database doesn't exist");
 		}
@@ -137,7 +130,8 @@ public class DatabaseHandler {
 	 * Gets the user with the corresponding userID from the database.
 	 * 
 	 * @param userID The user ID to query the database with
-	 * @return The corresponding User object with the given user ID
+	 * @return The corresponding User object with the given user ID,
+	 * or null if there is no such user
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String userID) throws SQLException {
@@ -163,7 +157,8 @@ public class DatabaseHandler {
 	 * 
 	 * @param username The username to query the database with
 	 * @param password The password to query the database with
-	 * @return The corresponding User object with the given username and password
+	 * @return The corresponding User object with the given username and password,
+	 * or null if there is no such user
 	 * @throws SQLException if the user is not in the database
 	 */
 	public User getUser(String username, String password) throws SQLException {
@@ -179,11 +174,9 @@ public class DatabaseHandler {
 		} else {
 			throw new SQLException("User is not in database or has no information");
 		}
-		System.out.println("User Strings for current user: " + userStrings.toString());
+		//creates a User object with the information found in the database
 		if (userStrings.size() > 3) {
 			user = new User(userStrings);
-
-			System.out.println("Successfully got user with username " + username);
 		} else {
 			throw new SQLException("User is not in database or has no information");
 		}
@@ -212,7 +205,7 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * Method that updates the reputation of a given user.
+	 * Method that updates the reputation of a given user in the database.
 	 * 
 	 * @param userID, user ID of user to change rep.
 	 * @param newRep, the new reputation of the user.
@@ -403,7 +396,8 @@ public class DatabaseHandler {
 	 */
 	public List<User> getTopFifty() throws SQLException {
 		List<User> topFifty = new ArrayList<User>();
-		for (List<String> row : queryData("SELECT * FROM users ORDER BY reputation DESC LIMIT 50", null)) {
+		List<List<String>> topLists = queryData("SELECT * FROM users ORDER BY reputation + 0 DESC LIMIT 50", null);
+		for (List<String> row : topLists) {
 			topFifty.add(new User(row));
 		}
 		return topFifty;
@@ -419,6 +413,7 @@ public class DatabaseHandler {
 	 * @param betType       The statistic that is being bet on
 	 * @param betPercentage What the user bet the resulting change will be
 	 * @param betAmount     The amount of reputation bet
+	 * @param patch 		The patch the bet was made on
 	 * @throws SQLException
 	 * @throws RepException
 	 */
@@ -428,7 +423,6 @@ public class DatabaseHandler {
 			System.out.println("Attempt to update database while closed");
 			return;
 		}
-		System.out.println("Bet made with id " + betID);
 		if (getUser(userID).getReputation() - Integer.parseInt(betAmount) < 0) {
 			throw new RepException("User does not have enough reputation to place that bet");
 		}
@@ -440,7 +434,7 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * adds reputation to user.
+	 * Adds reputation to a user in the database.
 	 * 
 	 * @param reputationChange - reputation to add
 	 * @param userID           - user to add reputation to
@@ -479,10 +473,12 @@ public class DatabaseHandler {
 	 */
 	public Bet getBet(String betID) throws SQLException {
 		Bet bet = null;
+		//gets the information of the bet stored in the database
 		List<String> betStrings = new ArrayList<>();
 		if (betID != null && !betID.equals("")) {
 			betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID)).get(0);
 		}
+		//creates a Bet object from the information
 		if (betStrings.size() != 0) {
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75, 0.0, 0.0);
 			bet = new Bet(gainFunc, betStrings);
@@ -506,10 +502,10 @@ public class DatabaseHandler {
 		List<List<String>> betStrings = new ArrayList<>();
 		if (patch != null && !patch.equals("")) {
 			betStrings = queryData("SELECT * FROM Bets WHERE patch = ? and userID = ?;", Arrays.asList(patch, userID));
-			System.out.println(betStrings);
 		}
 		if (betStrings.size() != 0) {
 			SigmoidAdjustedGain gainFunc = new SigmoidAdjustedGain(1.5, 0.75, 0.0, 0.0);
+			//makes a new bet object from each bet in the database
 			for (List<String> string : betStrings){
 				if(string.size() != 0){
 					bets.add(new Bet(gainFunc, string));
@@ -523,7 +519,9 @@ public class DatabaseHandler {
 	/**
 	 * Method that counts the number of bets for a given champion.
 	 * 
-	 * @param champ, the champion's name @return, number of bets submitted for that
+	 * @param champ the champion's name
+	 * @param patch The patch for the bet
+	 * @return number of bets submitted for that
 	 *               champion
 	 * @throws SQLException
 	 */
@@ -535,8 +533,9 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * Method that retrieves patches
-	 * @return, a list of lists of strings that represent patches.
+
+	 * Gets a list of patches from the database.
+	 * @return List of patches
 	 * @throws SQLException
 	 */
 	public List<List<String>> getPatches() throws SQLException {
@@ -546,9 +545,8 @@ public class DatabaseHandler {
 	}
 
 	/**
-	 * Method that updates the bet gain
+	 * Updates how much reputation each bet gained
 	 * @param bet - bets to update gains for
-	 *             Updates gains
 	 */
 	public void updateBetGains(Bet bet) {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));

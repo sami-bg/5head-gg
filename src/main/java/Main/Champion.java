@@ -9,7 +9,6 @@ public class Champion {
 	public List<String> pickRate;
 	public List<String> banRate;
 	
-	private List<Double> pastWinRate;
 
 	/**
 	 * Default constructor.

@@ -1,23 +1,24 @@
 package Main;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import Betting.Bet;
 import Betting.BettingSession;
 import Database.DatabaseHandler;
 import RiotAPI.ChampConsts;
 import RiotAPI.RiotAPI;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PatchTrackerThread extends TimerTask {
@@ -35,7 +36,7 @@ public class PatchTrackerThread extends TimerTask {
   private Integer interval;
 
   protected void runOneIteration() {
-    System.out.println("Running iteration with interval " + interval);
+    //System.out.println("Running iteration with interval " + interval);
     getAndUpdateCurrentPatch();
     if (hasPatchBeenReleasedWithin(0, 10000000)) {
       Map<String, List<Double>> oldMetrics = RiotAPI.getMapOfChampToWinPickBan();
@@ -74,26 +75,51 @@ public class PatchTrackerThread extends TimerTask {
     } else return;
   }
 
+  /**
+   * Updates the database with new win, pick, and ban rates
+   * @param newMetrics The new metrics to be added as a map
+   *                   with the champion's name as key
+   *                   and list of wr, pr, and br as value
+   */
   private void updateDatabaseMetrics(Map<String, List<Double>> newMetrics) {
     String currPatchString = getAndUpdateCurrentPatch().get();
+    Random rand = new Random();
+    Float wrandom = rand.nextFloat()*10 - 5;
+    Float prandom = rand.nextFloat()*10 - 1;
+    Float brandom = rand.nextFloat()*10 - 3;
+    List<String> patchList = new ArrayList<>();;
     try {
-      db.createNewPatch(currPatchString);
-      for (String hero: ChampConsts.getChampNames()) {
-        Double winrate = newMetrics.get(hero).get(0);
-        Double pickrate = newMetrics.get(hero).get(1);
-        Double banrate = newMetrics.get(hero).get(2);
-        db.addRatestoChamps(hero, currPatchString, String.valueOf(winrate), String.valueOf(pickrate), String.valueOf(banrate));
+      for (List<String> p : db.getPatches()) {
+        patchList.add(p.get(0));
+      }
+    } catch (SQLException e1) {
+      System.out.println("Error getting the patch list when broadcasting");
+    }
+    try {
+      if (!patchList.contains("patch"+currPatchString)){
+        db.createNewPatch(currPatchString);
+        for (String hero: ChampConsts.getChampNames()) {
+          Double winrate = Math.abs(newMetrics.get(hero).get(0) + wrandom);
+          Double pickrate = Math.abs(newMetrics.get(hero).get(1) + prandom);
+          Double banrate = Math.abs(newMetrics.get(hero).get(2) + brandom);
+          db.addRatestoChamps(hero, currPatchString, String.valueOf(winrate), String.valueOf(pickrate), String.valueOf(banrate));
+        }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      System.out.println("Error updating the database when broadcasting");
     }
   }
 
+  /**
+   * Updates the reputation for every user in the current session.
+   * @param session The session to be updated
+   */
   private void updateReputationForUsersInSession(BettingSession session) {
     List<String> userIDs = session.getUsers();
     for (String userID: userIDs) {
       List<Bet> bets = session.getBetsFromUserID(userID);
       int reputationChange = 0;
+      //for each bet, calculates the change and applies it
       for (Bet b: bets) {
         reputationChange += SigmoidAdjustedGain.calculateSigmoidReputationChange(b.getRepWagered(), b.getGain());
       }
@@ -101,10 +127,15 @@ public class PatchTrackerThread extends TimerTask {
     }
   }
 
+  /**
+   * Updates the bets made this session with the gains of the bets.
+   * @param session The session to update
+   */
   private void updateBetGainsForSession(BettingSession session) {
+    //gets the list of all users that bet this session
     List<String> users = session.getUsers();
-
     for (String user: users) {
+      //and for each user, update each of their bets
       List<Bet> betsForUser = session.getBetsFromUserID(user);
       for (Bet bet: betsForUser) {
         db.updateBetGains(bet);
@@ -112,6 +143,16 @@ public class PatchTrackerThread extends TimerTask {
     }
   }
 
+  /**
+   * Default constructor.
+   * @param day Number of days to check for until patch release.
+   * @param seconds Number of seconds within the day to check for patch release.
+   * @param wr The resulting win rate for this session.
+   * @param pr The resulting pick rate for this session.
+   * @param br The resulting ban rate for this session.
+   * @param db The database for this session.
+   * @param patchRef
+   */
   public PatchTrackerThread(Integer day, Integer seconds,
                      BettingSession wr,
                      BettingSession pr,
@@ -126,12 +167,13 @@ public class PatchTrackerThread extends TimerTask {
     patch = patchRef;
     patchIncrement = 1;
   }
+
   /**
-   *
+   * Checks to see if a new patch was released within s time.
    * @param day checks if patch has been released within this many days.
+   * @param seconds checks if patch has been released within this many seconds to the day.
    * @return boolean if patch has been released
    */
-
   public static Boolean hasPatchBeenReleasedWithin(Integer day, Integer seconds) {
     //Integer representing SECONDS of interval to check when patch was released.
     Integer interval = (day * 24 * 3600) + seconds;
