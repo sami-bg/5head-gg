@@ -116,6 +116,7 @@ public class BettingSession {
     }
   }
 
+  
   /**
    * Gets a list of all the users
    * @return a list of all the users in the betting session

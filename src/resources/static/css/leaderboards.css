@@ -108,6 +108,7 @@ body {
     justify-content: space-between;
     margin: 1%;
     border-bottom: 1px solid gray;
+    width: 60%
 }
 
 .user-id {
@@ -194,11 +195,11 @@ body {
 
 .top-entry {
     padding: 5px;
-    width: 25vw;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin: 0.5%;
+    width: 70%
 }
 
 #repsubtitle {
