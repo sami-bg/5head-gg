@@ -33,6 +33,11 @@ img {
 
 form {
     display: flex;
+    flex-direction: row;
+}
+
+form div {
+    display: flex;
     flex-direction: column;
 }
 
@@ -48,4 +53,9 @@ input[type=submit] {
     height: 50px; 
     color: white;
     font-weight: bold;
+}
+
+#entryforms {
+    display: flex;
+    flex-direction: row;
 }

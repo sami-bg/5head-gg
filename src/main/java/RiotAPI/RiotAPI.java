@@ -4,6 +4,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,11 +68,9 @@ public class RiotAPI {
       mapOfChampToImageURL.put(urlFriendlyName, splashIconList);
 
     } catch (IOException | NullPointerException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      System.out.println("Error connecting to u.gg for: " + champname);
     } catch (NumberFormatException e) {
       System.out.println("Couldn't parse rate for " + champname);
-      e.printStackTrace();
     }
   }
 

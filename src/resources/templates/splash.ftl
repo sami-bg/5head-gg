@@ -15,15 +15,26 @@
     <h1 id="title">5HEAD.gg</h1>
     <div><img src="/css/5head.png"></div>
     <div id="login">
-      <p> Log in or create an account below.
-      <br> 
-      If you don't have an account, one will be made for you!</p>
-	  ${incorrectPassword}
-      <form method="POST" action="/mybets">
-      <input type=text name="username">
-      <input type="password" name="password">
-      <input type="submit" value="Log In">
-      </form>
+      <p> Log in or create an account below</p>
+	    <p style="color:red">${incorrectPassword}<p>
+      <div id="entryforms">
+        <form method="POST" action="/mybets">
+          <div>
+          <label for="username"> Username </label>
+          <input type=text name="username">
+          <label for="password"> Password </label>
+          <input type="password" name="password">
+          <input type="submit" value="Log In">
+          </div>
+          <div>
+          <label for="newusername"> Username </label>
+          <input type=text name="newusername">
+          <label for="newpassword"> Password </label>
+          <input type="password" name="newpassword">
+          <input type="submit" value="Create Account">
+          </div>
+        </form>
+      </div>
     </div>
 
 </body>
