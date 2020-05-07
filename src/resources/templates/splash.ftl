@@ -14,6 +14,9 @@
 <body>
     <h1 id="title">5HEAD.gg</h1>
     <div><img src="/css/5head.png"></div>
+	<h2 id="explanation">Welcome to 5Head!<br>
+	Want to put your LoL analytic powers to the test?<br>
+	Predict a champion's winrate, pickrate, or banrate with each patch and watch your reputation grow!</h2>
     <div id="login">
       <p> Log in or create an account below</p>
 	    <p style="color:red">${incorrectPassword}<p>

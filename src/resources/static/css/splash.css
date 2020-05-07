@@ -16,6 +16,14 @@ body {
     font-size: 80px;
 }
 
+#explanation {
+    font-family: Roboto;
+    font-style: normal;
+    color: #F9F9F9;
+    font-size: 16px;
+    text-align: center;
+}
+
 img {
     width: 30vw;
     height: 30vh;

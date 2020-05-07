@@ -12,8 +12,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import freemarker.template.Configuration;
 import org.jsoup.Jsoup;
-import org.sqlite.SQLiteException;
-
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -336,7 +334,8 @@ public final class Main {
                 for (String champname : ChampConsts.getChampNames()) {
                     championDivs += "<a href=\"/champion/" + champname + "\">";
                     championDivs += "<div class=\"iconsdiv\">";
-                    championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\">";
+                    championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\"" + " alt=\""
+                            + champname + " Page\">";
                     championDivs += "</div>";
                     championDivs += "</a>";
                 }
