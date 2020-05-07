@@ -21,6 +21,11 @@ DatabaseHandler db = null;
         db.read("data/5HeadTest.db");
     }
 
+    @After
+    public void tearDown(String table) throws Exception {
+        db.deleteData(table);
+    }
+
     @Test
     public void testUserQueries() {
         User usr1 = new User("usrID", "usrName", 320, "brown.edu", "pswrd");
@@ -33,6 +38,7 @@ DatabaseHandler db = null;
             assertEquals(db.getUser("usrName1", "pswrd1").getID(), usr2.getID());
             db.updateReputation("usrID", "1000");
             assertEquals(db.getUser("usrID").getReputation(), 1000);
+            tearDown("Users");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,6 +70,10 @@ DatabaseHandler db = null;
             db.addRatestoChamps("Aatrox", "10.11", "0.35", "0.25", "0.45");
             assertTrue(db.getChampionWinRateFromPatch("10.11", "Aatrox") == 0.35);
 
+            tearDown("WinRate");
+            tearDown("BanRate");
+            tearDown("PickRate");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,6 +101,9 @@ DatabaseHandler db = null;
             assertEquals(db.getBet("1").getUserID(), bet1.getUserID());
             assertEquals(db.getUserBetsOnPatch("10.10", "usr_ID_1"), bets);
             assertTrue(db.countNumberOfBets("Aatrox", "10.10") == 2);
+
+            tearDown("Bets");
+            tearDown("Users");
         } catch (Exception e) {
             e.printStackTrace();
 

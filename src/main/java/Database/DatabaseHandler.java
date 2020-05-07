@@ -455,7 +455,7 @@ public class DatabaseHandler {
   public class RepException extends Exception {
 
 		/**
-		 *
+		 * Exception for invalid user reputation changes
 		 */
 		private static final long serialVersionUID = 1L;
 		public RepException(String error){
@@ -533,6 +533,7 @@ public class DatabaseHandler {
 	}
 
 	/**
+
 	 * Gets a list of patches from the database.
 	 * @return List of patches
 	 * @throws SQLException
@@ -543,12 +544,23 @@ public class DatabaseHandler {
 				Arrays.asList());
 	}
 
-		/**
+	/**
 	 * Updates how much reputation each bet gained
 	 * @param bet - bets to update gains for
 	 */
 	public void updateBetGains(Bet bet) {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
+	}
+
+	/**
+	 * Method that deletes all rows from a table.
+	 * @param table, table to delete rows from
+	 * @throws SQLException
+	 */
+	public void deleteData(String table) throws SQLException {
+		String delete = "DELETE FROM %s";
+		delete = String.format(delete, table);
+		updateData(delete, null);
 	}
 
 }
