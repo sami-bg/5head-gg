@@ -53,7 +53,7 @@ body {
 
 #logo {
     /* background: #4E77FF; */
-    height: 50px;
+    height: 3%;
 }
 
 #bettingstatus {
@@ -76,7 +76,12 @@ body {
     background-color: #181921;
     padding-left: 15px;
     padding-right: 15px;
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.46);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.46);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.46);
+    z-index: 3;
 }
+
 
 
 
@@ -120,7 +125,7 @@ body {
     top: 0px;
     left: 0px;
     width: 10.7143%;
-    min-width: 60
+    min-width: 60px
 }
 
 .attribute {
@@ -242,9 +247,9 @@ color: rgb(255, 255, 255);
 
 #reputation {
     
-    color: #FEFEFE;
+    color: #95faff;
     border-bottom: 0.5px solid #84929E;
-    font-size: 30px;
+    font-size: 35px;
 
 }
 
@@ -269,10 +274,21 @@ color: rgb(255, 255, 255);
     width: 50%;
     height: 100vh;
     display: flex;
+   
 }
 
 #champlist ::-webkit-scrollbar {
     display:none;
+}
+
+
+#champexplanation {
+flex: 0 0 100%;
+  text-align: center;
+}
+
+#patchexplanation {
+  text-align: center;
 }
 
 .patch-change-block {
@@ -319,5 +335,15 @@ img {
 .icons:hover {
     opacity: 0.85;
     scale: 100%;
+}
+
+#patchexplanation {
+    background-color: #181921;
+    height: 5%;
+}
+
+#champexplanation {
+    background-color: #181921;
+    height: 5%;
 }
 

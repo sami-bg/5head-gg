@@ -3,7 +3,6 @@ package Main;
 import Betting.Bet;
 import Betting.BettingSession;
 import Betting.GainFunction;
-import Database.DatabaseEntryFiller;
 import Database.DatabaseHandler;
 import Database.DatabaseHandler.RepException;
 import RiotAPI.ChampConsts;
@@ -12,8 +11,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import freemarker.template.Configuration;
 import org.jsoup.Jsoup;
-import org.sqlite.SQLiteException;
-
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -58,7 +55,6 @@ public final class Main {
 
     private void run() throws IOException, SQLException {
         db.read("data/5Head.db");
-        DatabaseEntryFiller DBEF = new DatabaseEntryFiller();
         RiotAPI.updateMapOfChamps();
         runSparkServer(4567);
     }
@@ -336,7 +332,8 @@ public final class Main {
                 for (String champname : ChampConsts.getChampNames()) {
                     championDivs += "<a href=\"/champion/" + champname + "\">";
                     championDivs += "<div class=\"iconsdiv\">";
-                    championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\">";
+                    championDivs += "<img class=\"icons\" src=\"" + RiotAPI.getIconByName(champname) + "\"" + " alt=\""
+                            + champname + " Page\">";
                     championDivs += "</div>";
                     championDivs += "</a>";
                 }
@@ -375,16 +372,21 @@ public final class Main {
     private static class ChampionPageHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
-            // checks to see if user is logged in and redirects to main page if not
+            String champName = req.params(":champname");
+            String error = "";
 
+            // checks to see if user is logged in and redirects to main page if not
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
 
                 return new ModelAndView(variables, "splash.ftl");
-            } else {
+                //checks to see if the URL leads to a valid champion page
+            } else if(!ChampConsts.getChampNames().contains(champName)){
+                champName = "Aatrox";
+                error = "That champion does not exist!";
+            }
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
 
-                String champName = req.params(":champname");
                 // builds the charts for each statistic
                 String wrchart = "";
                 String brchart = "";
@@ -395,7 +397,7 @@ public final class Main {
                     prchart = buildMetricChartForChampion(champName, "Pick", db.getPatches());
 
                 } catch (SQLException e) {
-                    System.out.println("problem connecting to databse while building charts");
+                    System.out.println("problem connecting to database while building charts");
                 }
 
                 Map<String, Object> variables = null;
@@ -411,11 +413,11 @@ public final class Main {
                         .put("profileName", currentUser.getUsername())
                         .put("champSplashimage", getSplashByName(champName)).put("winrateGraph", wrchart)
                         .put("pickrateGraph", prchart).put("banrateGraph", brchart).put("champname", champName)
-                        .put("error", "").build();
+                        .put("error", error).build();
 
                 return new ModelAndView(variables, "champion.ftl");
             }
-        }
+
     }
 
     /**
@@ -424,13 +426,18 @@ public final class Main {
     private static class ChampionBetHandler implements TemplateViewRoute {
         @Override
         public ModelAndView handle(Request req, Response res) {
+            String champName = req.params(":champname");
+            String error = "";
             // checks to see if user is logged in and redirects to main page if not
             if (!SessionHandler.isUserLoggedIn(req)) {
                 Map<String, Object> variables = ImmutableMap.of("incorrectPassword", "Please log in");
 
                 return new ModelAndView(variables, "splash.ftl");
-            } else {
-                String champName = req.params(":champname");
+            } else if(!ChampConsts.getChampNames().contains(champName)){
+                champName = "Aatrox";
+                error = "That champion does not exist, so a bet was made for Aatrox instead!";
+            }
+
 
                 QueryParamsMap qm = req.queryMap();
 
@@ -443,7 +450,6 @@ public final class Main {
                 String bstake = qm.value("bstaked");
 
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
-                String error = "";
                 if (currentUser != null) {
                     // if the winrate form is filled out, add a winrate bet
                     if (wper != null && Integer.parseInt(wstake) > 0) {
@@ -531,7 +537,7 @@ public final class Main {
                 return new ModelAndView(variables, "champion.ftl");
             }
         }
-    }
+
 
     /**
      * Builds a chart for the given champion and metric.

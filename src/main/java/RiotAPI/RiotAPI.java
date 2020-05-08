@@ -1,10 +1,10 @@
 package RiotAPI;
 
-import org.jsoup.*;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +89,7 @@ public class RiotAPI {
    * NOTE: Meant to be called after updateMapOfChamps
    * @param champname The champion to be "cleaned up."
    */
-  private static void cleanupChampInMaps(String champname) {
+  protected static void cleanupChampInMaps(String champname) {
     String urlName = urlFriendlyName(champname);
     //default icon and splash
     String icon;

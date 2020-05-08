@@ -8,6 +8,7 @@
   <meta name="description" content="5Head.gg">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="/css/patchnotes.css">
+  <link rel="icon" href="/css/favicon.png">
 
 </head>
 
@@ -48,9 +49,14 @@
 		</div>
     </div>
     <div id="canvas">
-        <div id="patchnotes-embed"> ${currentPatch} </div>
+        <div id="patchnotes-embed"> 
+		<div id="patchexplanation"><p style="font-weight: bold; color: #FEFEFE">Current Patch Notes:</p></div>
+		${currentPatch} </div>
         <!-- div for each champion -->
-        <div id="champlist"> ${championDivs} </div>
+        <div id="champlist"><div id="champexplanation">
+		<p style="font-weight: bold; color: #FEFEFE">Click on a portrait to go to that champion's page!</p>
+		</div>
+		${championDivs} </div>
     </div>
 </body>
 </html>

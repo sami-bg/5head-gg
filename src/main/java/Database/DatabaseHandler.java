@@ -69,7 +69,6 @@ public class DatabaseHandler {
 				for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
 					row.add(result.getString(i));
 				}
-				System.out.println(row.toString());
 				res.add(row);
 			}
 			prep.close();
@@ -81,9 +80,10 @@ public class DatabaseHandler {
 			System.out.println("Error: SQL connection error");
 			return Arrays.asList(new ArrayList<String>());
 		}
-
+		
 		return res;
 	}
+
 
 	/**
 	 * This method updates the database. It exists so that other classes do not have
@@ -92,7 +92,7 @@ public class DatabaseHandler {
 	 * @param query The SQL Query which will be called to the database
 	 * @param args  The argument which can be passed into the SQL call
 	 */
-	public void updateData(String query, List<String> args) {
+	public void updateData(String query, List<String> args) throws SQLException{
 		if (this.isLocked) {
 			System.out.println("Attempt to update database while closed");
 			return;
@@ -108,9 +108,6 @@ public class DatabaseHandler {
 			prep.close();
 		} catch (NullPointerException e) {
 			System.out.println("ERROR: Database is not connected");
-		} catch (SQLException e) {
-			System.out.println("Error: SQL connection error");
-			e.printStackTrace();
 		}
 	}
 
@@ -455,7 +452,7 @@ public class DatabaseHandler {
   public class RepException extends Exception {
 
 		/**
-		 *
+		 * Exception for invalid user reputation changes
 		 */
 		private static final long serialVersionUID = 1L;
 		public RepException(String error){
@@ -476,7 +473,11 @@ public class DatabaseHandler {
 		//gets the information of the bet stored in the database
 		List<String> betStrings = new ArrayList<>();
 		if (betID != null && !betID.equals("")) {
-			betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID)).get(0);
+			try {
+				betStrings = queryData("SELECT * FROM Bets WHERE betID = ? ;", Arrays.asList(betID)).get(0);
+			} catch (IndexOutOfBoundsException e){
+				throw new SQLException("Bet is not in database or has no information");
+			}
 		}
 		//creates a Bet object from the information
 		if (betStrings.size() != 0) {
@@ -533,6 +534,7 @@ public class DatabaseHandler {
 	}
 
 	/**
+
 	 * Gets a list of patches from the database.
 	 * @return List of patches
 	 * @throws SQLException
@@ -543,12 +545,23 @@ public class DatabaseHandler {
 				Arrays.asList());
 	}
 
-		/**
+	/**
 	 * Updates how much reputation each bet gained
 	 * @param bet - bets to update gains for
 	 */
-	public void updateBetGains(Bet bet) {
+	public void updateBetGains(Bet bet) throws SQLException {
 		updateData("UPDATE Bets SET Gain = ? WHERE BetID = ?;", Arrays.asList(String.valueOf(bet.getGain()), bet.getBetID()));
+	}
+
+	/**
+	 * Method that deletes all rows from a table.
+	 * @param table, table to delete rows from
+	 * @throws SQLException
+	 */
+	public void deleteData(String table) throws SQLException {
+		String delete = "DELETE FROM %s";
+		delete = String.format(delete, table);
+		updateData(delete, null);
 	}
 
 }

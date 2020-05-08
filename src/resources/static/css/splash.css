@@ -3,10 +3,14 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    grid-template-columns: 2;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-family: Roboto;
+    background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSeiZY_U0GcOSYXTKowxZPfwwjoQm8H6YqQ3VbeosLGepFmwWEn&usqp=CAU);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
 }
 
 #title {
@@ -16,16 +20,24 @@ body {
     font-size: 80px;
 }
 
+#explanation {
+    font-family: Roboto;
+    font-style: normal;
+    color: #F9F9F9;
+    font-size: 16px;
+    text-align: center;
+    line-height: 1.7em;
+}
+
 img {
-    width: 30vw;
-    height: 30vh;
+    width: 15vw;
     margin: 20px;
 }
 
 #login {
     display: flex;
     flex-direction: column;
-    color: #F9F9F9; 
+    color: #95faff; 
     margin: 50px;
     font-weight: bold;
     text-align: center;
@@ -58,4 +70,13 @@ input[type=submit] {
 #entryforms {
     display: flex;
     flex-direction: row;
+}
+
+#layout {
+    display: flex;
+    align-items: center;
+    background-color: rgb(0, 0, 0, 0.4);
+    border-radius: 20px;
+    padding-left: 2%;
+
 }

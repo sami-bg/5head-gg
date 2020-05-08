@@ -1,5 +1,6 @@
-package Database;
+package DatabaseHandler;
 
+import Database.DatabaseHandler;
 import Database.DatabaseHandler.RepException;
 import Main.Main;
 import RiotAPI.ChampConsts;

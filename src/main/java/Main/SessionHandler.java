@@ -40,7 +40,7 @@ public class SessionHandler {
         //to the stored password
          if(user.getAuth().equals(password)){
                 response.cookie("username", username, cookieDuration);
-                response.cookie("password", String.valueOf(password.hashCode()), cookieDuration);
+                response.cookie("password", password, cookieDuration);
                 successfulLogin = true;
             } else {
                 successfulLogin = false;

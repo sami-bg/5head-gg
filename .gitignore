@@ -2,4 +2,6 @@ bin/
 target/
 .vs/
 .idea/
-*.db
+5Head.db
+5Head-dirty.db
+5Head-clean.db
