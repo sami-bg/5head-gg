@@ -165,7 +165,7 @@ public class PatchTrackerThread extends TimerTask {
     this.brSession = br;
     this.db = db;
     patch = patchRef;
-    patchIncrement = 1;
+    patchIncrement = 0;
   }
 
   /**

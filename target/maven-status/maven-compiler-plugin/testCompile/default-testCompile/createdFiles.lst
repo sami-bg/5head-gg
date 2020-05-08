@@ -1,4 +1,5 @@
 Main/TestSigmoidAdjustedGain.class
 DatabaseHandler/QueryTest.class
+Main/TestPatch.class
 RiotAPI/RiotAPITest.class
 RiotAPI/ChampConstsTest.class
