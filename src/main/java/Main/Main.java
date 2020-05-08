@@ -8,7 +8,6 @@ import Database.DatabaseHandler.RepException;
 import RiotAPI.ChampConsts;
 import RiotAPI.RiotAPI;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 import freemarker.template.Configuration;
 import org.jsoup.Jsoup;
 import spark.*;
@@ -40,8 +39,6 @@ public final class Main {
     private static BettingSession br = new BettingSession("pickrate", ChampConsts.getChampNames());
 
     public static DatabaseHandler db = new DatabaseHandler();
-
-    private static final Gson GSON = new Gson();
 
     public static void main(String[] args) throws IOException, SQLException {
         new Main(args).run();
@@ -184,8 +181,6 @@ public final class Main {
                 return new ModelAndView(variables, "splash.ftl");
             } else {
                 User currentUser = SessionHandler.getUserFromRequestCookie(req, db);
-                String champOptions;
-                StringBuilder sb = new StringBuilder();
                 StringBuilder sb1 = new StringBuilder();
                 // builds and styles the list of all the user's bets
                 try {
@@ -226,8 +221,6 @@ public final class Main {
         @Override
         public ModelAndView handle(Request req, Response res) {
             User currentUser = null;
-            String champOptions;
-            StringBuilder sb = new StringBuilder();
             StringBuilder sb1 = new StringBuilder();
             QueryParamsMap qm = req.queryMap();
             Boolean successfulLogin;

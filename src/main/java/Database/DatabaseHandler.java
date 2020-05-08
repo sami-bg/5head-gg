@@ -498,8 +498,7 @@ public class DatabaseHandler {
 	 * @throws SQLException
 	 */
 	public List<Bet> getUserBetsOnPatch(String patch, String userID) throws SQLException {
-		Bet bet = null;
-		List<Bet> bets = new ArrayList();
+		List<Bet> bets = new ArrayList<>();
 		List<List<String>> betStrings = new ArrayList<>();
 		if (patch != null && !patch.equals("")) {
 			betStrings = queryData("SELECT * FROM Bets WHERE patch = ? and userID = ?;", Arrays.asList(patch, userID));
