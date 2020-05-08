@@ -10,14 +10,13 @@
   <link rel="stylesheet" href="/css/champion.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
   <script src="/js/Chart.js"></script>
-
+  <link rel="icon" href="/css/favicon.png">
 </head>
 
 <body>
 
     <div id="sidebar">
         <div id="logo">
-
         </div>
 
         <div class="left-aligned" id="reputation">
@@ -65,11 +64,11 @@
                 </div>
 
                 <div class="bet">
+                    <form method="POST">
                     <div class="plus-button">
                         % CHANGE
                     </div>
-                    <form method="POST">
-                        <input name="wpercentage" type="number" value="0">
+                        <input name="wpercentage" type="number" value="0" step="0.1">
                     <div class="minus-button">
                         
                     </div>
@@ -105,7 +104,7 @@
                         % CHANGE
                     </div>
                     <form method="POST">
-                        <input name= "ppercentage" type="number" value="0">
+                        <input name= "ppercentage" type="number" value="0" step="0.1">
                     <div class="minus-button">
                         
                     </div>
@@ -141,7 +140,7 @@
                         % CHANGE
                     </div>
                     <form method="POST">
-                        <input name= "bpercentage" type="number" value="0">
+                        <input name= "bpercentage" type="number" value="0" step="0.1">
                     <div class="minus-button">
                         
                     </div>
@@ -168,6 +167,5 @@
 
         </div>
     </div>
-    <#--  <script src="../js/wrate.js"></script>  -->
 </body>
 </html>

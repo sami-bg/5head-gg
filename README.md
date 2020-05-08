@@ -81,4 +81,13 @@ _On your first meeting with your mentor TA, you should plan dates for at least t
 **Adversary Checkpoint:** _(Schedule for on or before April 29 once you are assigned an adversary TA)_
 
 ## How to Build and Run
-_A necessary part of any README!_
+Build the package by running `mvn package`.
+
+Run the program by running the `run` executable. This will start a spark server listening on 0.0.0.0:4567.
+navigating to that in a web browser on the computer you ran it on will allow you to access the site. 
+
+## Testing
+
+The project has been thoroughly JUnit tested, with ~90% function coverage for each module. The Main class has low testing coverage, since many of its functions are for displaying the frontend, and can't be easily tested. 
+
+In addition, we hand tested the front end. We used W3C's HTML and CSS validators to ensure our frontend code was good. A record of the hand tests we performed on the frontend can be found in test/HandTests.md

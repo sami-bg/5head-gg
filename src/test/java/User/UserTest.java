@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import DatabaseHandler.DatabaseEntryFiller;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -13,10 +15,10 @@ import static org.junit.Assert.assertThrows;
 
 public class UserTest {
     Database.DatabaseHandler DHTest;
-    Database.DatabaseEntryFiller DEFTest;
+    DatabaseEntryFiller DEFTest;
     @Before // setup()
     public void before() throws Exception {
-         DEFTest = new Database.DatabaseEntryFiller();
+         DEFTest = new DatabaseEntryFiller();
          DHTest = new Database.DatabaseHandler();
          DHTest.read("data/5HeadTest.db");
     }

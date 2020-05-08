@@ -5,13 +5,12 @@ body {
   font-family: Roboto;
   font-style: normal;
   display: flex;
-  grid-template-columns: 2;
   height: 100%;
 }
 
 #logo {
   /* background: #4e77ff; */
-  height: 50px;
+  height: 3%;
 }
 
 #bettingstatus {
@@ -34,6 +33,10 @@ body {
   background-color: #181921;
   padding-left: 15px;
   padding-right: 15px;
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.46);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.46);
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.46);
+  z-index: 3;
 }
 
 .sidebarlink:link {
@@ -109,9 +112,9 @@ body {
 }
 
 #reputation {
-  color: #fefefe;
+  color: #95faff;
   border-bottom: 0.5px solid #84929e;
-  font-size: 30px;
+  font-size: 35px;
 }
 
 #canvas {
@@ -146,6 +149,9 @@ body {
   color: #fefefe;
   border-radius: 10px;
   opacity: 0.8;
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.9);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.9);
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0, 0.9);
 }
 
 #champname {
@@ -158,16 +164,18 @@ body {
   border-radius: 20px;
   padding: 10px 30px 10px 30px;
   opacity: 0.9;
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.9);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.9);
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0, 0.9);
 }
 
 .rate div {
   margin: 1vh;
   text-align: center;
-  font-size: 1.5sem;
 }
 
 .amount {
-  opacity: 2;
+  opacity: 1;
   background-color: #00000f;
   border-radius: 10px;
   width: auto;
@@ -176,7 +184,7 @@ body {
 }
 
 .bet {
-  opacity: 2;
+  opacity: 1;
   background-color: #00000f;
   border-radius: 10px;
   width: auto;
@@ -185,7 +193,7 @@ body {
 }
 
 .submit {
-  opacity: 2;
+  opacity: 1;
   background-color: #00000f;
   border-radius: 10px;
   transition-duration: 0.4s;

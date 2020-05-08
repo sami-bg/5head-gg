@@ -3,3 +3,5 @@ target/
 .vs/
 .idea/
 5Head.db
+5Head-dirty.db
+5Head-clean.db

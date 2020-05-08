@@ -27,12 +27,13 @@ DatabaseHandler db = null;
     public void testErrors() throws SQLException {
         db = new DatabaseHandler();
         db.read("fakedb");
-            assertThrows(SQLException.class, () -> {db.getUser("any");});
+        assertThrows(SQLException.class, () -> {db.getUser("any");});
         assertThrows(SQLException.class, () -> db.addNewUser("usrID", "usrName", "320", "brown.edu", "pswrd"));
         assertEquals(db.queryData(null, null), Arrays.asList(new ArrayList<String>()));
         assertThrows(SQLException.class, () -> db.createNewBet("2", "usr_ID_1", "Aatrox", "Ban", "0.5", "50", "10.10"));
 
     }
+
 
     @Test
     public void testUserQueries() {

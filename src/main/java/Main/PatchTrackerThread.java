@@ -35,7 +35,7 @@ public class PatchTrackerThread extends TimerTask {
    */
   private Integer interval;
 
-  protected void runOneIteration() throws SQLException {
+  private void runOneIteration() throws SQLException {
     //System.out.println("Running iteration with interval " + interval);
     getAndUpdateCurrentPatch();
     if (hasPatchBeenReleasedWithin(0, 10000000)) {

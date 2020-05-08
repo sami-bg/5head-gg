@@ -3,7 +3,6 @@ package Main;
 import Betting.Bet;
 import Betting.BettingSession;
 import Betting.GainFunction;
-import Database.DatabaseEntryFiller;
 import Database.DatabaseHandler;
 import Database.DatabaseHandler.RepException;
 import RiotAPI.ChampConsts;
@@ -56,7 +55,6 @@ public final class Main {
 
     private void run() throws IOException, SQLException {
         db.read("data/5Head.db");
-        DatabaseEntryFiller DBEF = new DatabaseEntryFiller();
         RiotAPI.updateMapOfChamps();
         runSparkServer(4567);
     }

@@ -69,7 +69,6 @@ public class DatabaseHandler {
 				for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
 					row.add(result.getString(i));
 				}
-				System.out.println(row.toString());
 				res.add(row);
 			}
 			prep.close();
@@ -81,9 +80,10 @@ public class DatabaseHandler {
 			System.out.println("Error: SQL connection error");
 			return Arrays.asList(new ArrayList<String>());
 		}
-
+		
 		return res;
 	}
+
 
 	/**
 	 * This method updates the database. It exists so that other classes do not have
