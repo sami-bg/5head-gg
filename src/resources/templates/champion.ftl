@@ -69,7 +69,7 @@
                         % CHANGE
                     </div>
                     <form method="POST">
-                        <input name="wpercentage" type="number" value="0">
+                        <input name="wpercentage" type="number" value="0" step="0.1">
                     <div class="minus-button">
                         
                     </div>
@@ -105,7 +105,7 @@
                         % CHANGE
                     </div>
                     <form method="POST">
-                        <input name= "ppercentage" type="number" value="0">
+                        <input name= "ppercentage" type="number" value="0" step="0.1">
                     <div class="minus-button">
                         
                     </div>
@@ -141,7 +141,7 @@
                         % CHANGE
                     </div>
                     <form method="POST">
-                        <input name= "bpercentage" type="number" value="0">
+                        <input name= "bpercentage" type="number" value="0" step="0.1">
                     <div class="minus-button">
                         
                     </div>
