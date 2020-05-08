@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.*;
 
-public class TestPatch {
+public class TestPatchTracker {
     DatabaseHandler db = null;
     PatchTrackerThread ptt = null;
     AtomicReference<String> ref = null;

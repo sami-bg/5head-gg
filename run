@@ -46,4 +46,4 @@ fi
 
 # The symbol "$@" passes the command-line arguments from
 # this script to your Java program.
-java -ea -cp "$TARGET$PATHSEP$CP" main.java.Main.Main "$@"
+java -ea -cp "$TARGET$PATHSEP$CP" $MAINPKG.Main "$@"
